@@ -1,5 +1,5 @@
 ﻿using CatalogService.Domain.Errors;
-using CatalogService.Domain.Primitives;
+using migApp.Shared.Domain.Primitives;
 using migApp.Shared.Results;
 using static migApp.Shared.Results.ResultFactory;
 
@@ -7,7 +7,7 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed class AltText : ValueObject
 {
-    private const int MaxLength = 200;
+    public const int MaxLength = 200;
 
     public string Value { get; }
 

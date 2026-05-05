@@ -1,5 +1,5 @@
 ﻿using CatalogService.Domain.Errors;
-using CatalogService.Domain.Primitives;
+using migApp.Shared.Domain.Primitives;
 using migApp.Shared.Results;
 using System.Text.RegularExpressions;
 using static migApp.Shared.Results.ResultFactory;
@@ -10,8 +10,8 @@ public sealed partial class Slug : ValueObject
 {
     [GeneratedRegex(@"^[a-z0-9]+(?:-[a-z0-9]+)*$", RegexOptions.Compiled)]
     private static partial Regex SlugRegex();
-    private const int MaxLength = 100;
-    private const int MinLength = 3;
+    public const int MaxLength = 100;
+    public const int MinLength = 3;
 
 
     public string Value { get; }

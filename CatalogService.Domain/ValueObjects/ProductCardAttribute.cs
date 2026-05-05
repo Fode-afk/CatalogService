@@ -1,4 +1,4 @@
-﻿using CatalogService.Domain.Primitives;
+﻿using migApp.Shared.Domain.Primitives;
 using migApp.Shared.Results;
 using static migApp.Shared.Results.ResultFactory;
 
@@ -8,6 +8,8 @@ public sealed class ProductCardAttribute : ValueObject
 {
     public AttributeName Name { get; }
     public AttributeValue Value { get; }
+
+    private ProductCardAttribute() { }
 
     private ProductCardAttribute(AttributeName name, AttributeValue value)
     {

@@ -1,5 +1,5 @@
 ﻿using CatalogService.Domain.Errors;
-using CatalogService.Domain.Primitives;
+using migApp.Shared.Domain.Primitives;
 using migApp.Shared.Results;
 using static migApp.Shared.Results.ResultFactory;
 
@@ -7,8 +7,8 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed class Name : ValueObject
 {
-    private const int MaxLength = 40;
-    private const int MinLength = 3;
+    public const int MaxLength = 40;
+    public const int MinLength = 3;
 
     private Name(string value)
     {
@@ -35,6 +35,12 @@ public sealed class Name : ValueObject
 
         return Ok(new Name(value));
     }
+
+    public static string Normalize(Name name) =>
+        name.Value
+            .ToLower()
+            .Replace(" ", "")
+            .Trim();
 
     public override string ToString() => Value;
 

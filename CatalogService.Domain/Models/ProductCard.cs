@@ -1,15 +1,20 @@
-﻿using CatalogService.Domain.DomainEvents;
-using CatalogService.Domain.Enums;
+﻿using CatalogService.Domain.Contexts;
+using CatalogService.Domain.DomainEvents;
 using CatalogService.Domain.Errors;
 using CatalogService.Domain.Primitives;
+using CatalogService.Domain.RequestData;
+using CatalogService.Domain.Specifications.ProductCard;
 using CatalogService.Domain.ValueObjects;
+using migApp.Shared.Enums.ProductCards;
 using migApp.Shared.Results;
 using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Domain.Models;
 
-public sealed class ProductCard : AggregateRoot
+public sealed class ProductCard : AggregateRoot 
 {
+    private ProductCard() : base(Guid.Empty) { }
+
     private ProductCard(
         Guid id,
         Name name,
@@ -20,6 +25,8 @@ public sealed class ProductCard : AggregateRoot
         Guid vendorId,
         Brand brand,
         SeoMetadata seoMetadata,
+        List<ProductCardAttribute> attributes,
+        List<Tag> tags,
         DateTimeOffset createdAt) : base(id)
     {
         Name = name;
@@ -30,28 +37,33 @@ public sealed class ProductCard : AggregateRoot
         VendorId = vendorId;
         Brand = brand;
         SeoMetadata = seoMetadata;
+        _attributes = attributes;
+        _tags = tags;
         CreatedAt = createdAt;
     }
+
+    public const int MaxAttributes = 30;
+    public const int MaxTags = 50;
+    public const int MaxImages = 10;
 
     public Name Name { get; private set; }
     public Slug Slug { get; private set; }
     public Description Description { get; private set; }
     public ShortDescription ShortDescription { get; private set; }
 
-    public RatingSnapshot Rating { get; private set; } = RatingSnapshot.Empty;
-    public int SkuCount { get; private set; }
-    public Money? MinPrice { get; private set; }
-    public Money? MaxPrice { get; private set; }
-    public bool HasStock { get; private set; }
+    public Guid? DefaultProductId { get; private set; }
+    public ProductCount ProductCount { get; private set; } = ProductCount.Zero;
 
     public Guid CategoryId { get; private set; }
+
     public Guid VendorId { get; private set; }
+
     public Brand Brand { get; private set; }
 
-    public ProductStatus Status { get; private set; } = ProductStatus.Draft;
+    public ProductCardStatus ProductCardStatus { get; private set; } = ProductCardStatus.Draft;
 
     public DateTimeOffset CreatedAt { get; private set; }
-    public DateTimeOffset UpdatedAt { get; private set; }
+    public DateTimeOffset? UpdatedAt { get; private set; }
 
     public SeoMetadata SeoMetadata { get; private set; }
 
@@ -61,158 +73,248 @@ public sealed class ProductCard : AggregateRoot
     private readonly List<ProductCardImage> _images = [];
     public IReadOnlyCollection<ProductCardImage> Images => _images;
 
-    private List<string> _tags = [];
-    public IReadOnlyCollection<string> Tags => _tags;
+    private List<Tag> _tags = [];
+    public IReadOnlyCollection<Tag> Tags => _tags;
 
     public static IResult<ProductCard> Create(
-        Name name,
-        Slug slug,
-        Description description,
-        ShortDescription shortDescription,
+        ProductCardCreationContext ctx,
+        ProductCardCreationData data,
         Guid categoryId,
         Guid vendorId,
-        Brand brand,
-        SeoMetadata seoMetadata,
         DateTimeOffset now)
     {
+        var result = ProductCardCreationSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return Fail<ProductCard>(result.Error);
+
         var product = new ProductCard(
             Guid.NewGuid(),
-            name,
-            slug,
-            description,
-            shortDescription,
+            data.Name,
+            data.Slug,
+            data.Description,
+            data.ShortDescription,
             categoryId,
             vendorId,
-            brand,
-            seoMetadata,
+            data.Brand,
+            data.SeoMetadata,
+            [..data.Attributes],
+            [..data.Tags],
             now);
 
-        product.RaiseDomainEvent(new ProductCardCreatedDomainEvent(product.Id));
+        product.RaiseDomainEvent(new ProductCardCreatedDomainEvent(
+            product.Id,
+            product.Name,
+            product.Slug,
+            product.Description,
+            product.ShortDescription,
+            product.CategoryId,
+            product.VendorId,
+            product.Brand,
+            product.ProductCardStatus,
+            product.SeoMetadata,
+            [.. product.Attributes],
+            [.. product.Tags],
+            product.CreatedAt));
 
         return Ok(product);
     }
 
     public IResult UpdateInfo(
-        Name name,
-        Description description,
-        ShortDescription shortDescription,
+        ProductCardUpdateInfoContext ctx,
+        ProductCardUpdateInfoData data,
         Guid categoryId,
-        Brand brand,
-        SeoMetadata seoMetadata,
         DateTimeOffset now)
     {
-        if (Name == name &&
-            Description == description &&
-            ShortDescription == shortDescription &&
+        if (Name == data.Name &&
+            Description == data.Description &&
+            ShortDescription == data.ShortDescription &&
             CategoryId == categoryId &&
-            Brand == brand &&
-            SeoMetadata == seoMetadata)
+            Brand == data.Brand &&
+            SeoMetadata == data.SeoMetadata)
             return Ok();
 
-        Name = name;
-        Description = description;
-        ShortDescription = shortDescription;
+        var result = ProductCardUpdateInfoSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return Fail<ProductCard>(result.Error);
+
+        Name = data.Name;
+        Description = data.Description;
+        ShortDescription = data.ShortDescription;
         CategoryId = categoryId;
-        Brand = brand;
-        SeoMetadata = seoMetadata;
+        Brand = data.Brand;
+        SeoMetadata = data.SeoMetadata;
         UpdatedAt = now;
 
-        RaiseDomainEvent(new ProductCardInfoUpdatedDomainEvent(Id));
+        RaiseDomainEvent(new ProductCardInfoUpdatedDomainEvent(
+            Id,
+            Name,
+            Description,
+            ShortDescription,
+            CategoryId,
+            Brand,
+            SeoMetadata,
+            UpdatedAt.Value));
 
         return Ok();
     }
 
-    public IResult Publish(DateTimeOffset now)
+    public IResult Publish(
+        ProductCardPublishContext ctx,
+        DateTimeOffset now)
     {
-        if (Status == ProductStatus.Published)
+        if (ProductCardStatus == ProductCardStatus.Published)
             return Ok();
 
-        if (SkuCount == 0)
-            return Fail("Product must have at least one variant");
+        var result = ProductCardPublishSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return result;
 
-        Status = ProductStatus.Published;
+        ProductCardStatus = ProductCardStatus.Published;
         UpdatedAt = now;
 
-        RaiseDomainEvent(new ProductCardPublishedDomainEvent(Id));
+        RaiseDomainEvent(new ProductCardPublishedDomainEvent(
+            Id,
+            VendorId,
+            ProductCardStatus,
+            UpdatedAt.Value));
 
         return Ok();
     }
 
-    public IResult Archive(DateTimeOffset now)
+    public IResult Archive(
+        ProductCardArchivedContext ctx, 
+        DateTimeOffset now)
     {
-        if (Status == ProductStatus.Archived)
+        if (ProductCardStatus == ProductCardStatus.Archived)
             return Ok();
 
-        Status = ProductStatus.Archived;
+        var result = ProductCardArchivedSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return result;
+
+        ProductCardStatus = ProductCardStatus.Archived;
         UpdatedAt = now;
 
-        RaiseDomainEvent(new ProductCardArchivedDomainEvent(Id));
+        RaiseDomainEvent(new ProductCardArchivedDomainEvent(
+            Id,
+            VendorId,
+            ProductCardStatus,
+            UpdatedAt.Value));
 
         return Ok();
     }
 
-    public IResult UpdateRating(RatingSnapshot rating, DateTimeOffset now)
+    public IResult SetDefaultProduct()
     {
-        if (Rating == rating)
-            return Ok();
+        return Ok();
+    }
 
-        Rating = rating;
-        UpdatedAt = now;
-
-        RaiseDomainEvent(new ProductCardRatingUpdatedDomainEvent(Id));
-
+    public IResult UnsetDefaultProduct()
+    {
         return Ok();
     }
 
     public IResult ReplaceAttributes(
+        ProductCardAttributesReplacedContext ctx,
         List<ProductCardAttribute> attributes,
         DateTimeOffset now)
     {
         if (_attributes.SequenceEqual(attributes))
             return Ok();
 
+        var result = ProductCardAttributesReplacedSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return result;
+
         _attributes = [.. attributes];
         UpdatedAt = now;
 
-        RaiseDomainEvent(new ProductAttributesReplacedDomainEvent(Id));
+        RaiseDomainEvent(new ProductCardAttributesReplacedDomainEvent(
+            Id,
+            [..Attributes],
+            UpdatedAt.Value));
 
         return Ok();
     }
 
     public IResult ReplaceTags(
-        List<string> tags,
+        ProductCardTagsReplacedContext ctx,
+        List<Tag> tags,
         DateTimeOffset now)
     {
         if (_tags.SequenceEqual(tags))
             return Ok();
 
+        var result = ProductCardTagsReplacedSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return result;
+
         _tags = [.. tags];
         UpdatedAt = now;
 
-        RaiseDomainEvent(new ProductTagsReplacedDomainEvent(Id));
+        RaiseDomainEvent(new ProductCardTagsReplacedDomainEvent(
+            Id,
+            [.. Tags],
+            UpdatedAt.Value));
 
         return Ok();
     }
 
-    public void IncrementSkuCount(DateTimeOffset now)
+    public IResult IncrementProductCount(ProductCountIncrementedContext ctx, DateTimeOffset now)
     {
-        SkuCount++;
+        var validation = ProductCountIncrementedSpecification.Spec.IsSatisfiedBy(ctx);
+        if (validation.IsFailure) 
+            return validation;
+
+        var result = ProductCount.Create(ProductCount.Value + 1);
+
+        if (result.IsFailure)
+            return result;
+
+        ProductCount = result.Value;
         UpdatedAt = now;
+
+        RaiseDomainEvent(new ProductCardCountIncrementedDomainEvent(
+            Id,
+            ProductCount,
+            UpdatedAt.Value));
+
+        return Ok();
     }
 
-    public void DecrementSkuCount(DateTimeOffset now)
+    public IResult DecrementProductCount(ProductCountDecrementedContext ctx, DateTimeOffset now)
     {
-        SkuCount--;
+        var validation = ProductCountDecrementedSpecification.Spec.IsSatisfiedBy(ctx);
+        if (validation.IsFailure)
+            return validation;
+
+        var result = ProductCount.Create(ProductCount.Value - 1);
+
+        if (result.IsFailure)
+            return result;
+
+        ProductCount = result.Value;
         UpdatedAt = now;
+
+        RaiseDomainEvent(new ProductCardCountDecrementedDomainEvent(
+            Id,
+            ProductCount,
+            UpdatedAt.Value));
+
+        return Ok();
     }
 
-    public IResult AddProductImage(
-        ImageUrl url,
-        AltText alt,
+    public IResult AddProductCardImage(
+        ProductCardAddImageContext ctx,
+        AddProductCardImageData data,
         bool isMain,
         DateTimeOffset now)
     {
-        var imageResult = ProductCardImage.Create(Id, url, alt, _images.Count, isMain);
+        var result = ProductCardAddImageSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return result;
+
+        var imageResult = ProductCardImage.Create(Id, data.Url, data.Alt, _images.Count, isMain);
 
         if (imageResult.IsFailure)
             return imageResult;
@@ -233,13 +335,24 @@ public sealed class ProductCard : AggregateRoot
 
         UpdatedAt = now;
 
-        RaiseDomainEvent(new ProductCardImageAddedDomainEvent(Id));
+        RaiseDomainEvent(new ProductCardImageAddedDomainEvent(
+            Id,
+            [..Images],
+            UpdatedAt.Value));
+
         return Ok();
     }
 
-    public IResult RemoveProductImage(Guid imageId, DateTimeOffset now)
+    public IResult RemoveProductCardImage(
+        ProductCardRemoveImageContext ctx,
+        ImageUrl url,
+        DateTimeOffset now)
     {
-        var image = _images.FirstOrDefault(x => x.Id == imageId);
+        var result = ProductCardRemoveImageSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return result;
+
+        var image = _images.FirstOrDefault(x => x.Url == url);
         if (image is null)
             return Fail(ProductCardErrors.ImageNotFound());
 
@@ -247,19 +360,30 @@ public sealed class ProductCard : AggregateRoot
         _images.Remove(image);
 
         RecalculateImageOrder();
-
         if (wasMain && _images.Count > 0)
             _images[0].SetAsMain(true);
 
         UpdatedAt = now;
 
-        RaiseDomainEvent(new ProductImageRemovedDomainEvent(Id));
+        RaiseDomainEvent(new ProductCardImageRemovedDomainEvent(
+            Id,
+            [.. Images],
+            UpdatedAt.Value));
+
         return Ok();
     }
 
-    public IResult ChangeImageOrder(Guid imageId, int newOrder, DateTimeOffset now)
+    public IResult ChangeImageOrder(
+        ProductCardChangeImageOrderContext ctx,
+        ImageUrl url, 
+        int newOrder,
+        DateTimeOffset now)
     {
-        var image = _images.FirstOrDefault(x => x.Id == imageId);
+        var result = ProductCardChangeImageOrderSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return result;
+
+        var image = _images.FirstOrDefault(x => x.Url == url);
         if (image is null)
             return Fail(ProductCardErrors.ImageNotFound());
 
@@ -273,7 +397,11 @@ public sealed class ProductCard : AggregateRoot
 
         UpdatedAt = now;
 
-        RaiseDomainEvent(new ProductImageOrderChangedDomainEvent(Id));
+        RaiseDomainEvent(new ProductCardImageOrderChangedDomainEvent(
+            Id,
+            [.. Images],
+            UpdatedAt.Value));
+
         return Ok();
     }
 
@@ -283,9 +411,16 @@ public sealed class ProductCard : AggregateRoot
             _images[i].ChangeOrder(i);
     }
 
-    public IResult SetMainImage(Guid imageId, DateTimeOffset now)
+    public IResult SetMainImage(
+        ProductCardSetMainImageContext ctx,
+        ImageUrl url,
+        DateTimeOffset now)
     {
-        var image = _images.FirstOrDefault(x => x.Id == imageId);
+        var result = ProductCardSetMainImageSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return result;
+
+        var image = _images.FirstOrDefault(x => x.Url == url);
 
         if (image is null)
             return Fail(ProductCardErrors.ImageNotFound());
@@ -297,27 +432,39 @@ public sealed class ProductCard : AggregateRoot
 
         UpdatedAt = now;
 
-        RaiseDomainEvent(new ProductImageSetMainDomainEvent(Id));
+        RaiseDomainEvent(new ProductCardImageSetMainDomainEvent(
+            Id,
+            [.. Images],
+            UpdatedAt.Value));
 
         return Ok();
     }
 
-    public IResult UpdateImageAlt(Guid imageId, AltText alt, DateTimeOffset now)
+    public IResult UpdateImageAlt(
+        ProductCardUpdateImageAltContext ctx,
+        ProductCardUpdateImageAltData data,
+        DateTimeOffset now)
     {
-        var image = _images.FirstOrDefault(x => x.Id == imageId);
+        var validation = ProductCardUpdateImageAltSpecification.Spec.IsSatisfiedBy(ctx);
+        if (validation.IsFailure)
+            return validation;
+
+        var image = _images.FirstOrDefault(x => x.Url == data.Url);
 
         if (image is null)
             return Fail(ProductCardErrors.ImageNotFound());
 
-        var result = image.UpdateAlt(alt);
+        var result = image.UpdateAlt(data.Alt);
 
         if (result.IsFailure)
             return result;
 
         UpdatedAt = now;
-        UpdatedAt = now;
 
-        RaiseDomainEvent(new ProductImageAltUpdatedDomainEvent(Id));
+        RaiseDomainEvent(new ProductCardImageAltUpdatedDomainEvent(
+            Id,
+            [.. Images],
+            UpdatedAt.Value));
 
         return Ok();
     }

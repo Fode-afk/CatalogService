@@ -1,5 +1,6 @@
 ﻿using CatalogService.Domain.Errors;
 using CatalogService.Domain.Primitives;
+using migApp.Shared.Domain.Primitives;
 using migApp.Shared.Results;
 using System.Text.RegularExpressions;
 using static migApp.Shared.Results.ResultFactory;
