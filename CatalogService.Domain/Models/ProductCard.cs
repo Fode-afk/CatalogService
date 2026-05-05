@@ -204,13 +204,28 @@ public sealed class ProductCard : AggregateRoot
         return Ok();
     }
 
-    public IResult SetDefaultProduct()
+    public IResult SetDefaultProduct(
+        ProductCardSetDefaultProductContext ctx,
+        Guid defaultProductId,
+        DateTimeOffset now)
     {
-        return Ok();
-    }
+        if (DefaultProductId == defaultProductId)
+            return Ok();
 
-    public IResult UnsetDefaultProduct()
-    {
+        var result = ProductCardSetDefaultProductSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return result;
+
+        var oldDefaultProductId = DefaultProductId;
+
+        DefaultProductId = defaultProductId;
+        UpdatedAt = now;
+
+        RaiseDomainEvent(new ProductCardDefaultProductSetDomainEvent(
+            Id,
+            DefaultProductId.Value,
+            oldDefaultProductId));
+
         return Ok();
     }
 

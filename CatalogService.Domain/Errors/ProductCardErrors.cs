@@ -16,6 +16,7 @@ public static class ProductCardErrors
     public static Error NoDefaultProduct() => Error.InvalidArgument(ProductCardErrorCodes.NoDefaultProduct);
     public static Error CannotModify() => Error.InvalidArgument(ProductCardErrorCodes.CannotModify);
     public static Error VendorMismatch() => Error.Unauthenticated(ProductCardErrorCodes.VendorMismatch);
+    public static Error ProductDoesNotBelongToCard() => Error.InvalidArgument(ProductCardErrorCodes.ProductDoesNotBelongToCard);
 }
 
 public static class ProductCardErrorCodes
@@ -33,4 +34,5 @@ public static class ProductCardErrorCodes
     public const string InvalidId = "ProductCard.InvalidId";
     public const string CannotModify = "ProductCard.CannotModify";
     public const string VendorMismatch = "ProductCard.VendorMismatch";
+    public const string ProductDoesNotBelongToCard = "ProductCard.ProductDoesNotBelongToCard";
 }

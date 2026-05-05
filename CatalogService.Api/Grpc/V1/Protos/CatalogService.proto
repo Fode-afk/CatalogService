@@ -14,6 +14,8 @@ service CatalogService {
     rpc PublishProductCard(PublishProductCardRequest) returns (google.protobuf.Empty);
     rpc ArchiveProductCard(ArchiveProductCardRequest) returns (google.protobuf.Empty);
 
+    rpc ProductCardSetDefaultProduct(ProductCardSetDefaultProductRequest) returns (google.protobuf.Empty); 
+
     rpc ReplaceProductCardAttributes(ReplaceProductCardAttributesRequest) returns (google.protobuf.Empty);
     rpc ReplaceProductCardTags(ReplaceProductCardTagsRequest) returns (google.protobuf.Empty);
 
@@ -113,6 +115,12 @@ message PublishProductCardRequest {
 message ArchiveProductCardRequest {
     string product_card_id = 1;
     string vendor_id = 2;
+}
+
+message ProductCardSetDefaultProductRequest {
+    string product_card_id = 1;
+    string vendor_id = 2;
+    string default_product_id = 3;
 }
 
 message ReplaceProductCardAttributesRequest {

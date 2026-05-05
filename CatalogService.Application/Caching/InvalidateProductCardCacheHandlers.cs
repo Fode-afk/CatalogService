@@ -8,6 +8,7 @@ public sealed class InvalidateProductCardCacheHandlers(IFusionCache cache) :
     IPostCommitDomainEventHandler<ProductCardInfoUpdatedDomainEvent>,
     IPostCommitDomainEventHandler<ProductCardPublishedDomainEvent>,
     IPostCommitDomainEventHandler<ProductCardArchivedDomainEvent>,
+    IPostCommitDomainEventHandler<ProductCardDefaultProductSetDomainEvent>,
     IPostCommitDomainEventHandler<ProductCardAttributesReplacedDomainEvent>,
     IPostCommitDomainEventHandler<ProductCardTagsReplacedDomainEvent>,
     IPostCommitDomainEventHandler<ProductCardCountIncrementedDomainEvent>,
@@ -25,6 +26,9 @@ public sealed class InvalidateProductCardCacheHandlers(IFusionCache cache) :
         await HandleInternal(notification.ProductCardId, cancellationToken);
 
     public async Task Handle(ProductCardArchivedDomainEvent notification, CancellationToken cancellationToken) =>
+        await HandleInternal(notification.ProductCardId, cancellationToken);
+
+    public async Task Handle(ProductCardDefaultProductSetDomainEvent notification, CancellationToken cancellationToken) =>
         await HandleInternal(notification.ProductCardId, cancellationToken);
 
     public async Task Handle(ProductCardAttributesReplacedDomainEvent notification, CancellationToken cancellationToken) =>

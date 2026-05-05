@@ -7,6 +7,7 @@ using MediatR;
 using CatalogService.Application.Features.Commands.ArchiveProductCard;
 using CatalogService.Application.Features.Commands.PublishProductCard;
 using CatalogService.Application.Features.Queries.GetProductCardById;
+using CatalogService.Application.Features.Commands.ProductCardSetDefaultProduct;
 
 namespace CatalogService.Api.Grpc.V1;
 
@@ -44,6 +45,16 @@ internal sealed class GrpcServer(IMediator mediator) : Protos.CatalogService.Cat
         var result = await mediator.Send(new ArchiveProductCardCommand(
             Guid.Parse(request.ProductCardId), 
             Guid.Parse(request.VendorId)), context.CancellationToken);
+        result.ThrowIfFailure();
+        return new Empty();
+    }
+
+    public override async Task<Empty> ProductCardSetDefaultProduct(ProductCardSetDefaultProductRequest request, ServerCallContext context)
+    {
+        var result = await mediator.Send(new ProductCardSetDefaultProductCommand(
+            Guid.Parse(request.VendorId),
+            Guid.Parse(request.ProductCardId),
+            Guid.Parse(request.DefaultProductId)), context.CancellationToken);
         result.ThrowIfFailure();
         return new Empty();
     }
