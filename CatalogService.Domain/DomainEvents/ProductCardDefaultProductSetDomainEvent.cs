@@ -5,4 +5,5 @@ namespace CatalogService.Domain.DomainEvents;
 public sealed record ProductCardDefaultProductSetDomainEvent(
     Guid ProductCardId,
     Guid NewDefaultProductId,
-    Guid? OldDefaultProductId) : IDomainEvent;
+    Guid? OldDefaultProductId,
+    DateTimeOffset UpdatedAt) : IDomainEvent;

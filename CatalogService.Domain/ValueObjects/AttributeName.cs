@@ -7,7 +7,7 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed class AttributeName : ValueObject
 {
-    public const int MaxLength = 100;
+    public static int MaxLength => 100;
 
     public string Value { get; }
 
@@ -21,10 +21,12 @@ public sealed class AttributeName : ValueObject
         if (string.IsNullOrWhiteSpace(value))
             return Fail<AttributeName>(AttributeNameErrors.TooLong());
 
+        value = value.Trim();
+
         if (value.Length > MaxLength)
             return Fail<AttributeName>(AttributeNameErrors.TooLong());
 
-        return Ok(new AttributeName(value.Trim()));
+        return Ok(new AttributeName(value));
     }
 
     public override IEnumerable<object> GetAtomicValues()

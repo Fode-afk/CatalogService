@@ -7,7 +7,7 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed class Tag : ValueObject
 {
-    public const int MaxLength = 50;
+    public static int MaxLength => 50;
 
     public string Value { get; }
 
@@ -21,6 +21,8 @@ public sealed class Tag : ValueObject
         if (string.IsNullOrWhiteSpace(value))
             return Fail<Tag>(TagErrors.Empty());
 
+        value = value.Trim();
+
         if (value.Length > MaxLength)
             return Fail<Tag>(TagErrors.TooLong());
 
@@ -31,4 +33,8 @@ public sealed class Tag : ValueObject
     {
         yield return Value;
     }
+
+    public override string ToString() => Value;
+
+    public static implicit operator string(Tag tag) => tag.ToString();
 }

@@ -52,7 +52,7 @@ internal sealed class ProductCardReadRepository(IDbConnectionFactory connectionF
                 TagsFlat,
                 ImagesJson
 
-            FROM productCards.ProductCardReadModels
+            FROM catalog_read.ProductCardReadModels
             WHERE Id = @Id
             """;
 

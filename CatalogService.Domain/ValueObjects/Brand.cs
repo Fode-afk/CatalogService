@@ -1,5 +1,4 @@
 ﻿using CatalogService.Domain.Errors;
-using CatalogService.Domain.Primitives;
 using migApp.Shared.Domain.Primitives;
 using migApp.Shared.Results;
 using System.Text.RegularExpressions;
@@ -9,7 +8,7 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed partial class Brand : ValueObject
 {
-    public const int MaxLength = 100;
+    public static int MaxLength => 100;
 
     public string Value { get; }
 

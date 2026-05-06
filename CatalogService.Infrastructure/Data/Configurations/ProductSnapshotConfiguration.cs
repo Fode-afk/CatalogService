@@ -11,6 +11,7 @@ internal sealed class ProductSnapshotConfiguration : IEntityTypeConfiguration<Pr
         builder.ToTable("ProductSnapshots", Schemas.CatalogWrite);
 
         builder.HasKey(x => x.ProductId);
+        builder.HasIndex(x => x.ProductCardId);
 
         builder.Property<byte[]>("RowVersion")
            .IsRowVersion()

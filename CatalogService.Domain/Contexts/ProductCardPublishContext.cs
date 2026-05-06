@@ -1,6 +1,4 @@
 ﻿using CatalogService.Domain.Abstractions;
-using CatalogService.Domain.Models;
-using CatalogService.Domain.ValueObjects;
 using migApp.Shared.Enums.ProductCards;
 
 namespace CatalogService.Domain.Contexts;
@@ -11,7 +9,6 @@ public sealed record ProductCardPublishContext(
     bool DefaultProductHasPrice,
     bool DefaultProductInStock,
     ProductCardStatus ProductCardStatus,
-    ProductCount ProductCount,
-    IReadOnlyCollection<ProductCardImage> Images) : 
+    int ImagesCount) : 
         IVendorContext,
         IStatusContext;

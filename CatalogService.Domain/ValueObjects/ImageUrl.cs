@@ -19,11 +19,13 @@ public sealed class ImageUrl : ValueObject
         if (string.IsNullOrWhiteSpace(value))
             return Fail<ImageUrl>(ImageUrlErrors.NullOrEmpty());
 
+        value = value.Trim();
+
         if (!Uri.TryCreate(value, UriKind.Absolute, out var uriResult)
             || (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
             return Fail<ImageUrl>(ImageUrlErrors.InvalidFormat());
 
-        return Ok(new ImageUrl(value.Trim()));
+        return Ok(new ImageUrl(uriResult.ToString()));
     }
 
     public override IEnumerable<object> GetAtomicValues()

@@ -58,8 +58,7 @@ public sealed class PublishProductCardCommandHandler(
             priceSnapshot.HasPrice,
             inventorySnapshot.InStock,
             productCard.ProductCardStatus,
-            productCard.ProductCount,
-            productCard.Images);
+            productCard.Images.Count);
 
         var result = productCard.Publish(
             ctx,

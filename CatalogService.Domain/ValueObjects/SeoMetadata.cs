@@ -34,9 +34,4 @@ public sealed class SeoMetadata : ValueObject
         yield return Description;
         yield return Keywords;
     }
-
-    public override string ToString()
-        => $"{Title} | {Description}";
-
-    public static implicit operator string(SeoMetadata seoMetadata) => seoMetadata.ToString();
 }

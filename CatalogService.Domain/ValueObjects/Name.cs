@@ -7,8 +7,8 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed class Name : ValueObject
 {
-    public const int MaxLength = 40;
-    public const int MinLength = 3;
+    public static int MaxLength => 40;
+    public static int MinLength => 3;
 
     private Name(string value)
     {
@@ -26,6 +26,8 @@ public sealed class Name : ValueObject
     {
         if (string.IsNullOrWhiteSpace(value))
             return Fail<Name>(NameErrors.NullOrEmpty());
+
+        value = value.Trim();
 
         if (value.Length > MaxLength)
             return Fail<Name>(NameErrors.TooLong());

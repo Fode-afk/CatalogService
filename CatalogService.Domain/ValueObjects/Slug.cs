@@ -10,8 +10,8 @@ public sealed partial class Slug : ValueObject
 {
     [GeneratedRegex(@"^[a-z0-9]+(?:-[a-z0-9]+)*$", RegexOptions.Compiled)]
     private static partial Regex SlugRegex();
-    public const int MaxLength = 100;
-    public const int MinLength = 3;
+    public static int MaxLength => 100;
+    public static int MinLength => 3;
 
 
     public string Value { get; }
@@ -26,13 +26,13 @@ public sealed partial class Slug : ValueObject
         if (string.IsNullOrWhiteSpace(value))
             return Fail<Slug>(SlugErrors.NullOrEmpty());
 
+        value = value.Trim().ToLowerInvariant();
+
         if (value.Length > MaxLength)
             return Fail<Slug>(SlugErrors.TooLong());
 
         if (value.Length < MinLength)
             return Fail<Slug>(SlugErrors.TooShort());
-
-        value = value.Trim().ToLowerInvariant();
 
         if (!SlugRegex().IsMatch(value))
             return Fail<Slug>(SlugErrors.InvalidFormat());

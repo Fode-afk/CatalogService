@@ -7,7 +7,7 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed class AltText : ValueObject
 {
-    public const int MaxLength = 200;
+    public static int MaxLength => 200;
 
     public string Value { get; }
 
@@ -21,10 +21,12 @@ public sealed class AltText : ValueObject
         if (string.IsNullOrWhiteSpace(value))
             return Fail<AltText>(AltTextErrors.NullOrEmpty());
 
+        value = value.Trim();
+
         if (value.Length > MaxLength)
             return Fail<AltText>(AltTextErrors.TooLong());
 
-        return Ok(new AltText(value.Trim()));
+        return Ok(new AltText(value));
     }
 
     public override IEnumerable<object> GetAtomicValues()

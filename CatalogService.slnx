@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/tests/">
+    <Project Path="CatalogService.UnitTests/CatalogService.UnitTests.csproj" Id="c7508e63-6381-475e-bfdc-da3f993b6feb" />
+  </Folder>
   <Project Path="CatalogService.Api/CatalogService.Api.csproj" />
   <Project Path="CatalogService.Application/CatalogService.Application.csproj" />
   <Project Path="CatalogService.Domain/CatalogService.Domain.csproj" />

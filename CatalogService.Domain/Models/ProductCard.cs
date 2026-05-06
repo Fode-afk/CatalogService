@@ -42,9 +42,9 @@ public sealed class ProductCard : AggregateRoot
         CreatedAt = createdAt;
     }
 
-    public const int MaxAttributes = 30;
-    public const int MaxTags = 50;
-    public const int MaxImages = 10;
+    public static int MaxAttributes => 30;
+    public static int MaxTags => 50;
+    public static int MaxImages => 10;
 
     public Name Name { get; private set; }
     public Slug Slug { get; private set; }
@@ -58,9 +58,10 @@ public sealed class ProductCard : AggregateRoot
 
     public Guid VendorId { get; private set; }
 
+    //TODO: Хранить только id (у бренда может быть Image и всё такое)
     public Brand Brand { get; private set; }
 
-    public ProductCardStatus ProductCardStatus { get; private set; } = ProductCardStatus.Draft;
+    public ProductCardStatus ProductCardStatus { get; private set; } = ProductCardStatus.Draft; 
 
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset? UpdatedAt { get; private set; }
@@ -72,6 +73,8 @@ public sealed class ProductCard : AggregateRoot
 
     private readonly List<ProductCardImage> _images = [];
     public IReadOnlyCollection<ProductCardImage> Images => _images;
+
+    public ProductCardImage? MainImage => _images.FirstOrDefault(i => i.IsMain);
 
     private List<Tag> _tags = [];
     public IReadOnlyCollection<Tag> Tags => _tags;
@@ -158,6 +161,8 @@ public sealed class ProductCard : AggregateRoot
         return Ok();
     }
 
+
+    //TODO: проверять что у всех товаров в карточке есть цена, они в наличии и что у них есть main image
     public IResult Publish(
         ProductCardPublishContext ctx,
         DateTimeOffset now)
@@ -224,7 +229,8 @@ public sealed class ProductCard : AggregateRoot
         RaiseDomainEvent(new ProductCardDefaultProductSetDomainEvent(
             Id,
             DefaultProductId.Value,
-            oldDefaultProductId));
+            oldDefaultProductId,
+            UpdatedAt.Value));
 
         return Ok();
     }

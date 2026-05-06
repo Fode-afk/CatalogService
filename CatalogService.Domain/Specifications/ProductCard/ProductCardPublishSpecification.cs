@@ -20,9 +20,6 @@ public static class ProductCardPublishSpecification
                 ctx => ctx.DefaultProductInStock,
                 ProductInventorySnapshotErrors.OutOfStock()))
             .And(Specification<ProductCardPublishContext>.Create(
-                ctx => !ctx.ProductCount.IsEmpty,
-                ProductCardErrors.NoVariants()))
-            .And(Specification<ProductCardPublishContext>.Create(
-                ctx => ctx.Images.Count != 0,
+                ctx => ctx.ImagesCount != 0,
                 ProductCardErrors.ImagesRequired()));
 }

@@ -7,10 +7,10 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed class ProductCount : ValueObject
 {
-    public const int MinValue = 0;
-    public const int MaxValue = 20;
+    public static int MinValue => 0;
+    public static int MaxValue => 20;
 
-    public static ProductCount Zero => Create(0).Value;
+    public static ProductCount Zero => new(0);
 
     public int Value { get; }
     public bool IsEmpty => Value == 0;

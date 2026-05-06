@@ -7,7 +7,7 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed class SeoKeywords : ValueObject
 {
-    public const int MaxLength = 255;
+    public static int MaxLength => 255;
 
     public string Value { get; }
 
@@ -31,12 +31,9 @@ public sealed class SeoKeywords : ValueObject
 
     private static string NormalizeKeywords(string value)
     {
-        if (string.IsNullOrWhiteSpace(value))
-            return string.Empty;
-
         var keywords = value
-            .Split(',', StringSplitOptions.RemoveEmptyEntries)
-            .Select(k => k.Trim().ToLowerInvariant())
+            .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .Select(k => k.ToLowerInvariant())
             .Distinct();
 
         return string.Join(", ", keywords);
@@ -46,4 +43,8 @@ public sealed class SeoKeywords : ValueObject
     {
         yield return Value;
     }
+
+    public override string ToString() => Value;
+
+    public static implicit operator string(SeoKeywords seoKeywords) => seoKeywords.ToString();
 }

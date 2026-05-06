@@ -8,7 +8,7 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed partial class SeoDescription : ValueObject
 {
-    public const int MaxLength = 160;
+    public static int MaxLength => 160;
 
     public string Value { get; }
 
@@ -49,4 +49,8 @@ public sealed partial class SeoDescription : ValueObject
     {
         yield return Value;
     }
+
+    public override string ToString() => Value;
+
+    public static implicit operator string(SeoDescription seoDescription) => seoDescription.ToString();
 }
