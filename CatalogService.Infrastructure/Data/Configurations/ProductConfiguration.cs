@@ -115,12 +115,11 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
                     .HasMaxLength(AttributeName.MaxLength);
             });
 
-            a.OwnsOne(x => x.Value, v =>
-            {
-                v.Property(x => x.Value)
-                    .HasColumnName("Value")
-                    .HasMaxLength(AttributeValue.MaxLength);
-            });
+            a.Property(x => x.Value)
+                .HasMaxLength(AttributeValue.MaxLength)
+                .HasConversion(
+                    value => value != null ? value.Value : null,
+                    value => value != null ? AttributeValue.Create(value).Value : null);
 
             a.Property(x => x.GroupName)
                 .HasMaxLength(AttributeGroupName.MaxLength)

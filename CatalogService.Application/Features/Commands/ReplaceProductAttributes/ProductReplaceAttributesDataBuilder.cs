@@ -41,21 +41,32 @@ internal static class ProductReplaceAttributesDataBuilder
                 groupName = groupResult.Value;
             }
 
-            var attributeResult = ProductAttribute.Create(
-                snapshot.CharacteristicId,
-                snapshot.Name,
-                value,
-                snapshot.CharType,
+            var nameResult = AttributeName.Create(snapshot.Name);
+            if (nameResult.IsFailure)
+                errors.Add(nameResult.Error);
+
+            var valueResult = AttributeValue.Create(value);
+            if (valueResult.IsFailure)
+                errors.Add(valueResult.Error);
+
+            if (nameResult.IsSuccess && valueResult.IsSuccess)
+            {
+                var attributeResult = ProductAttribute.Create(
+                    snapshot.CharacteristicId,
+                    nameResult.Value,
+                    valueResult.Value,
+                    snapshot.CharType,
                 groupName,
                 snapshot.IsUnifying);
 
-            if (attributeResult.IsFailure)
-            {
-                errors.Add(attributeResult.Error);
-                continue;
-            }
+                if (attributeResult.IsFailure)
+                {
+                    errors.Add(attributeResult.Error);
+                    continue;
+                }
 
-            attributes.Add(attributeResult.Value);
+                attributes.Add(attributeResult.Value);
+            }
         }
 
         if (errors.Count > 0)

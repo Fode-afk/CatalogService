@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogService.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260509121520_InitialCreate")]
+    [Migration("20260509132909_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -679,6 +679,10 @@ namespace CatalogService.Infrastructure.Data.Migrations
                             b1.Property<Guid>("ProductId")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("Value")
+                                .HasMaxLength(500)
+                                .HasColumnType("nvarchar(500)");
+
                             b1.HasKey("Id");
 
                             b1.HasIndex("ProductId");
@@ -729,29 +733,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
                                         .HasForeignKey("ProductAttributeId");
                                 });
 
-                            b1.OwnsOne("CatalogService.Domain.ValueObjects.AttributeValue", "Value", b2 =>
-                                {
-                                    b2.Property<int>("ProductAttributeId")
-                                        .HasColumnType("int");
-
-                                    b2.Property<string>("Value")
-                                        .IsRequired()
-                                        .HasMaxLength(500)
-                                        .HasColumnType("nvarchar(500)")
-                                        .HasColumnName("Value");
-
-                                    b2.HasKey("ProductAttributeId");
-
-                                    b2.ToTable("ProductAttributes", "catalog_write");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("ProductAttributeId");
-                                });
-
                             b1.Navigation("Name")
-                                .IsRequired();
-
-                            b1.Navigation("Value")
                                 .IsRequired();
 
                             b1.Navigation("VariableValues");

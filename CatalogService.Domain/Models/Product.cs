@@ -193,7 +193,7 @@ public sealed class Product : AggregateRoot
 
     public IResult AddVariantToAttributes(
         ProductAddVariantToAttributesContext ctx,
-        List<(Guid CharacteristicId, string Name, string Value, AttributeCharType CharType, AttributeGroupName?     GroupName, AttributeVariableValue VariableValue)> variantValues,
+        List<(Guid CharacteristicId, AttributeName Name, AttributeCharType CharType, AttributeGroupName? GroupName, AttributeVariableValue VariableValue)> variantValues,
         DateTimeOffset now)
     {
         var result = ProductAddVariantToAttributesSpecification.Spec.IsSatisfiedBy(ctx);
@@ -207,10 +207,9 @@ public sealed class Product : AggregateRoot
 
             if (attribute is null)
             {
-                var createResult = ProductAttribute.Create(
+                var createResult = ProductAttribute.CreateVariable(
                     item.CharacteristicId,
                     item.Name,
-                    item.Value,
                     item.CharType,
                     item.GroupName);
 

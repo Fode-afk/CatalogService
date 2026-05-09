@@ -53,7 +53,7 @@ public sealed class AddProductVariantSnapshotCommandHandler(
 
         var snapshotMap = characteristicSnapshots.ToDictionary(c => c.CharacteristicId);
 
-        var variantValues = new List<(Guid, string, string, AttributeCharType, AttributeGroupName?, AttributeVariableValue)>();
+        var variantValues = new List<(Guid, AttributeName, AttributeCharType, AttributeGroupName?, AttributeVariableValue)>();
 
         foreach (var cv in request.CharacteristicValues)
         {
@@ -69,10 +69,13 @@ public sealed class AddProductVariantSnapshotCommandHandler(
                 groupName = groupResult.Value;
             }
 
+            var attributeNameResult = AttributeName.Create(snapshot.Name);
+            if (attributeNameResult.IsFailure)
+                return attributeNameResult;
+
             variantValues.Add((
                 cv.CharacteristicId,
-                snapshot.Name,
-                cv.Value,
+                attributeNameResult.Value,
                 snapshot.CharType,
                 groupName,
                 new AttributeVariableValue(cv.Value, request.ProductVariantId)));

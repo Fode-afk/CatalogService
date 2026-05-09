@@ -9,11 +9,10 @@ namespace CatalogService.Domain.Models;
 public sealed class ProductAttribute
 {
     private ProductAttribute() { }
-
     private ProductAttribute(
         Guid? characteristicId,
         AttributeName name,
-        AttributeValue value,
+        AttributeValue? value,
         AttributeCharType charType,
         AttributeGroupName? groupName,
         bool isVariable,
@@ -30,7 +29,7 @@ public sealed class ProductAttribute
 
     public Guid? CharacteristicId { get; private set; }
     public AttributeName Name { get; private set; }
-    public AttributeValue Value { get; private set; }
+    public AttributeValue? Value { get; private set; }
     public AttributeCharType CharType { get; private set; }
     public AttributeGroupName? GroupName { get; private set; }
     public bool IsVariable { get; private set; }
@@ -41,31 +40,43 @@ public sealed class ProductAttribute
 
     public static IResult<ProductAttribute> Create(
         Guid? characteristicId,
-        string name,
-        string value,
+        AttributeName name,
+        AttributeValue value,
         AttributeCharType charType,
         AttributeGroupName? groupName = null,
         bool isUnifying = false)
     {
-        var nameResult = AttributeName.Create(name);
-        if (nameResult.IsFailure)
-            return Fail<ProductAttribute>(nameResult.Error);
-
-        var valueResult = AttributeValue.Create(value);
-        if (valueResult.IsFailure)
-            return Fail<ProductAttribute>(valueResult.Error);
-
         return Ok(new ProductAttribute(
             characteristicId,
-            nameResult.Value,
-            valueResult.Value,
+            name,
+            value,
             charType,
             groupName,
             isVariable: false,
             isUnifying));
     }
 
-    public void MarkAsVariable() => IsVariable = true;
+    public static IResult<ProductAttribute> CreateVariable(
+        Guid? characteristicId,
+        AttributeName name,
+        AttributeCharType charType,
+        AttributeGroupName? groupName = null)
+    {
+        return Ok(new ProductAttribute(
+            characteristicId,
+            name,
+            value: null,
+            charType,
+            groupName,
+            isVariable: true,
+            isUnifying: false));
+    }
+
+    public void MarkAsVariable()
+    {
+        IsVariable = true;
+        Value = null;
+    }
 
     public IResult AddVariableValue(AttributeVariableValue variableValue)
     {

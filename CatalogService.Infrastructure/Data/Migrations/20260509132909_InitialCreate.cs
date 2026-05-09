@@ -290,7 +290,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CharacteristicId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     CharType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     GroupName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     IsVariable = table.Column<bool>(type: "bit", nullable: false),
