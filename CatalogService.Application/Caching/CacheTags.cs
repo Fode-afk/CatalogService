@@ -2,6 +2,6 @@
 
 public static class CacheTags
 {
-    public static string ProductCardById(Guid productCardId)
-       => $"ProductCards:{productCardId}";
+    public static string ProductById(Guid productId)
+       => $"Products:{productId}";
 }

@@ -12,7 +12,7 @@ public sealed class AttributesRequiredSpec<T> : Specification<T>
     public override IResult IsSatisfiedBy(T ctx)
     {
         if (ctx.Attributes.Count == 0)
-            return Fail(ProductCardErrors.AttributesRequired());
+            return Fail(ProductErrors.AttributesRequired());
 
         return Ok();
     }

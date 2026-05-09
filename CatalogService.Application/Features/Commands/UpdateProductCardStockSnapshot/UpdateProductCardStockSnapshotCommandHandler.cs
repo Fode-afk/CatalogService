@@ -17,10 +17,10 @@ public sealed class UpdateProductCardStockSnapshotCommandHandler(
 {
     public async Task<IResult> Handle(UpdateProductCardStockSnapshotCommand request, CancellationToken cancellationToken)
     {
-        var productCardReadModel = await context.ProductCardReadModels
+        var productCardReadModel = await context.ProductReadModels
             .FirstOrDefaultAsync(p => p.Id == request.ProductCardId, cancellationToken);
         if (productCardReadModel == null)
-            return Fail(ProductCardErrors.NotFound());
+            return Fail(ProductErrors.NotFound());
 
         var now = timeProvider.GetUtcNow();
 
@@ -30,7 +30,7 @@ public sealed class UpdateProductCardStockSnapshotCommandHandler(
         
         await context.SaveChangesAsync(cancellationToken);
 
-        await cache.RemoveByTagAsync(CacheTags.ProductCardById(request.ProductCardId), token: cancellationToken);
+        await cache.RemoveByTagAsync(CacheTags.ProductById(request.ProductCardId), token: cancellationToken);
 
         return Ok();
     }

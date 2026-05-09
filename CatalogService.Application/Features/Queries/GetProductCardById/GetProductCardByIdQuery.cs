@@ -6,4 +6,4 @@ namespace CatalogService.Application.Features.Queries.GetProductCardById;
 
 public sealed record GetProductCardByIdQuery(
     Guid ProductCardId,
-    string Currency) : IRequest<IResult<ProductCardDto>>;
+    string Currency) : IRequest<IResult<ProductDto>>;

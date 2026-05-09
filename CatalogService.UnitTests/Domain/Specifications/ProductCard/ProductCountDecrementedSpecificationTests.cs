@@ -1,6 +1,6 @@
 ﻿using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
-using CatalogService.Domain.Specifications.ProductCard;
+using CatalogService.Domain.Specifications.Product;
 using FluentAssertions;
 using migApp.Shared.Enums.ProductCards;
 
@@ -11,7 +11,7 @@ public sealed class ProductCountDecrementedSpecificationTests
     [Theory]
     [InlineData(false, ProductCardStatus.Draft, VendorSnapshotErrorCodes.CannotModify)]
     [InlineData(false, ProductCardStatus.Published, VendorSnapshotErrorCodes.CannotModify)]
-    [InlineData(true, ProductCardStatus.Archived, ProductCardErrorCodes.CannotModify)]
+    [InlineData(true, ProductCardStatus.Archived, ProductErrorCodes.CannotModify)]
     [InlineData(false, ProductCardStatus.Archived, VendorSnapshotErrorCodes.CannotModify)]
     [InlineData(true, ProductCardStatus.Draft, null)]
     [InlineData(true, ProductCardStatus.Published, null)]
@@ -26,7 +26,7 @@ public sealed class ProductCountDecrementedSpecificationTests
             productCardStatus);
 
         //Act
-        var result = ProductCountDecrementedSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = VariationCountDecrementSpecification.Spec.IsSatisfiedBy(ctx);
 
         //Assert
         result.IsFailure.Should().Be(expectedErrorCode is not null);

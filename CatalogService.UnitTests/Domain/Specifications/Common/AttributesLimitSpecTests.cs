@@ -1,7 +1,6 @@
 ﻿using CatalogService.Domain.Abstractions;
 using CatalogService.Domain.Models;
 using CatalogService.Domain.Specifications.Common;
-using CatalogService.Domain.ValueObjects;
 using FluentAssertions;
 using Models = CatalogService.Domain.Models;
 
@@ -9,7 +8,7 @@ namespace CatalogService.UnitTests.Domain.Specifications.Common;
 
 public sealed class AttributesLimitSpecTests
 {
-    private sealed record TestContext(IReadOnlyCollection<ProductCardAttribute> Attributes) : IAttributesContext;
+    private sealed record TestContext(IReadOnlyCollection<ProductAttribute> Attributes) : IAttributesContext;
 
     private readonly AttributesLimitSpec<TestContext> _spec = new();
 
@@ -19,7 +18,7 @@ public sealed class AttributesLimitSpecTests
         // Arrange
         var ctx = new TestContext([.. Enumerable
             .Range(1, 5)
-            .Select(i => ProductCardAttribute.Create(i.ToString(), i.ToString()).Value)]);
+            .Select(i => ProductAttribute.Create(i.ToString(), i.ToString()).Value)]);
 
         // Act
         var result = _spec.IsSatisfiedBy(ctx);
@@ -32,11 +31,11 @@ public sealed class AttributesLimitSpecTests
     public void Should_Pass_When_Attributes_Equals_Max()
     {
         // Arrange
-        var max = Models.ProductCard.MaxAttributes;
+        var max = Models.Product.MaxAttributes;
 
         var ctx = new TestContext([.. Enumerable
             .Range(1, max)
-            .Select(i => ProductCardAttribute.Create(i.ToString(), i.ToString()).Value)]);
+            .Select(i => ProductAttribute.Create(i.ToString(), i.ToString()).Value)]);
 
         // Act
         var result = _spec.IsSatisfiedBy(ctx);
@@ -49,11 +48,11 @@ public sealed class AttributesLimitSpecTests
     public void Should_Fail_When_Attributes_Exceed_Max()
     {
         // Arrange
-        var max = Models.ProductCard.MaxAttributes;
+        var max = Models.Product.MaxAttributes;
 
         var ctx = new TestContext([.. Enumerable
             .Range(1, max + 1)
-            .Select(i => ProductCardAttribute.Create(i.ToString(), i.ToString()).Value)]);
+            .Select(i => ProductAttribute.Create(i.ToString(), i.ToString()).Value)]);
 
         // Act
         var result = _spec.IsSatisfiedBy(ctx);

@@ -1,7 +1,7 @@
 ﻿using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
-using CatalogService.Domain.Specifications.ProductCard;
-using CatalogService.Domain.ValueObjects;
+using CatalogService.Domain.Models;
+using CatalogService.Domain.Specifications.Product;
 using FluentAssertions;
 using migApp.Shared.Enums.ProductCards;
 using Models = CatalogService.Domain.Models;
@@ -14,11 +14,11 @@ public sealed class ProductCardAttributesReplacedSpecificationTests
         new()
         {
             { false, ProductCardStatus.Draft, 0, VendorSnapshotErrorCodes.CannotModify },
-            { true, ProductCardStatus.Archived, 0, ProductCardErrorCodes.CannotModify },
-            { true, ProductCardStatus.Draft, 0, ProductCardErrorCodes.AttributesRequired },
+            { true, ProductCardStatus.Archived, 0, ProductErrorCodes.CannotModify },
+            { true, ProductCardStatus.Draft, 0, ProductErrorCodes.AttributesRequired },
             { false, ProductCardStatus.Archived, 0, VendorSnapshotErrorCodes.CannotModify },
-            { true, ProductCardStatus.Draft, Models.ProductCard.MaxAttributes + 1,  ProductCardErrorCodes.MaxAttributesReached },
-            { true, ProductCardStatus.Draft, Models.ProductCard.MaxAttributes, null },
+            { true, ProductCardStatus.Draft, Models.Product.MaxAttributes + 1,  ProductErrorCodes.MaxAttributesReached },
+            { true, ProductCardStatus.Draft, Models.Product.MaxAttributes, null },
             { true, ProductCardStatus.Draft, 1, null }
         };
 
@@ -38,7 +38,7 @@ public sealed class ProductCardAttributesReplacedSpecificationTests
             attributes);
 
         //Act
-        var result = ProductCardAttributesReplacedSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = ProductAttributesReplaceSpecification.Spec.IsSatisfiedBy(ctx);
 
         //Assert
         result.IsFailure.Should().Be(expectedErrorCode is not null);
@@ -47,8 +47,8 @@ public sealed class ProductCardAttributesReplacedSpecificationTests
             result.Error.Code.Should().Be(expectedErrorCode);
     }
 
-    private static List<ProductCardAttribute> GenerateAttributes(int count) =>
+    private static List<ProductAttribute> GenerateAttributes(int count) =>
         [.. Enumerable
             .Range(0, count)
-            .Select(i => ProductCardAttribute.Create(i.ToString(), i.ToString()).Value)];
+            .Select(i => ProductAttribute.Create(i.ToString(), i.ToString()).Value)];
 }

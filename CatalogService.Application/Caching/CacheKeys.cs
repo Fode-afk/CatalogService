@@ -2,8 +2,8 @@
 
 public static class CacheKeys
 {
-    public static string ProductCardById(Guid productCardId, string currency)
-        => $"ProductCards:{productCardId}:{currency}";
+    public static string ProductById(Guid productId, string currency)
+        => $"Products:{productId}:{currency}";
 
     public static string ExchangeRateByCurrency(string currency) => $"ExchangeRate:{currency}";
 }

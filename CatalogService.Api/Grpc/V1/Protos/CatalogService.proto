@@ -8,27 +8,19 @@ package catalog.v1;
 option csharp_namespace = "CatalogService.Api.Grpc.V1.Protos";
 
 service CatalogService {
-	rpc CreateProductCard(CreateProductCardRequest) returns (google.protobuf.Empty);
-    rpc UpdateProductCardInfo(UpdateProductCardInfoRequest) returns (google.protobuf.Empty);
+	rpc CreateProduct(CreateProductRequest) returns (google.protobuf.Empty);
+    rpc UpdateProductInfo(UpdateProductInfoRequest) returns (google.protobuf.Empty);
 
-    rpc PublishProductCard(PublishProductCardRequest) returns (google.protobuf.Empty);
-    rpc ArchiveProductCard(ArchiveProductCardRequest) returns (google.protobuf.Empty);
+    rpc PublishProduct(PublishProductRequest) returns (google.protobuf.Empty);
+    rpc ArchiveProduct(ArchiveProductRequest) returns (google.protobuf.Empty);
 
-    rpc ProductCardSetDefaultProduct(ProductCardSetDefaultProductRequest) returns (google.protobuf.Empty); 
+    rpc ReplaceProductAttributes(ReplaceProductAttributesRequest) returns (google.protobuf.Empty);
+    rpc ReplaceProductTags(ReplaceProductTagsRequest) returns (google.protobuf.Empty);
 
-    rpc ReplaceProductCardAttributes(ReplaceProductCardAttributesRequest) returns (google.protobuf.Empty);
-    rpc ReplaceProductCardTags(ReplaceProductCardTagsRequest) returns (google.protobuf.Empty);
-
-    rpc AddProductCardImage(AddProductCardImageRequest) returns (google.protobuf.Empty);
-    rpc RemoveProductCardImage(RemoveProductCardImageRequest) returns (google.protobuf.Empty);
-    rpc ChangeProductCardImageOrder(ChangeProductCardImageOrderRequest) returns (google.protobuf.Empty);
-    rpc SetMainProductCardImage(SetMainProductCardImageRequest) returns (google.protobuf.Empty);
-    rpc UpdateProductCardImageAlt(UpdateProductCardImageAltRequest) returns (google.protobuf.Empty);
-
-    rpc GetProductCardById(GetProductCardByIdRequest) returns (GetProductCardByIdResponse);
+    rpc GetProductById(GetProductByIdRequest) returns (GetProductByIdResponse);
 }
 
-message ProductCardDto {
+message ProductDto {
     string id = 1;
     string name = 2;
     string slug = 3;
@@ -79,102 +71,60 @@ enum ProductCardStatus {
     ARCHIVED = 2;
 }
 
-message CreateProductCardRequest {
+message CreateProductRequest {
     string vendor_id = 1;
     string category_id = 2;
-    string name = 3; 
+    string brand_id = 3;
+    string name = 4; 
+    string slug = 5;
+    string description = 6;
+    string short_description = 7;
+    string seo_title = 8;
+    string seo_description = 9;
+    string seo_keywords = 10;
+}
+
+message UpdateProductInfoRequest {
+    string product_id = 1;
+    string vendor_id = 2;
+    string name = 3;
     string slug = 4;
     string description = 5;
     string short_description = 6;
-    string brand = 7;
-    string seo_title = 8;
-    string seo_description = 9;
-    string seo_keywords = 10;
-    map<string, string> attributes = 11;
-    repeated string tags = 12;
+    string category_id = 7;
+    string brand_id = 8;
+    string seo_title = 9;
+    string seo_description = 10;
+    string seo_keywords = 11;
 }
 
-message UpdateProductCardInfoRequest {
-    string product_card_id = 1;
-    string vendor_id = 2;
-    string name = 3;
-    string description = 4;
-    string short_description = 5;
-    string category_id = 6;
-    string brand = 7;
-    string seo_title = 8;
-    string seo_description = 9;
-    string seo_keywords = 10;
-}
-
-message PublishProductCardRequest {
-    string product_card_id = 1;
+message PublishProductRequest {
+    string product_id = 1;
     string vendor_id = 2;
 }
 
-message ArchiveProductCardRequest {
-    string product_card_id = 1;
+message ArchiveProductRequest {
+    string product_id = 1;
     string vendor_id = 2;
 }
 
-message ProductCardSetDefaultProductRequest {
-    string product_card_id = 1;
-    string vendor_id = 2;
-    string default_product_id = 3;
-}
-
-message ReplaceProductCardAttributesRequest {
+message ReplaceProductAttributesRequest {
     string vendor_id = 1;
-    string product_card_id = 2;
+    string product_id = 2;
     map<string, string> attributes = 3;
 }
 
-message ReplaceProductCardTagsRequest {
+message ReplaceProductTagsRequest {
     string vendor_id = 1;
-    string product_card_id = 2;
+    string product_id = 2;
     repeated string tags = 3;
 }
 
-message AddProductCardImageRequest {
-    string vendor_id = 1;
-    string product_card_id = 2;
-    string url = 3;
-    string alt = 4;
-    bool is_main = 5;
-    int32 sort_order = 6;
-}
-
-message RemoveProductCardImageRequest {
-    string vendor_id = 1;
-    string product_card_id = 2;
-    string url = 3;
-}
-
-message ChangeProductCardImageOrderRequest {
-    string vendor_id = 1;
-    string product_card_id = 2;
-    string url = 3;
-    int32 new_sort_order = 4;
-}
-
-message SetMainProductCardImageRequest {
-    string vendor_id = 1;
-    string product_card_id = 2;
-    string url = 3;
-}
-
-message UpdateProductCardImageAltRequest {
-    string vendor_id = 1;
-    string product_card_id = 2;
-    string url = 3;
-    string new_alt = 4;
-}
-
-message GetProductCardByIdRequest {
-    string product_card_id = 1;
+message GetProductByIdRequest {
+    string product_id = 1;
     string currncy_code = 2;
 }
 
-message GetProductCardByIdResponse {
-    ProductCardDto product_card = 1;
+message GetProductByIdResponse {
+    ProductDto product = 1;
 }

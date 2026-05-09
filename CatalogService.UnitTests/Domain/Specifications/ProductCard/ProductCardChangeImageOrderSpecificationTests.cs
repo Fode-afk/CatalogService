@@ -1,6 +1,6 @@
 ﻿using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
-using CatalogService.Domain.Specifications.ProductCard;
+using CatalogService.Domain.Specifications.Product;
 using FluentAssertions;
 using migApp.Shared.Enums.ProductCards;
 
@@ -10,7 +10,7 @@ public sealed class ProductCardChangeImageOrderSpecificationTests
 {
     [Theory]
     [InlineData(false, ProductCardStatus.Draft, VendorSnapshotErrorCodes.CannotModify)]
-    [InlineData(true, ProductCardStatus.Archived, ProductCardErrorCodes.CannotModify)]
+    [InlineData(true, ProductCardStatus.Archived, ProductErrorCodes.CannotModify)]
     [InlineData(false, ProductCardStatus.Archived, VendorSnapshotErrorCodes.CannotModify)]
     [InlineData(true, ProductCardStatus.Draft, null)]
     public void Spec_Should_Return_Correct_Error(

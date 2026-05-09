@@ -13,15 +13,15 @@ internal sealed class AppDbContext(
     DbContextOptions<AppDbContext> opt,
     IDomainEventsDispatcher domainEventsDispatcher) : DbContext(opt), IAppDbContext
 {
-    public DbSet<ProductCard> ProductCards { get; set; }
-    public DbSet<ProductCardImage> ProductCardImages { get; set; }
-    public DbSet<ProductCardReadModel> ProductCardReadModels { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<ProductReadModel> ProductReadModels { get; set; }
 
     public DbSet<VendorSnapshot> VendorSnapshots { get; set; }
-    public DbSet<ProductSnapshot> ProductSnapshots { get; set; }
+    public DbSet<ProductVariantSnapshot> ProductVariantSnapshots { get; set; }
     public DbSet<CategorySnapshot> CategorySnapshots { get; set; }
-    public DbSet<ProductPriceSnapshot> ProductPriceSnapshots { get; set; }
-    public DbSet<ProductInventorySnapshot> ProductInventorySnapshots { get; set; }
+    public DbSet<ProductVariantPriceSnapshot> ProductVariantPriceSnapshots { get; set; }
+    public DbSet<BrandSnapshot> BrandSnapshots { get; set; }
+    public DbSet<CharacteristicSnapshot> CharacteristicSnapshots { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

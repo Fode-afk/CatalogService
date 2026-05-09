@@ -23,16 +23,14 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CatalogService.Domain.Models.ProductCard", b =>
+            modelBuilder.Entity("CatalogService.Domain.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Brand")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<Guid>("BrandId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
@@ -40,24 +38,29 @@ namespace CatalogService.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid?>("DefaultProductId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(3000)
-                        .HasColumnType("nvarchar(3000)");
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsLockedByAdmin")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("ProductCardStatus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductCount")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductStatus")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
@@ -67,8 +70,8 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
                     b.Property<string>("ShortDescription")
                         .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Slug")
                         .IsRequired()
@@ -83,13 +86,15 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BrandId");
+
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("CreatedAt");
 
-                    b.HasIndex("DefaultProductId");
+                    b.HasIndex("IsDeleted");
 
-                    b.HasIndex("ProductCardStatus");
+                    b.HasIndex("ProductStatus");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -98,53 +103,18 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
                     b.HasIndex("VendorId");
 
-                    b.HasIndex("CategoryId", "ProductCardStatus");
+                    b.HasIndex("CategoryId", "ProductStatus");
 
-                    b.HasIndex("VendorId", "ProductCardStatus");
+                    b.HasIndex("IsDeleted", "ProductStatus");
 
-                    b.ToTable("ProductCards", "catalog_write");
+                    b.HasIndex("VendorId", "ProductStatus");
+
+                    b.ToTable("Products", "catalog_write");
                 });
 
-            modelBuilder.Entity("CatalogService.Domain.Models.ProductCardImage", b =>
+            modelBuilder.Entity("CatalogService.Domain.Models.ProductReadModel", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Alt")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("IsMain")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("ProductCardId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.Property<int>("SortOrder")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductCardId");
-
-                    b.ToTable("ProductCardImages", "catalog_write");
-                });
-
-            modelBuilder.Entity("CatalogService.Domain.Models.ProductCardReadModel", b =>
-                {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("BrandId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -152,11 +122,9 @@ namespace CatalogService.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Brand")
+                    b.Property<string>("BrandName")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .IsUnicode(true)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
@@ -182,6 +150,9 @@ namespace CatalogService.Infrastructure.Data.Migrations
                         .HasMaxLength(4000)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(4000)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ImagesJson")
                         .IsRequired()
@@ -213,10 +184,10 @@ namespace CatalogService.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset?>("PriceUpdatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("ProductCardStatus")
+                    b.Property<int>("ProductCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductCount")
+                    b.Property<int>("ProductStatus")
                         .HasColumnType("int");
 
                     b.Property<decimal>("RatingAvg")
@@ -282,9 +253,11 @@ namespace CatalogService.Infrastructure.Data.Migrations
                     b.Property<Guid>("VendorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.Property<string>("VendorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("Brand");
+                    b.HasKey("BrandId");
 
                     b.HasIndex("CategoryId");
 
@@ -302,8 +275,6 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
                     b.HasIndex("PriceUpdatedAt");
 
-                    b.HasIndex("ProductCardStatus");
-
                     b.HasIndex("Slug")
                         .IsUnique();
 
@@ -315,21 +286,42 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
                     b.HasIndex("VendorId");
 
-                    b.HasIndex("Brand", "CategoryId");
-
-                    b.HasIndex("Brand", "ProductCardStatus");
+                    b.HasIndex("BrandId", "CategoryId");
 
                     b.HasIndex("CategoryId", "PriceAmount");
 
-                    b.HasIndex("CategoryId", "ProductCardStatus");
-
                     b.HasIndex("CategoryId", "StockStatus");
-
-                    b.HasIndex("VendorId", "ProductCardStatus");
 
                     b.HasIndex("VendorId", "StockStatus");
 
-                    b.ToTable("ProductCardReadModels", "catalog_read");
+                    b.ToTable("ProductReadModels", "catalog_read");
+                });
+
+            modelBuilder.Entity("CatalogService.Domain.Snapshots.BrandSnapshot", b =>
+                {
+                    b.Property<Guid>("BrandId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("Version")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("BrandId");
+
+                    b.HasIndex("IsActive");
+
+                    b.ToTable("BrandSnapshots", "catalog_write");
                 });
 
             modelBuilder.Entity("CatalogService.Domain.Snapshots.CategorySnapshot", b =>
@@ -359,22 +351,36 @@ namespace CatalogService.Infrastructure.Data.Migrations
                     b.ToTable("CategorySnapshots", "catalog_write");
                 });
 
-            modelBuilder.Entity("CatalogService.Domain.Snapshots.ProductInventorySnapshot", b =>
+            modelBuilder.Entity("CatalogService.Domain.Snapshots.CharacteristicSnapshot", b =>
                 {
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("CharacteristicId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CharType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("GroupName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("IsUnifying")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
-
-                    b.Property<int>("StockQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StockStatus")
-                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -382,20 +388,21 @@ namespace CatalogService.Infrastructure.Data.Migrations
                     b.Property<long>("Version")
                         .HasColumnType("bigint");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("CharacteristicId");
 
-                    b.ToTable("ProductInventorySnapshots", "catalog_write");
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("CharacteristicSnapshots", "catalog_write");
                 });
 
-            modelBuilder.Entity("CatalogService.Domain.Snapshots.ProductPriceSnapshot", b =>
+            modelBuilder.Entity("CatalogService.Domain.Snapshots.ProductVariantPriceSnapshot", b =>
                 {
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("ProductVariantId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal?>("PriceAmount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<bool>("HasPrice")
+                        .HasColumnType("bit");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
@@ -408,18 +415,21 @@ namespace CatalogService.Infrastructure.Data.Migrations
                     b.Property<long>("Version")
                         .HasColumnType("bigint");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("ProductVariantId");
 
-                    b.ToTable("ProductPriceSnapshots", "catalog_write");
+                    b.ToTable("ProductVariantPriceSnapshots", "catalog_write");
                 });
 
-            modelBuilder.Entity("CatalogService.Domain.Snapshots.ProductSnapshot", b =>
+            modelBuilder.Entity("CatalogService.Domain.Snapshots.ProductVariantSnapshot", b =>
                 {
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("ProductVariantId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ProductCardId")
+                    b.Property<bool>("HasMainImage")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("RowVersion")
@@ -433,9 +443,11 @@ namespace CatalogService.Infrastructure.Data.Migrations
                     b.Property<long>("Version")
                         .HasColumnType("bigint");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("ProductVariantId");
 
-                    b.ToTable("ProductSnapshots", "catalog_write");
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductVariantSnapshots", "catalog_write");
                 });
 
             modelBuilder.Entity("CatalogService.Domain.Snapshots.VendorSnapshot", b =>
@@ -444,16 +456,13 @@ namespace CatalogService.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsVerified")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -462,12 +471,6 @@ namespace CatalogService.Infrastructure.Data.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("VendorId");
-
-                    b.HasIndex("IsVerified");
-
-                    b.HasIndex("Status");
-
-                    b.HasIndex("UpdatedAt");
 
                     b.ToTable("VendorSnapshots", "catalog_write");
                 });
@@ -642,40 +645,116 @@ namespace CatalogService.Infrastructure.Data.Migrations
                     b.ToTable("OutboxState", "messaging");
                 });
 
-            modelBuilder.Entity("CatalogService.Domain.Models.ProductCard", b =>
+            modelBuilder.Entity("CatalogService.Domain.Models.Product", b =>
                 {
-                    b.OwnsOne("CatalogService.Domain.ValueObjects.SeoMetadata", "SeoMetadata", b1 =>
+                    b.OwnsMany("CatalogService.Domain.Models.ProductAttribute", "Attributes", b1 =>
                         {
-                            b1.Property<Guid>("ProductCardId")
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("CharType")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)");
+
+                            b1.Property<Guid?>("CharacteristicId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("Description")
-                                .IsRequired()
-                                .HasMaxLength(160)
-                                .HasColumnType("nvarchar(160)")
-                                .HasColumnName("SeoDescription");
+                            b1.Property<string>("GroupName")
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
 
-                            b1.Property<string>("Keywords")
-                                .IsRequired()
-                                .HasMaxLength(255)
-                                .HasColumnType("nvarchar(255)")
-                                .HasColumnName("SeoKeywords");
+                            b1.Property<bool>("IsUnifying")
+                                .HasColumnType("bit");
 
-                            b1.Property<string>("Title")
-                                .IsRequired()
-                                .HasMaxLength(60)
-                                .HasColumnType("nvarchar(60)")
-                                .HasColumnName("SeoTitle");
+                            b1.Property<bool>("IsVariable")
+                                .HasColumnType("bit");
 
-                            b1.HasKey("ProductCardId");
+                            b1.Property<Guid>("ProductId")
+                                .HasColumnType("uniqueidentifier");
 
-                            b1.ToTable("ProductCards", "catalog_write");
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("ProductId");
+
+                            b1.ToTable("ProductAttributes", "catalog_write");
 
                             b1.WithOwner()
-                                .HasForeignKey("ProductCardId");
+                                .HasForeignKey("ProductId");
+
+                            b1.OwnsMany("CatalogService.Domain.Models.AttributeVariableValue", "VariableValues", b2 =>
+                                {
+                                    b2.Property<int>("AttributeId")
+                                        .HasColumnType("int");
+
+                                    b2.Property<Guid>("ValueId")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasMaxLength(500)
+                                        .HasColumnType("nvarchar(500)");
+
+                                    b2.HasKey("AttributeId", "ValueId");
+
+                                    b2.ToTable("ProductAttributeVariableValues", "catalog_write");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("AttributeId");
+                                });
+
+                            b1.OwnsOne("CatalogService.Domain.ValueObjects.AttributeName", "Name", b2 =>
+                                {
+                                    b2.Property<int>("ProductAttributeId")
+                                        .HasColumnType("int");
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasMaxLength(100)
+                                        .HasColumnType("nvarchar(100)")
+                                        .HasColumnName("Name");
+
+                                    b2.HasKey("ProductAttributeId");
+
+                                    b2.ToTable("ProductAttributes", "catalog_write");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("ProductAttributeId");
+                                });
+
+                            b1.OwnsOne("CatalogService.Domain.ValueObjects.AttributeValue", "Value", b2 =>
+                                {
+                                    b2.Property<int>("ProductAttributeId")
+                                        .HasColumnType("int");
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasMaxLength(500)
+                                        .HasColumnType("nvarchar(500)")
+                                        .HasColumnName("Value");
+
+                                    b2.HasKey("ProductAttributeId");
+
+                                    b2.ToTable("ProductAttributes", "catalog_write");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("ProductAttributeId");
+                                });
+
+                            b1.Navigation("Name")
+                                .IsRequired();
+
+                            b1.Navigation("Value")
+                                .IsRequired();
+
+                            b1.Navigation("VariableValues");
                         });
 
-                    b.OwnsMany("CatalogService.Domain.ValueObjects.ProductCardAttribute", "Attributes", b1 =>
+                    b.OwnsMany("CatalogService.Domain.Models.ProductSuspensionReason", "SuspensionReasons", b1 =>
                         {
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
@@ -686,58 +765,50 @@ namespace CatalogService.Infrastructure.Data.Migrations
                             b1.Property<Guid>("ProductId")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("Reason")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
+
                             b1.HasKey("Id");
 
                             b1.HasIndex("ProductId");
 
-                            b1.ToTable("ProductCardAttributes", "catalog_write");
+                            b1.ToTable("ProductSuspensionReasons", "catalog_write");
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductId");
+                        });
 
-                            b1.OwnsOne("CatalogService.Domain.ValueObjects.AttributeName", "Name", b2 =>
-                                {
-                                    b2.Property<int>("ProductCardAttributeId")
-                                        .HasColumnType("int");
+                    b.OwnsOne("CatalogService.Domain.ValueObjects.SeoMetadata", "SeoMetadata", b1 =>
+                        {
+                            b1.Property<Guid>("ProductId")
+                                .HasColumnType("uniqueidentifier");
 
-                                    b2.Property<string>("Value")
-                                        .IsRequired()
-                                        .HasMaxLength(100)
-                                        .HasColumnType("nvarchar(100)")
-                                        .HasColumnName("Name");
+                            b1.Property<string>("Description")
+                                .IsRequired()
+                                .HasMaxLength(250)
+                                .HasColumnType("nvarchar(250)")
+                                .HasColumnName("SeoDescription");
 
-                                    b2.HasKey("ProductCardAttributeId");
+                            b1.Property<string>("Keywords")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("nvarchar(500)")
+                                .HasColumnName("SeoKeywords");
 
-                                    b2.ToTable("ProductCardAttributes", "catalog_write");
+                            b1.Property<string>("Title")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("SeoTitle");
 
-                                    b2.WithOwner()
-                                        .HasForeignKey("ProductCardAttributeId");
-                                });
+                            b1.HasKey("ProductId");
 
-                            b1.OwnsOne("CatalogService.Domain.ValueObjects.AttributeValue", "Value", b2 =>
-                                {
-                                    b2.Property<int>("ProductCardAttributeId")
-                                        .HasColumnType("int");
+                            b1.ToTable("Products", "catalog_write");
 
-                                    b2.Property<string>("Value")
-                                        .IsRequired()
-                                        .HasMaxLength(500)
-                                        .HasColumnType("nvarchar(500)")
-                                        .HasColumnName("Value");
-
-                                    b2.HasKey("ProductCardAttributeId");
-
-                                    b2.ToTable("ProductCardAttributes", "catalog_write");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("ProductCardAttributeId");
-                                });
-
-                            b1.Navigation("Name")
-                                .IsRequired();
-
-                            b1.Navigation("Value")
-                                .IsRequired();
+                            b1.WithOwner()
+                                .HasForeignKey("ProductId");
                         });
 
                     b.OwnsMany("CatalogService.Domain.ValueObjects.Tag", "Tags", b1 =>
@@ -761,7 +832,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
                             b1.HasIndex("ProductId");
 
-                            b1.ToTable("ProductCardTags", "catalog_write");
+                            b1.ToTable("ProductTags", "catalog_write");
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductId");
@@ -772,16 +843,9 @@ namespace CatalogService.Infrastructure.Data.Migrations
                     b.Navigation("SeoMetadata")
                         .IsRequired();
 
-                    b.Navigation("Tags");
-                });
+                    b.Navigation("SuspensionReasons");
 
-            modelBuilder.Entity("CatalogService.Domain.Models.ProductCardImage", b =>
-                {
-                    b.HasOne("CatalogService.Domain.Models.ProductCard", null)
-                        .WithMany("Images")
-                        .HasForeignKey("ProductCardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
@@ -794,11 +858,6 @@ namespace CatalogService.Infrastructure.Data.Migrations
                         .WithMany()
                         .HasForeignKey("InboxMessageId", "InboxConsumerId")
                         .HasPrincipalKey("MessageId", "ConsumerId");
-                });
-
-            modelBuilder.Entity("CatalogService.Domain.Models.ProductCard", b =>
-                {
-                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

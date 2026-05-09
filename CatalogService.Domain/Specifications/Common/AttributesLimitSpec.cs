@@ -11,8 +11,8 @@ public sealed class AttributesLimitSpec<T> : Specification<T>
 {
     public override IResult IsSatisfiedBy(T ctx)
     {
-        if (ctx.Attributes.Count > Models.ProductCard.MaxAttributes)
-            return Fail(ProductCardErrors.MaxAttributesReached());
+        if (ctx.Attributes.Count > Models.Product.MaxAttributes)
+            return Fail(ProductErrors.MaxAttributesReached());
 
         return Ok();
     }

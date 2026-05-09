@@ -1,6 +1,6 @@
 ﻿using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
-using CatalogService.Domain.Specifications.ProductCard;
+using CatalogService.Domain.Specifications.Product;
 using FluentAssertions;
 using migApp.Shared.Enums.ProductCards;
 using Models = CatalogService.Domain.Models;
@@ -13,10 +13,10 @@ public sealed class ProductCardAddImageSpecificationTests
         new()
         {
             { false, ProductCardStatus.Draft, 1, VendorSnapshotErrorCodes.CannotModify },
-            { true, ProductCardStatus.Archived, 1, ProductCardErrorCodes.CannotModify },
-            { true, ProductCardStatus.Draft, Models.ProductCard.MaxImages, ProductCardImageErrorCodes.MaxImagesReached },
-            { false, ProductCardStatus.Archived, Models.ProductCard.MaxImages, VendorSnapshotErrorCodes.CannotModify },
-            { true, ProductCardStatus.Draft, Models.ProductCard.MaxImages - 1, null },
+            { true, ProductCardStatus.Archived, 1, ProductErrorCodes.CannotModify },
+            { true, ProductCardStatus.Draft, Models.Product.MaxImages, ProductCardImageErrorCodes.MaxImagesReached },
+            { false, ProductCardStatus.Archived, Models.Product.MaxImages, VendorSnapshotErrorCodes.CannotModify },
+            { true, ProductCardStatus.Draft, Models.Product.MaxImages - 1, null },
             { true, ProductCardStatus.Published, 1, null },
             { true, ProductCardStatus.Draft, 1, null }
         };

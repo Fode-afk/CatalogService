@@ -1,6 +1,6 @@
 ﻿using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
-using CatalogService.Domain.Specifications.ProductCard;
+using CatalogService.Domain.Specifications.Product;
 using FluentAssertions;
 
 namespace CatalogService.UnitTests.Domain.Specifications.ProductCard;
@@ -18,7 +18,7 @@ public sealed class ProductCardArchivedSpecificationTests
         var ctx = new ProductCardArchivedContext(vendorActive);
 
         //Act
-        var result = ProductCardArchivedSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = ProductArchiveSpecification.Spec.IsSatisfiedBy(ctx);
 
         //Assert
         result.IsFailure.Should().Be(expectedErrorCode is not null);

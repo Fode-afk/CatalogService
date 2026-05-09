@@ -1,6 +1,6 @@
 ﻿using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
-using CatalogService.Domain.Specifications.ProductCard;
+using CatalogService.Domain.Specifications.Product;
 using FluentAssertions;
 using migApp.Shared.Enums.ProductCards;
 
@@ -12,11 +12,11 @@ public sealed class ProductCardPublishSpecificationTests
        new()
        {
             { false, true, true, true, ProductCardStatus.Draft, 1, VendorSnapshotErrorCodes.CannotModify },
-            { true, false, true, true, ProductCardStatus.Draft, 1, ProductCardErrorCodes.NoDefaultProduct },
-            { true, true, false, true, ProductCardStatus.Draft, 1, ProductPriceSnapshotErrorCodes.NoPrice },
+            { true, false, true, true, ProductCardStatus.Draft, 1, ProductErrorCodes.NoDefaultProduct },
+            { true, true, false, true, ProductCardStatus.Draft, 1, VariationPriceSnapshotErrorCodes.NoPrice },
             { true, true, true, false, ProductCardStatus.Draft, 1, ProductInventorySnapshotErrorCodes.OutOfStock },
-            { true, true, true, true, ProductCardStatus.Archived, 1, ProductCardErrorCodes.CannotModify },
-            { true, true, true, true, ProductCardStatus.Draft, 0, ProductCardErrorCodes.ImagesRequired },
+            { true, true, true, true, ProductCardStatus.Archived, 1, ProductErrorCodes.CannotModify },
+            { true, true, true, true, ProductCardStatus.Draft, 0, ProductErrorCodes.ImagesRequired },
             { false, false, false, false, ProductCardStatus.Archived, 0, VendorSnapshotErrorCodes.CannotModify },
             { true, true, true, true, ProductCardStatus.Draft, 1, null },
             { true, true, true, true, ProductCardStatus.Published, 1, null }
@@ -43,7 +43,7 @@ public sealed class ProductCardPublishSpecificationTests
             imagesCount);
 
         //Act
-        var result = ProductCardPublishSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = ProductPublishSpecification.Spec.IsSatisfiedBy(ctx);
 
         //Assert
         result.IsFailure.Should().Be(expectedErrorCode is not null);

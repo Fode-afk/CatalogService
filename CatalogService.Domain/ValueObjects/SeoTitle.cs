@@ -8,7 +8,7 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed partial class SeoTitle : ValueObject
 {
-    public static int MaxLength => 60;
+    public static int MaxLength => 100;
 
     public string Value { get; }
 

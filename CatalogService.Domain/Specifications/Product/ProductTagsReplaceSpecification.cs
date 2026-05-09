@@ -1,0 +1,14 @@
+﻿using CatalogService.Domain.Contexts;
+using CatalogService.Domain.Specifications.Base;
+using CatalogService.Domain.Specifications.Common;
+
+namespace CatalogService.Domain.Specifications.Product;
+
+public static class ProductTagsReplaceSpecification
+{
+    public static readonly ISpecification<ProductTagsReplaceContext> Spec =
+        new VendorIsActiveSpec<ProductTagsReplaceContext>()
+            .And(new CanBeModifiedSpec<ProductTagsReplaceContext>())
+            .And(new TagsRequiredSpec<ProductTagsReplaceContext>())
+            .And(new TagsLimitSpec<ProductTagsReplaceContext>());
+}

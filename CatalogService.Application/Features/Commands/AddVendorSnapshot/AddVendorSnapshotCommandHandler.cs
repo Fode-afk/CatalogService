@@ -25,8 +25,6 @@ public sealed class AddVendorSnapshotCommandHandler(
             new VendorSnapshot
             {        
                 VendorId = request.VendorId,
-                Status = request.Status,
-                IsVerified = request.IsVerified,
                 UpdatedAt = timeProvider.GetUtcNow()
             });
 

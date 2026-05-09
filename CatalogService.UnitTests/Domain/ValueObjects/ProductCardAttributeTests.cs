@@ -1,4 +1,4 @@
-﻿using CatalogService.Domain.ValueObjects;
+﻿using CatalogService.Domain.Models;
 using FluentAssertions;
 
 namespace CatalogService.UnitTests.Domain.ValueObjects;
@@ -13,7 +13,7 @@ public sealed class ProductCardAttributeTests
         var value = "some value";
 
         // Act
-        var result = ProductCardAttribute.Create(name, value);
+        var result = ProductAttribute.Create(name, value);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -27,7 +27,7 @@ public sealed class ProductCardAttributeTests
         var value = ""; // invalid
 
         // Act
-        var result = ProductCardAttribute.Create(name, value);
+        var result = ProductAttribute.Create(name, value);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -41,7 +41,7 @@ public sealed class ProductCardAttributeTests
         var value = "Red";
 
         // Act
-        var result = ProductCardAttribute.Create(name, value);
+        var result = ProductAttribute.Create(name, value);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -57,7 +57,7 @@ public sealed class ProductCardAttributeTests
         var value = "Red";
 
         // Act
-        var result = ProductCardAttribute.Create(name, value).Value;
+        var result = ProductAttribute.Create(name, value).Value;
 
         // Assert
         result.Name.Value.Should().Be(name);
@@ -68,8 +68,8 @@ public sealed class ProductCardAttributeTests
     public void Attributes_Should_Be_Equal_When_Same_Values()
     {
         //Arrange
-        var a = ProductCardAttribute.Create("Color", "Red").Value;
-        var b = ProductCardAttribute.Create("Color", "Red").Value;
+        var a = ProductAttribute.Create("Color", "Red").Value;
+        var b = ProductAttribute.Create("Color", "Red").Value;
 
         //Assert
         a.Should().Be(b);
@@ -79,8 +79,8 @@ public sealed class ProductCardAttributeTests
     public void Attributes_Should_Not_Be_Equal_When_Different()
     {
         //Arrange
-        var a = ProductCardAttribute.Create("Color", "Red").Value;
-        var b = ProductCardAttribute.Create("Size", "Red").Value;
+        var a = ProductAttribute.Create("Color", "Red").Value;
+        var b = ProductAttribute.Create("Size", "Red").Value;
 
         //Assert
         a.Should().NotBe(b);

@@ -13,33 +13,33 @@ using static migApp.Shared.Results.ResultFactory;
 namespace CatalogService.Application.Features.Queries.GetProductCardById;
 
 public sealed class GetProductCardByIdQueryHandler(
-    IProductCardReadRepository productCardReadRepository,
+    IProductReadRepository productCardReadRepository,
     IMoneyConverter moneyConverter,
-    IFusionCache cache) : IRequestHandler<GetProductCardByIdQuery, IResult<ProductCardDto>>
+    IFusionCache cache) : IRequestHandler<GetProductCardByIdQuery, IResult<ProductDto>>
 {
-    public async Task<IResult<ProductCardDto>> Handle(GetProductCardByIdQuery request, CancellationToken cancellationToken)
+    public async Task<IResult<ProductDto>> Handle(GetProductCardByIdQuery request, CancellationToken cancellationToken)
     {
         var currencyResult = Currency.Create(request.Currency);
         if (currencyResult.IsFailure)
-            return Fail<ProductCardDto>(currencyResult.Error);
+            return Fail<ProductDto>(currencyResult.Error);
 
         var currency = currencyResult.Value;
 
-        var productCardDto = await cache.GetOrSetAsync<ProductCardDto?>(
-            CacheKeys.ProductCardById(request.ProductCardId, currency.Code),
+        var productCardDto = await cache.GetOrSetAsync<ProductDto?>(
+            CacheKeys.ProductById(request.ProductCardId, currency.Code),
             async (entry, ct) => await GetProductCardDto(
                 request.ProductCardId,
                 currency,
                 ct),
-            tags: [CacheTags.ProductCardById(request.ProductCardId)],
+            tags: [CacheTags.ProductById(request.ProductCardId)],
             token: cancellationToken);
 
         return productCardDto != null ?
             Ok(productCardDto) :
-            Fail<ProductCardDto>(ProductCardErrors.NotFound());
+            Fail<ProductDto>(ProductErrors.NotFound());
     }
 
-    public async Task<ProductCardDto?> GetProductCardDto(
+    public async Task<ProductDto?> GetProductCardDto(
         Guid productCardId,
         Currency currency,
         CancellationToken cancellationToken = default)
@@ -78,7 +78,7 @@ public sealed class GetProductCardByIdQueryHandler(
             }
         }
 
-        return new ProductCardDto(
+        return new ProductDto(
             productCard.Id.ToString(),
             productCard.Name,
             productCard.Slug,
@@ -95,15 +95,14 @@ public sealed class GetProductCardByIdQueryHandler(
             productCard.CategoryName,
             productCard.CategorySlug,
             productCard.VendorId.ToString(),
-            productCard.Brand,
-            productCard.ProductCardStatus,
+            productCard.BrandName,
+            productCard.ProductStatus,
             new SeoMetadataDto (
                 productCard.SeoTitle,
                 productCard.SeoDescription,
                 productCard.SeoKeywords),
             JsonSerializer.Deserialize<Dictionary<string, string>>(productCard.AttributesJson)!,
-            JsonSerializer.Deserialize<List<string>>(productCard.TagsJson)!,
-            JsonSerializer.Deserialize<List<ProductCardImageDto>>(productCard.ImagesJson)!);
+            JsonSerializer.Deserialize<List<string>>(productCard.TagsJson)!);
     }
 
     private async Task<IResult<long>> ConvertUsdToTargetMinorAsync(

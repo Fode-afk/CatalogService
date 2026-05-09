@@ -31,7 +31,7 @@ public sealed class TagsLimitSpecTests
     public void Should_Pass_When_Tags_Equal_To_Max()
     {
         // Arrange
-        var max = Models.ProductCard.MaxTags;
+        var max = Models.Product.MaxTags;
         var ctx = new TestContext([.. Enumerable.Range(1, max).Select(i => Tag.Create(i.ToString()).Value)]);
 
         // Act
@@ -45,7 +45,7 @@ public sealed class TagsLimitSpecTests
     public void Should_Fail_When_Tags_Exceed_Max()
     {
         // Arrange
-        var max = Models.ProductCard.MaxTags;
+        var max = Models.Product.MaxTags;
         var ctx = new TestContext([.. Enumerable.Range(1, max + 1).Select(i => Tag.Create(i.ToString()).Value)]);
 
         // Act
@@ -59,13 +59,13 @@ public sealed class TagsLimitSpecTests
     public void Should_Return_MaxTagsReached_Error()
     {
         // Arrange
-        var max = Models.ProductCard.MaxTags;
+        var max = Models.Product.MaxTags;
         var ctx = new TestContext([.. Enumerable.Range(1, max + 1).Select(i => Tag.Create(i.ToString()).Value)]);
 
         // Act
         var result = _spec.IsSatisfiedBy(ctx);
 
         // Assert
-        result.Error.Should().Be(ProductCardErrors.MaxTagsReached());
+        result.Error.Should().Be(ProductErrors.MaxTagsReached());
     }
 }

@@ -11,6 +11,7 @@ internal sealed class CategorySnapshotConfiguration : IEntityTypeConfiguration<C
         builder.ToTable("CategorySnapshots", Schemas.CatalogWrite);
 
         builder.HasKey(x => x.CategoryId);
+
         builder.HasIndex(x => x.IsActive);
 
         builder.Property<byte[]>("RowVersion")

@@ -7,7 +7,7 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed class SeoKeywords : ValueObject
 {
-    public static int MaxLength => 255;
+    public static int MaxLength => 500;
 
     public string Value { get; }
 

@@ -47,7 +47,7 @@ public static class InfrastructureExtensions
         services.AddTransient<IDomainEventsDispatcher, DomainEventsDispatcher>();
 
         services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
-        services.AddScoped<IProductCardReadRepository, ProductCardReadRepository>();
+        services.AddScoped<IProductReadRepository, ProductReadRepository>();
 
         services.AddScoped<ICurrencyService, CurrencyServiceClient>();
         services.AddScoped<IExchangeRateService, ExchangeRateService>();

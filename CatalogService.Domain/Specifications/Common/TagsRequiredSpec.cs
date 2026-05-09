@@ -12,7 +12,7 @@ public sealed class TagsRequiredSpec<T> : Specification<T>
     public override IResult IsSatisfiedBy(T ctx)
     {
         if (ctx.Tags.Count == 0)
-            return Fail(ProductCardErrors.TagsRequired());
+            return Fail(ProductErrors.TagsRequired());
 
         return Ok();
     }

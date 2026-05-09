@@ -1,6 +1,6 @@
 ﻿using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
-using CatalogService.Domain.Specifications.ProductCard;
+using CatalogService.Domain.Specifications.Product;
 using CatalogService.Domain.ValueObjects;
 using FluentAssertions;
 using migApp.Shared.Enums.ProductCards;
@@ -14,11 +14,11 @@ public sealed class ProductCardTagsReplacedSpecificationTests
         new()
         {
             { false, ProductCardStatus.Draft, 0, VendorSnapshotErrorCodes.CannotModify },
-            { true, ProductCardStatus.Archived, 0, ProductCardErrorCodes.CannotModify },
-            { true, ProductCardStatus.Draft, 0, ProductCardErrorCodes.TagsRequired },
+            { true, ProductCardStatus.Archived, 0, ProductErrorCodes.CannotModify },
+            { true, ProductCardStatus.Draft, 0, ProductErrorCodes.TagsRequired },
             { false, ProductCardStatus.Archived, 0, VendorSnapshotErrorCodes.CannotModify },
-            { true, ProductCardStatus.Draft, Models.ProductCard.MaxTags + 1,  ProductCardErrorCodes.MaxTagsReached },
-            { true, ProductCardStatus.Draft, Models.ProductCard.MaxTags, null },
+            { true, ProductCardStatus.Draft, Models.Product.MaxTags + 1,  ProductErrorCodes.MaxTagsReached },
+            { true, ProductCardStatus.Draft, Models.Product.MaxTags, null },
             { true, ProductCardStatus.Draft, 1, null }
         };
 
@@ -38,7 +38,7 @@ public sealed class ProductCardTagsReplacedSpecificationTests
             tags);
 
         //Act
-        var result = ProductCardTagsReplacedSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = ProductTagsReplaceSpecification.Spec.IsSatisfiedBy(ctx);
 
         //Assert
         result.IsFailure.Should().Be(expectedErrorCode is not null);

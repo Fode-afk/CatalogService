@@ -11,7 +11,7 @@ public sealed class ProductCountTests
     public void Create_Should_Fail_When_Value_Less_Than_Min(int input)
     {
         //Act
-        var result = ProductCount.Create(input);
+        var result = VariantCount.Create(input);
 
         //Assert
         result.IsFailure.Should().BeTrue();
@@ -23,7 +23,7 @@ public sealed class ProductCountTests
     public void Create_Should_Fail_When_Value_Greater_Than_Max(int input)
     {
         //Act
-        var result = ProductCount.Create(input);
+        var result = VariantCount.Create(input);
 
         //Assert
         result.IsFailure.Should().BeTrue();
@@ -36,7 +36,7 @@ public sealed class ProductCountTests
     public void Create_Should_Succeed_For_Valid_Range(int input)
     {
         //Act
-        var result = ProductCount.Create(input);
+        var result = VariantCount.Create(input);
 
         //Assert
         result.IsSuccess.Should().BeTrue();
@@ -47,7 +47,7 @@ public sealed class ProductCountTests
     public void Create_Should_Allow_Min_Value()
     {
         //Act
-        var result = ProductCount.Create(ProductCount.MinValue);
+        var result = VariantCount.Create(VariantCount.MinValue);
 
         //Assert
         result.IsSuccess.Should().BeTrue();
@@ -58,7 +58,7 @@ public sealed class ProductCountTests
     public void Create_Should_Allow_Max_Value()
     {
         //Act
-        var result = ProductCount.Create(ProductCount.MaxValue);
+        var result = VariantCount.Create(VariantCount.MaxValue);
 
         //Assert
         result.IsSuccess.Should().BeTrue();
@@ -69,7 +69,7 @@ public sealed class ProductCountTests
     public void IsEmpty_Should_Be_True_When_Value_Is_Zero()
     {
         //Arrange
-        var count = ProductCount.Create(0).Value;
+        var count = VariantCount.Create(0).Value;
 
         //Act
         var result = count.IsEmpty;
@@ -82,7 +82,7 @@ public sealed class ProductCountTests
     public void IsEmpty_Should_Be_False_When_Value_Greater_Than_Zero()
     {
         //Arrange
-        var count = ProductCount.Create(5).Value;
+        var count = VariantCount.Create(5).Value;
 
         //Act
         var result = count.IsEmpty;
@@ -95,7 +95,7 @@ public sealed class ProductCountTests
     public void Zero_Should_Return_Zero_Value()
     {
         //Arrange
-        var zero = ProductCount.Zero;
+        var zero = VariantCount.Zero;
 
         //Assert
         zero.Value.Should().Be(0);
@@ -106,8 +106,8 @@ public sealed class ProductCountTests
     public void ProductCount_Should_Be_Equal_When_Values_Are_Same()
     {
         //Arrange
-        var a = ProductCount.Create(5).Value;
-        var b = ProductCount.Create(5).Value;
+        var a = VariantCount.Create(5).Value;
+        var b = VariantCount.Create(5).Value;
 
         //Assert
         a.Should().Be(b);
@@ -117,8 +117,8 @@ public sealed class ProductCountTests
     public void ProductCount_Should_Not_Be_Equal_When_Values_Differ()
     {
         //Arrange
-        var a = ProductCount.Create(5).Value;
-        var b = ProductCount.Create(10).Value;
+        var a = VariantCount.Create(5).Value;
+        var b = VariantCount.Create(10).Value;
 
         //Assert
         a.Should().NotBe(b);
@@ -128,7 +128,7 @@ public sealed class ProductCountTests
     public void Implicit_Conversion_To_Int_Should_Work()
     {
         //Arrange
-        var count = ProductCount.Create(7).Value;
+        var count = VariantCount.Create(7).Value;
 
         //Act
         int result = count;

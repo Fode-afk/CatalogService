@@ -8,9 +8,9 @@ namespace CatalogService.UnitTests.Domain.Specifications.Common;
 
 public sealed class StatusIsNotArchivedSpecTests
 {
-    private sealed record TestContext(ProductCardStatus ProductCardStatus) : IStatusContext;
+    private sealed record TestContext(ProductCardStatus ProductCardStatus) : IProductContext;
 
-    private readonly StatusIsNotArchived<TestContext> _spec = new();
+    private readonly CanBeModifiedSpec<TestContext> _spec = new();
 
     [Fact]
     public void Should_Fail_When_Status_Is_Archived()
@@ -50,6 +50,6 @@ public sealed class StatusIsNotArchivedSpecTests
         var result = _spec.IsSatisfiedBy(ctx);
 
         // Assert
-        result.Error.Should().Be(ProductCardErrors.CannotModify());
+        result.Error.Should().Be(ProductErrors.CannotModify());
     }
 }

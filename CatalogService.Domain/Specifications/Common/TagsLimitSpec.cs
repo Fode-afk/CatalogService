@@ -11,8 +11,8 @@ public sealed class TagsLimitSpec<T> : Specification<T>
 {
     public override IResult IsSatisfiedBy(T ctx)
     {
-        if (ctx.Tags.Count > Models.ProductCard.MaxTags)
-            return Fail(ProductCardErrors.MaxTagsReached());
+        if (ctx.Tags.Count > Models.Product.MaxTags)
+            return Fail(ProductErrors.MaxTagsReached());
 
         return Ok();
     }

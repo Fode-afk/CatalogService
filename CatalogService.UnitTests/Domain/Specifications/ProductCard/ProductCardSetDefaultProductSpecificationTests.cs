@@ -1,6 +1,6 @@
 ﻿using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
-using CatalogService.Domain.Specifications.ProductCard;
+using CatalogService.Domain.Specifications.Product;
 using FluentAssertions;
 using migApp.Shared.Enums.ProductCards;
 
@@ -11,8 +11,8 @@ public sealed class ProductCardSetDefaultProductSpecificationTests
     [Theory]
     [InlineData(false, ProductCardStatus.Draft, true, VendorSnapshotErrorCodes.CannotModify)]
     [InlineData(false, ProductCardStatus.Published, true, VendorSnapshotErrorCodes.CannotModify)]
-    [InlineData(true, ProductCardStatus.Archived, true, ProductCardErrorCodes.CannotModify)]
-    [InlineData(true, ProductCardStatus.Draft, false, ProductCardErrorCodes.ProductDoesNotBelongToCard)]
+    [InlineData(true, ProductCardStatus.Archived, true, ProductErrorCodes.CannotModify)]
+    [InlineData(true, ProductCardStatus.Draft, false, ProductErrorCodes.ProductDoesNotBelongToCard)]
     [InlineData(false, ProductCardStatus.Archived, false, VendorSnapshotErrorCodes.CannotModify)]
     [InlineData(true, ProductCardStatus.Draft, true, null)]
     [InlineData(true, ProductCardStatus.Published, true, null)]

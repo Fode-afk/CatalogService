@@ -1,13 +1,13 @@
 ﻿using CatalogService.Domain.Abstractions;
+using CatalogService.Domain.Models;
 using CatalogService.Domain.Specifications.Common;
-using CatalogService.Domain.ValueObjects;
 using FluentAssertions;
 
 namespace CatalogService.UnitTests.Domain.Specifications.Common;
 
 public sealed class AttributesRequiredSpecTests
 {
-    private sealed record TestContext(IReadOnlyCollection<ProductCardAttribute> Attributes) : IAttributesContext;
+    private sealed record TestContext(IReadOnlyCollection<ProductAttribute> Attributes) : IAttributesContext;
 
     private readonly AttributesRequiredSpec<TestContext> _spec = new();
 
@@ -28,7 +28,7 @@ public sealed class AttributesRequiredSpecTests
     public void Should_Pass_When_Attributes_Exist()
     {
         // Arrange
-        var ctx = new TestContext([ProductCardAttribute.Create("Attribute", "Test").Value]);
+        var ctx = new TestContext([ProductAttribute.Create("Attribute", "Test").Value]);
 
         // Act
         var result = _spec.IsSatisfiedBy(ctx);
@@ -43,7 +43,7 @@ public sealed class AttributesRequiredSpecTests
         // Arrange
         var ctx = new TestContext([.. Enumerable
             .Range(1, 5)
-            .Select(i => ProductCardAttribute.Create(i.ToString(), i.ToString()).Value)]);
+            .Select(i => ProductAttribute.Create(i.ToString(), i.ToString()).Value)]);
 
         // Act
         var result = _spec.IsSatisfiedBy(ctx);

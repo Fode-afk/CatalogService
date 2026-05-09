@@ -1,8 +1,8 @@
-﻿using CatalogService.Domain.ValueObjects;
+﻿using CatalogService.Domain.Models;
 
 namespace CatalogService.Domain.Abstractions;
 
 public interface IAttributesContext
 {
-    IReadOnlyCollection<ProductCardAttribute> Attributes { get; }
+    IReadOnlyCollection<ProductAttribute> Attributes { get; }
 }

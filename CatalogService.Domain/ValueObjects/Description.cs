@@ -7,7 +7,7 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed class Description : ValueObject
 {
-    public static int MaxLength => 3000;
+    public static int MaxLength => 5000;
 
     private Description(string value)
     {

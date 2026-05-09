@@ -15,14 +15,14 @@ public sealed class ValidateProductCardForDiscountCommandHandler(
 {
     public async Task<IResult> Handle(ValidateProductCardForDiscountCommand request, CancellationToken cancellationToken)
     {
-        var productCardExists = await context.ProductCards
+        var productCardExists = await context.Products
             .AnyAsync(p =>
                 p.Id == request.ProductCardId &&
                 p.VendorId == request.VendorId,
                 cancellationToken);
 
         if (productCardExists)
-            await publish.Publish(new ProductCardValidated(request.CorrelationId), cancellationToken);
+            await publish.Publish(new ProductValidated(request.CorrelationId), cancellationToken);
         else
             await publish.Publish(new DiscountProcessFailed(
                 request.CorrelationId,

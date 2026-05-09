@@ -17,11 +17,11 @@ public sealed class UpdateProductCardRatingSnapshotCommandHandler(
 {
     public async Task<IResult> Handle(UpdateProductCardRatingSnapshotCommand request, CancellationToken cancellationToken)
     {
-        var productCardReadModel = await context.ProductCardReadModels
+        var productCardReadModel = await context.ProductReadModels
             .FirstOrDefaultAsync(c => c.Id == request.ProductCardId, cancellationToken);
 
         if (productCardReadModel == null)
-            return Fail(ProductCardErrors.NotFound());
+            return Fail(ProductErrors.NotFound());
 
         if (request.RatingCount > 0 && (request.RatingAvg < 1 || request.RatingAvg > 5))
             return Fail(RatingSnapshotErrors.OutOfRange());
@@ -35,7 +35,7 @@ public sealed class UpdateProductCardRatingSnapshotCommandHandler(
 
         await context.SaveChangesAsync(cancellationToken);
 
-        await cache.RemoveByTagAsync(CacheTags.ProductCardById(request.ProductCardId), token: cancellationToken);
+        await cache.RemoveByTagAsync(CacheTags.ProductById(request.ProductCardId), token: cancellationToken);
 
         return Ok();
     }

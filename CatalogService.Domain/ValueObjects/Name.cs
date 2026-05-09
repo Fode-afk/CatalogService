@@ -7,7 +7,7 @@ namespace CatalogService.Domain.ValueObjects;
 
 public sealed class Name : ValueObject
 {
-    public static int MaxLength => 40;
+    public static int MaxLength => 100;
     public static int MinLength => 3;
 
     private Name(string value)

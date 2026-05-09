@@ -1,5 +1,6 @@
 ﻿using CatalogService.Domain.Models;
 using CatalogService.Domain.Snapshots;
+using CatalogService.Infrastructure.Data.Seeds;
 using migApp.Shared.Enums.Vendors;
 
 namespace CatalogService.Infrastructure.Data;
@@ -9,29 +10,19 @@ internal static class DbContextSeed
     public static async Task SeedAsync(AppDbContext context)
     {
         if (!context.VendorSnapshots.Any())
-        {
-            context.VendorSnapshots.Add(
-                new VendorSnapshot
-                {
-                    VendorId = Guid.Parse("3DA8CA23-4511-42CF-8AD0-03718D60CE9F"),
-                    Status = VendorStatus.Active,
-                    IsVerified = true,
-                    Version = 0,
-                    UpdatedAt = DateTime.UtcNow
-                });
-        }
+            context.AddRange(VendorSnapshotSeed.Data);
 
         if (!context.CategorySnapshots.Any())
-        {
-            context.CategorySnapshots.Add(
-                new CategorySnapshot
-                {
-                    CategoryId = Guid.Parse("3DA8CA23-4511-42CF-8AD0-03718D60CE9D"),
-                    IsActive = false,
-                    Version = 0,
-                    UpdatedAt = DateTime.UtcNow
-                });
-        }
+            context.AddRange(CategorySnapshotSeed.Data);
+
+        if (!context.BrandSnapshots.Any())
+            context.AddRange(BrandSnapshotSeed.Data);
+
+        if (!context.CharacteristicSnapshots.Any())
+            context.AddRange(CharacteristicSnapshotSeed.Data);
+
+        //if (!context.VariationSnapshots.Any())
+        //    context.AddRange(ProductVariantSnapshotSeed.Data);
 
         await context.SaveChangesAsync();
     }
