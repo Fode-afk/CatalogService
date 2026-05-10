@@ -2,7 +2,6 @@
 using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
 using CatalogService.Domain.Models;
-using CatalogService.Domain.Snapshots;
 using CatalogService.Domain.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

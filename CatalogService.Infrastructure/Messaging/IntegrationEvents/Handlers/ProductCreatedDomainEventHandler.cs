@@ -12,5 +12,6 @@ public sealed class ProductCreatedDomainEventHandler(IPublishEndpoint publish) :
                 notification.ProductId,
                 notification.VendorId,
                 notification.CategoryId,
-                notification.CanBeModified), cancellationToken);
+                notification.CanBeModified,
+                notification.Version), cancellationToken);
 }

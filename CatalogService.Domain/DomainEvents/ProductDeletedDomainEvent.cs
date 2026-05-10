@@ -1,6 +1,9 @@
-﻿using CatalogService.Domain.Enums;
-using CatalogService.Domain.Primitives;
+﻿using CatalogService.Domain.Primitives;
 
 namespace CatalogService.Domain.DomainEvents;
 
-public sealed record ProductDeletedDomainEvent(Guid ProductId, ProductDeletionReason Reason) : IDomainEvent;
+public sealed record ProductDeletedDomainEvent(
+    Guid ProductId,
+    Guid CategoryId,
+    bool CanBeModified,
+    long Version) : IDomainEvent;

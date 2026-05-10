@@ -12,7 +12,7 @@ public sealed class ProductBelongsToVendorSpec : Specification<ProductVendorOwne
 
     public override IResult IsSatisfiedBy(ProductVendorOwnershipContext ctx)
     {
-        if (ctx.RequestVendorId != ctx.ProductCardVendorId)
+        if (ctx.RequestVendorId != ctx.ProductVendorId)
             return Fail(ProductErrors.VendorMismatch());
 
         return Ok();

@@ -1,5 +1,4 @@
 ﻿using CatalogService.Application.DependencyInjection;
-using CatalogService.Domain.Primitives;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +12,6 @@ public static class ApplicationExtensions
         services
             .AddValidators()
             .AddMediatR()
-            .AddDomainEventHandlers()
             .AddTimeProvider();
 
     private static IServiceCollection AddValidators(this IServiceCollection services) =>
@@ -27,19 +25,6 @@ public static class ApplicationExtensions
         });
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
-        return services;
-    }
-
-    private static IServiceCollection AddDomainEventHandlers(this IServiceCollection services)
-    {
-        var assembly = typeof(ApplicationAssemblyMarker).Assembly;
-
-        services.Scan(scan => scan
-            .FromAssemblies(assembly)
-            .AddClasses(classes => classes.AssignableTo(typeof(IPostCommitDomainEventHandler<>)))
-            .AsImplementedInterfaces()
-            .WithScopedLifetime());
 
         return services;
     }

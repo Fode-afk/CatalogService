@@ -2,4 +2,4 @@
 
 public sealed record ProductVendorOwnershipContext(
     Guid RequestVendorId,
-    Guid ProductCardVendorId);
+    Guid ProductVendorId);

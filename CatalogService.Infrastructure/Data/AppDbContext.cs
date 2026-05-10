@@ -46,6 +46,10 @@ internal sealed class AppDbContext(
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        foreach (var entry in ChangeTracker.Entries<AggregateRoot>()
+           .Where(x => x.State == EntityState.Modified))
+            entry.Entity.IncreaseVersion();
+
         await PublishPreCommitDomainEventsEventsAsync(cancellationToken);
 
         int result = await base.SaveChangesAsync(cancellationToken);

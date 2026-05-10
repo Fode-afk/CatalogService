@@ -102,17 +102,11 @@ public sealed class Product : AggregateRoot
 
         product.RaiseDomainEvent(new ProductCreatedDomainEvent(
             product.Id,
-            product.Name,
-            product.Slug,
-            product.Description,
-            product.ShortDescription,
             product.CategoryId,
             product.VendorId,
             product.BrandId,
-            product.ProductStatus,
-            product.SeoMetadata,
             product.CanBeModified,
-            product.CreatedAt));
+            product.Version));
 
         return Ok(product);
     }
@@ -148,14 +142,9 @@ public sealed class Product : AggregateRoot
 
         RaiseDomainEvent(new ProductInfoUpdatedDomainEvent(
             Id,
-            Name,
-            Slug,
-            Description,
-            ShortDescription,
             CategoryId,
-            BrandId,
-            SeoMetadata,
-            UpdatedAt.Value));
+            CanBeModified,
+            Version));
 
         return Ok();
     }
@@ -300,9 +289,9 @@ public sealed class Product : AggregateRoot
 
         RaiseDomainEvent(new ProductPublishedDomainEvent(
             Id,
-            VendorId,
-            ProductStatus,
-            UpdatedAt.Value));
+            CategoryId,
+            CanBeModified,
+            Version));
 
         return Ok();
     }
@@ -323,8 +312,9 @@ public sealed class Product : AggregateRoot
 
         RaiseDomainEvent(new ProductUnpublishedDomainEvent(
             Id,
-            ProductStatus,
-            UpdatedAt.Value));
+            CategoryId,
+            CanBeModified,
+            Version));
 
         return Ok();
     }
@@ -347,8 +337,9 @@ public sealed class Product : AggregateRoot
 
         RaiseDomainEvent(new ProductLockedDomainEvent(
             Id,
-            IsLockedByAdmin,
-            UpdatedAt.Value));
+            CategoryId,
+            CanBeModified,
+            Version));
 
         return Ok();
     }
@@ -370,8 +361,9 @@ public sealed class Product : AggregateRoot
 
         RaiseDomainEvent(new ProductUnlockedDomainEvent(
             Id,
-            IsLockedByAdmin,
-            UpdatedAt.Value));
+            CategoryId,
+            CanBeModified,
+            Version));
 
         return Ok();
     }
@@ -449,9 +441,9 @@ public sealed class Product : AggregateRoot
 
         RaiseDomainEvent(new ProductArchivedDomainEvent(
             Id,
-            VendorId,
-            ProductStatus,
-            UpdatedAt.Value));
+            CategoryId,
+            CanBeModified,
+            Version));
 
         return Ok();
     }
@@ -470,8 +462,9 @@ public sealed class Product : AggregateRoot
 
         RaiseDomainEvent(new ProductRestoredDomainEvent(
             Id,
-            ProductStatus,
-            UpdatedAt.Value));
+            CategoryId,
+            CanBeModified,
+            Version));
         
         return Ok();
     }
@@ -499,7 +492,11 @@ public sealed class Product : AggregateRoot
         if (ProductStatus == ProductStatus.Published)
             ProductStatus = ProductStatus.Draft;
 
-        RaiseDomainEvent(new ProductDeletedDomainEvent(Id, reason));
+        RaiseDomainEvent(new ProductDeletedDomainEvent(
+            Id,
+            CategoryId,
+            CanBeModified,
+            Version));
 
         return Ok();
     }

@@ -4,5 +4,6 @@ namespace CatalogService.Domain.DomainEvents;
 
 public sealed record ProductLockedDomainEvent(
     Guid ProductId,
-    bool IsLockedByAdmin,
-    DateTimeOffset UpdatedAt) : IDomainEvent;
+    Guid CategoryId,
+    bool CanBeModified,
+    long Version) : IDomainEvent;

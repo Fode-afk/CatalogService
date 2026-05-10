@@ -10,6 +10,7 @@ public sealed class ProductArchivedDomainEventHandler(IPublishEndpoint publish) 
     public async Task Handle(ProductArchivedDomainEvent notification, CancellationToken cancellationToken) =>
         await publish.Publish(new ProductArchivedIntegrationEvent(
             notification.ProductId,
-            notification.VendorId,
-            notification.ProductStatus), cancellationToken);
+            notification.CategoryId,
+            notification.CanBeModified,
+            notification.Version), cancellationToken);
 }

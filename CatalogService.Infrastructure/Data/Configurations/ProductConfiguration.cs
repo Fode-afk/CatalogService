@@ -173,10 +173,6 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
                 .HasMaxLength(100);
         });
 
-        builder.Property(x => x.RowVersion)
-           .IsRowVersion()
-           .IsConcurrencyToken();
-
         builder.Navigation(p => p.Tags)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
@@ -185,6 +181,13 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.Navigation(p => p.SuspensionReasons)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.Property(x => x.RowVersion)
+            .IsRowVersion()
+            .IsConcurrencyToken();
+
+        builder.Property(x => x.Version)
+            .IsRequired();
 
         builder.HasQueryFilter(p => !p.IsDeleted);
     }
