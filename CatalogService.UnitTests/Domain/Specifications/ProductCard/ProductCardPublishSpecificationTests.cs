@@ -13,7 +13,7 @@ public sealed class ProductCardPublishSpecificationTests
        {
             { false, true, true, true, ProductCardStatus.Draft, 1, VendorSnapshotErrorCodes.CannotModify },
             { true, false, true, true, ProductCardStatus.Draft, 1, ProductErrorCodes.NoDefaultProduct },
-            { true, true, false, true, ProductCardStatus.Draft, 1, VariationPriceSnapshotErrorCodes.NoPrice },
+            { true, true, false, true, ProductCardStatus.Draft, 1, ProductVariantPriceSnapshotErrorCodes.NoPrice },
             { true, true, true, false, ProductCardStatus.Draft, 1, ProductInventorySnapshotErrorCodes.OutOfStock },
             { true, true, true, true, ProductCardStatus.Archived, 1, ProductErrorCodes.CannotModify },
             { true, true, true, true, ProductCardStatus.Draft, 0, ProductErrorCodes.ImagesRequired },

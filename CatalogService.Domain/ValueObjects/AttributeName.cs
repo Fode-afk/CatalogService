@@ -19,7 +19,7 @@ public sealed class AttributeName : ValueObject
     public static IResult<AttributeName> Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            return Fail<AttributeName>(AttributeNameErrors.TooLong());
+            return Fail<AttributeName>(AttributeNameErrors.NullOrEmpty());
 
         value = value.Trim();
 

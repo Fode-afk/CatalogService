@@ -41,12 +41,6 @@ public static class ApplicationExtensions
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 
-        services.Scan(scan => scan
-            .FromAssemblies(assembly)
-            .AddClasses(classes => classes.AssignableTo(typeof(IPreCommitDomainEventHandler<>)))
-            .AsImplementedInterfaces()
-            .WithScopedLifetime());
-
         return services;
     }
 

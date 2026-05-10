@@ -12,6 +12,8 @@ internal sealed class ProductVariantPriceSnapshotConfiguration : IEntityTypeConf
 
         builder.HasKey(x => x.ProductVariantId);
 
+        builder.HasIndex(x => x.ProductId);
+
         builder.Property<byte[]>("RowVersion")
            .IsRowVersion()
            .IsConcurrencyToken();

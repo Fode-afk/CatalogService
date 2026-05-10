@@ -1,4 +1,4 @@
-﻿using CatalogService.Application.Features.Commands.AddVendorSnapshot;
+﻿using CatalogService.Application.Features.IntegrationEventHandlers.VendorSnapshot.AddVendorSnapshot;
 using MassTransit;
 using MediatR;
 using migApp.Shared.Messaging.IntegrationEvents.Vendors;
@@ -10,6 +10,6 @@ public sealed class VendorCreatedIntegrationEventConsumer(IMediator mediator) : 
     public async Task Consume(ConsumeContext<VendorCreatedIntegrationEvent> context) =>
         await mediator.Send(new AddVendorSnapshotCommand(
             context.Message.VendorId, 
-            context.Message.Status,
-            context.Message.IsVerified), context.CancellationToken);
+            context.Message.IsActive,
+            context.Message.Version), context.CancellationToken);
 }

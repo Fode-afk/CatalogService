@@ -1,4 +1,4 @@
-﻿using CatalogService.Domain.Enums;
+﻿using migApp.Shared.Enums.Characteristics;
 
 namespace CatalogService.Domain.Snapshots;
 

@@ -46,38 +46,4 @@ public static class ProductGrpcMapper
             VendorId: Guid.Parse(request.VendorId),
             ProductId: Guid.Parse(request.ProductId),
             Tags: [.. request.Tags]);
-
-    public static ProductDto FromDto(Application.Dtos.ProductDto dto) =>
-        new()
-        {
-            Id = dto.Id,
-            Name = dto.Name,
-            Slug = dto.Slug,
-            Description = dto.Description,
-            ShortDescription = dto.ShortDescription,
-            RatingAvg = (double)dto.RatingAvg,
-            RatingCount = dto.RatingCount,
-            DefaultProductId = dto.DefaultProductId,
-            ProductCount = dto.ProductCount,
-            PriceMinorAmount = dto.PriceMinorAmount,
-            OldPriceMinorAmount = dto.OldPriceMinorAmount,
-            StockStatus = (StockStatus)dto.StockStatus,
-            CategoryId = dto.CategoryId,
-            CategoryName = dto.CategoryName,
-            CategorySlug = dto.CategorySlug,
-            VendorId = dto.VendorId,
-            Brand = dto.Brand,
-            ProductCardStatus = (ProductCardStatus)dto.ProductCardStatus,
-            SeoMetadata = FromSeoMetadata(dto.SeoMetadata),
-            Attributes = { dto.Attributes },
-            Tags = { dto.Tags }
-        };
-
-    private static SeoMetadataDto FromSeoMetadata(Application.Dtos.SeoMetadataDto dto) =>
-        new()
-        {
-            Title = dto.Title,
-            Description = dto.Description,
-            Keywords = dto.Keywords
-        };
 }

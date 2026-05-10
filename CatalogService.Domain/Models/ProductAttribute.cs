@@ -1,6 +1,6 @@
-﻿using CatalogService.Domain.Enums;
-using CatalogService.Domain.Errors;
+﻿using CatalogService.Domain.Errors;
 using CatalogService.Domain.ValueObjects;
+using migApp.Shared.Enums.Characteristics;
 using migApp.Shared.Results;
 using static migApp.Shared.Results.ResultFactory;
 

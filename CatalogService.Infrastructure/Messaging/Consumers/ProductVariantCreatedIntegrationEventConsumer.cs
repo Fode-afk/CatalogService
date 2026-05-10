@@ -1,4 +1,4 @@
-﻿using CatalogService.Application.Features.Commands.AddProductVariantSnapshot;
+﻿using CatalogService.Application.Features.IntegrationEventHandlers.ProductVariantSnapshot.AddProductVariantSnapshot;
 using MassTransit;
 using MediatR;
 using migApp.Shared.Messaging.IntegrationEvents.ProductVariants;
@@ -12,5 +12,6 @@ public sealed class ProductVariantCreatedIntegrationEventConsumer(IMediator medi
             context.Message.ProductVariantId,
             context.Message.ProductId,
             context.Message.HasMainImage,
+            context.Message.Version,
             context.Message.CharacteristicValues), context.CancellationToken);
 }

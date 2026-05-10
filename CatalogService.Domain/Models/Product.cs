@@ -1,11 +1,11 @@
 ﻿using CatalogService.Domain.Contexts;
 using CatalogService.Domain.DomainEvents;
 using CatalogService.Domain.Enums;
-using CatalogService.Domain.Errors;
 using CatalogService.Domain.Primitives;
 using CatalogService.Domain.RequestData;
 using CatalogService.Domain.Specifications.Product;
 using CatalogService.Domain.ValueObjects;
+using migApp.Shared.Enums.Characteristics;
 using migApp.Shared.Enums.Products;
 using migApp.Shared.Results;
 using static migApp.Shared.Results.ResultFactory;
@@ -477,13 +477,21 @@ public sealed class Product : AggregateRoot
     }
 
     public IResult Delete(ProductDeleteContext ctx, DateTimeOffset now)
-    {
-        if (IsDeleted)
-            return Ok();
+        => DeleteInternal(ctx, ProductDeletionReason.DeletedByVendor, now);
 
-        var result = ProductDeleteSpecification.Spec.IsSatisfiedBy(ctx);
-        if (result.IsFailure)
-            return result;
+    public IResult ForceDelete(DateTimeOffset now)
+        => DeleteInternal(null, ProductDeletionReason.VendorDeleted, now);
+
+    private IResult DeleteInternal(ProductDeleteContext? ctx, ProductDeletionReason reason, DateTimeOffset now)
+    {
+        if (IsDeleted) return Ok();
+
+        if (ctx is not null)
+        {
+            var result = ProductDeleteSpecification.Spec.IsSatisfiedBy(ctx);
+            if (result.IsFailure)
+                return result;
+        }
 
         IsDeleted = true;
         DeletedAt = now;
@@ -491,7 +499,7 @@ public sealed class Product : AggregateRoot
         if (ProductStatus == ProductStatus.Published)
             ProductStatus = ProductStatus.Draft;
 
-        RaiseDomainEvent(new ProductDeletedDomainEvent(Id));
+        RaiseDomainEvent(new ProductDeletedDomainEvent(Id, reason));
 
         return Ok();
     }

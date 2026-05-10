@@ -14,7 +14,6 @@ internal sealed class AppDbContext(
     IDomainEventsDispatcher domainEventsDispatcher) : DbContext(opt), IAppDbContext
 {
     public DbSet<Product> Products { get; set; }
-    public DbSet<ProductReadModel> ProductReadModels { get; set; }
 
     public DbSet<VendorSnapshot> VendorSnapshots { get; set; }
     public DbSet<ProductVariantSnapshot> ProductVariantSnapshots { get; set; }

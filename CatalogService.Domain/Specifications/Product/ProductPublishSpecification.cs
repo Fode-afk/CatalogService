@@ -16,8 +16,8 @@ public static class ProductPublishSpecification
             .And(new TagsRequiredSpec<ProductPublishContext>())
             .And(Specification<ProductPublishContext>.Create(
                 ctx => ctx.PriceSnapshots.Count(p => p.HasPrice) == ctx.VariationSnapshots.Count,
-                VariationPriceSnapshotErrors.NoPrice()))
+                ProductVariantPriceSnapshotErrors.NoPrice()))
             .And(Specification<ProductPublishContext>.Create(
                 ctx => ctx.VariationSnapshots.All(v => v.HasMainImage),
-                VariationSnapshotErrors.ImagesRequired()));
+                ProductVariantSnapshotErrors.ImagesRequired()));
 }

@@ -1,5 +1,5 @@
-﻿using CatalogService.Domain.Enums;
-using CatalogService.Domain.Snapshots;
+﻿using CatalogService.Domain.Snapshots;
+using migApp.Shared.Enums.Characteristics;
 
 namespace CatalogService.Infrastructure.Data.Seeds;
 
