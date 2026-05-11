@@ -97,6 +97,7 @@ public sealed class ProductAttribute
             return Ok();
 
         _variableValues.Remove(existing);
+
         return Ok();
     }
 }

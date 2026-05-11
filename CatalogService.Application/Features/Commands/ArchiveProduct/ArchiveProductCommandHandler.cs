@@ -34,7 +34,7 @@ public sealed class ArchiveProductCommandHandler(
         if (vendorSnapshot == null)
             return Fail(VendorSnapshotErrors.NotFound());
 
-        var ctx = new ProductArchiveContext(vendorSnapshot.IsActive, product.IsLockedByAdmin);
+        var ctx = new ProductArchiveContext(vendorSnapshot.IsActive, product.CanBeModified);
 
         var result = product.Archive(ctx, timeProvider.GetUtcNow());
         if (result.IsFailure)

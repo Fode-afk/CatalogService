@@ -238,8 +238,10 @@ public sealed class Product : AggregateRoot
         {
             var result = attribute.RemoveVariableValue(variantId);
             if (result.IsFailure)
-                return result;
+                return result;    
         }
+
+        _attributes.RemoveAll(a => a.IsVariable && a.VariableValues.Count == 0);
 
         UpdatedAt = now;
 
@@ -492,11 +494,7 @@ public sealed class Product : AggregateRoot
         if (ProductStatus == ProductStatus.Published)
             ProductStatus = ProductStatus.Draft;
 
-        RaiseDomainEvent(new ProductDeletedDomainEvent(
-            Id,
-            CategoryId,
-            CanBeModified,
-            Version));
+        RaiseDomainEvent(new ProductDeletedDomainEvent(Id));
 
         return Ok();
     }

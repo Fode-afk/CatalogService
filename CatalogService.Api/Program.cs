@@ -10,7 +10,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 var app = builder.Build();
 
 //await app.MigrateDatabaseAsync();
-//await app.SeedDatabaseAsync();
+// app.SeedDatabaseAsync();
 
 app.UseHttpsRedirection();
 
