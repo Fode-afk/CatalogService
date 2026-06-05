@@ -4,8 +4,12 @@ namespace CatalogService.Domain.Errors;
 
 public static class ProductVariantPriceSnapshotErrors
 {
-    public static Error NoPrice() => Error.InvalidArgument(ProductVariantPriceSnapshotErrorCodes.NoPrice);
-    public static Error NotFound() => Error.NotFound(ProductVariantPriceSnapshotErrorCodes.NotFound);
+    public static Error NoPrice() =>
+        Error.InvalidArgument(ProductVariantPriceSnapshotErrorCodes.NoPrice,
+            "No price available.");
+    public static Error NotFound() =>
+        Error.NotFound(ProductVariantPriceSnapshotErrorCodes.NotFound,
+            "Product variant price snapshot not found.");
 }
 
 public static class ProductVariantPriceSnapshotErrorCodes

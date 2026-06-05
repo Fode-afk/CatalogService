@@ -1,28 +1,35 @@
 ﻿using CatalogService.Application.Interfaces.Data;
 using CatalogService.Application.Interfaces.Jobs;
-using CatalogService.Domain.Errors;
+using CatalogService.Application.Interfaces.Metrics;
+using CatalogService.Domain.Exceptions;
 using Hangfire;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using migApp.Shared.Results;
-using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Application.Features.IntegrationEventHandlers.VendorSnapshot.UpdateVendorSnapshot;
 
 public sealed class UpdateVendorSnapshotCommandHandler(
     IAppDbContext context,
     IBackgroundJobClient backgroundJobClient,
-    TimeProvider timeProvider) : IRequestHandler<UpdateVendorSnapshotCommand, IResult>
+    ICatalogMetrics metrics,
+    TimeProvider timeProvider) : IRequestHandler<UpdateVendorSnapshotCommand>
 {
-    public async Task<IResult> Handle(UpdateVendorSnapshotCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateVendorSnapshotCommand request, CancellationToken cancellationToken)
     {
         var snapshot = await context.VendorSnapshots
             .FirstOrDefaultAsync(v => v.VendorId == request.VendorId, cancellationToken);
-        if (snapshot is null)
-            return Fail(VendorSnapshotErrors.NotFound());
+
+        if (snapshot == null)
+        {
+            metrics.RecordSnapshotNotFound("Vendor");
+            throw new SnapshotNotFoundException("Vendor", request.VendorId);
+        }
 
         if (request.Version <= snapshot.Version)
-            return Ok();
+        {
+            metrics.RecordSnapshotOutdated(nameof(UpdateVendorSnapshotCommand));
+            return;
+        }
 
         var isActiveChanged = snapshot.IsActive != request.IsActive;
 
@@ -41,7 +48,5 @@ public sealed class UpdateVendorSnapshotCommandHandler(
         }
 
         await transaction.CommitAsync(cancellationToken);
-
-        return Ok();
     }
 }

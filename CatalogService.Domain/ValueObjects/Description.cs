@@ -29,7 +29,7 @@ public sealed class Description : ValueObject
         value = value.Trim();
 
         if (value.Length > MaxLength)
-            return Fail<Description>(DescriptionErrors.TooLong());
+            return Fail<Description>(DescriptionErrors.TooLong(MaxLength));
 
         return Ok(new Description(value));
     }

@@ -2,7 +2,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using migApp.Shared.Validation;
+using migApp.Shared.Behaviours;
 
 namespace CatalogService.Application.DependencyInjection;
 

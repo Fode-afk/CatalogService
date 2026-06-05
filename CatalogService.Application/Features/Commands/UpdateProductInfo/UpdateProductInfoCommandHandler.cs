@@ -65,7 +65,14 @@ public sealed class UpdateProductInfoCommandHandler(
         if (result.IsFailure)
             return result;
 
-        await context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException)
+        {
+            return Fail(SlugErrors.NotUnique());
+        }
 
         return Ok();
     }

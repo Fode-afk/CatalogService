@@ -1,28 +1,35 @@
 ﻿using CatalogService.Application.Interfaces.Data;
 using CatalogService.Application.Interfaces.Jobs;
-using CatalogService.Domain.Errors;
+using CatalogService.Application.Interfaces.Metrics;
+using CatalogService.Domain.Exceptions;
 using Hangfire;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using migApp.Shared.Results;
-using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Application.Features.IntegrationEventHandlers.BrandSnapshot.UpdateBrandSnapshot;
 
 public sealed class UpdateBrandSnapshotCommandHandler(
     IAppDbContext context,
     IBackgroundJobClient backgroundJobClient,
-    TimeProvider timeProvider) : IRequestHandler<UpdateBrandSnapshotCommand, IResult>
+    ICatalogMetrics metrics,
+    TimeProvider timeProvider) : IRequestHandler<UpdateBrandSnapshotCommand>
 {
-    public async Task<IResult> Handle(UpdateBrandSnapshotCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateBrandSnapshotCommand request, CancellationToken cancellationToken)
     {
         var snapshot = await context.BrandSnapshots
            .FirstOrDefaultAsync(b => b.BrandId == request.BrandId, cancellationToken);
-        if (snapshot is null)
-            return Fail(BrandSnapshotErrors.NotFound());
+
+        if (snapshot == null)
+        {
+            metrics.RecordSnapshotNotFound("Brand");
+            throw new SnapshotNotFoundException("Brand", request.BrandId);
+        }
 
         if (request.Version <= snapshot.Version)
-            return Ok();
+        {
+            metrics.RecordSnapshotOutdated(nameof(UpdateBrandSnapshotCommand));
+            return;
+        }
 
         var isActiveChanged = snapshot.IsActive != request.IsActive;
 
@@ -41,7 +48,5 @@ public sealed class UpdateBrandSnapshotCommandHandler(
         }
 
         await transaction.CommitAsync(cancellationToken);
-
-        return Ok();
     }
 }

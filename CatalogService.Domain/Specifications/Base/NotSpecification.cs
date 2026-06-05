@@ -10,7 +10,8 @@ public sealed class NotSpecification<T>(
         var result = inner.IsSatisfiedBy(candidate);
 
         return result.IsSuccess
-            ? ResultFactory.Fail(Error.InvalidArgument("NOT_SPEC_FAILED"))
+            ? ResultFactory.Fail(Error.InvalidArgument("NOT_SPEC_FAILED",
+                "The specified condition is not satisfied."))
             : ResultFactory.Ok();
     }
 }

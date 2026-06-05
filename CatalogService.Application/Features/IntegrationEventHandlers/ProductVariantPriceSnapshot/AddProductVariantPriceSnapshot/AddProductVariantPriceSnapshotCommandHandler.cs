@@ -1,21 +1,19 @@
 ﻿using CatalogService.Application.Interfaces.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using migApp.Shared.Results;
-using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Application.Features.IntegrationEventHandlers.ProductVariantPriceSnapshot.AddProductVariantPriceSnapshot;
 
 public sealed class AddProductVariantPriceSnapshotCommandHandler(
     IAppDbContext context,
-    TimeProvider timeProvider) : IRequestHandler<AddProductVariantPriceSnapshotCommand, IResult>
+    TimeProvider timeProvider) : IRequestHandler<AddProductVariantPriceSnapshotCommand>
 {
-    public async Task<IResult> Handle(AddProductVariantPriceSnapshotCommand request, CancellationToken cancellationToken)
+    public async Task Handle(AddProductVariantPriceSnapshotCommand request, CancellationToken cancellationToken)
     {
         var exists = await context.ProductVariantPriceSnapshots
             .AnyAsync(x => x.ProductVariantId == request.ProductVariantId, cancellationToken);
         if (exists)
-            return Ok();
+            return;
 
         context.ProductVariantPriceSnapshots.Add(
             new Domain.Snapshots.ProductVariantPriceSnapshot
@@ -27,7 +25,5 @@ public sealed class AddProductVariantPriceSnapshotCommandHandler(
             });
 
         await context.SaveChangesAsync(cancellationToken);
-
-        return Ok();
     }
 }

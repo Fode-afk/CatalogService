@@ -25,7 +25,7 @@ public sealed partial class SeoDescription : ValueObject
         value = Normalize(value);
 
         if (value.Length > MaxLength)
-            return Fail<SeoDescription>(SeoDescriptionErrors.TooLong());
+            return Fail<SeoDescription>(SeoDescriptionErrors.TooLong(MaxLength));
 
         return Ok(new SeoDescription(value));
     }

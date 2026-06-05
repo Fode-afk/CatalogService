@@ -1,4 +1,5 @@
 ﻿using CatalogService.Application.Interfaces.Data;
+using CatalogService.Application.Interfaces.Metrics;
 using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
 using CatalogService.Domain.Models;
@@ -11,6 +12,7 @@ namespace CatalogService.Application.Features.Commands.CreateProduct;
 
 public sealed class CreateProductCommandHandler(
     IAppDbContext context,
+    ICatalogMetrics metrics,
     TimeProvider timeProvider) : IRequestHandler<CreateProductCommand, IResult>
 {
     public async Task<IResult> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -56,7 +58,16 @@ public sealed class CreateProductCommandHandler(
 
         context.Products.Add(result.Value);
 
-        await context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException)
+        {
+            return Fail(ProductErrors.AlreadyExists());
+        }
+
+        metrics.RecordProductCreated();
 
         return Ok();
     }

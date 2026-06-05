@@ -105,6 +105,12 @@ public sealed class Product : AggregateRoot
             product.CategoryId,
             product.VendorId,
             product.BrandId,
+            product.Name,
+            product.Slug,
+            product.Description,
+            product.ShortDescription,
+            product.SeoMetadata,
+            product.ProductStatus,
             product.CanBeModified,
             product.Version));
 

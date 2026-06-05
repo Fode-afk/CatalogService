@@ -1,28 +1,35 @@
 ﻿using CatalogService.Application.Interfaces.Data;
 using CatalogService.Application.Interfaces.Jobs;
-using CatalogService.Domain.Errors;
+using CatalogService.Application.Interfaces.Metrics;
+using CatalogService.Domain.Exceptions;
 using Hangfire;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using migApp.Shared.Results;
-using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Application.Features.IntegrationEventHandlers.CategorySnapshot.UpdateCategorySnapshot;
 
 public sealed class UpdateCategorySnapshotCommandHandler(
     IAppDbContext context,
     IBackgroundJobClient backgroundJobClient,
-    TimeProvider timeProvider) : IRequestHandler<UpdateCategorySnapshotCommand, IResult>
+    ICatalogMetrics metrics,
+    TimeProvider timeProvider) : IRequestHandler<UpdateCategorySnapshotCommand>
 {
-    public async Task<IResult> Handle(UpdateCategorySnapshotCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateCategorySnapshotCommand request, CancellationToken cancellationToken)
     {
         var snapshot = await context.CategorySnapshots
            .FirstOrDefaultAsync(c => c.CategoryId == request.CategoryId, cancellationToken);
-        if (snapshot is null)
-            return Fail(BrandSnapshotErrors.NotFound());
+
+        if (snapshot == null)
+        {
+            metrics.RecordSnapshotNotFound("Category");
+            throw new SnapshotNotFoundException("Category", request.CategoryId);
+        }
 
         if (request.Version <= snapshot.Version)
-            return Ok();
+        {
+            metrics.RecordSnapshotOutdated(nameof(UpdateCategorySnapshotCommand));
+            return;
+        }
 
         var isActiveChanged = snapshot.IsActive != request.IsActive;
 
@@ -41,7 +48,5 @@ public sealed class UpdateCategorySnapshotCommandHandler(
         }
 
         await transaction.CommitAsync(cancellationToken);
-
-        return Ok();
     }
 }

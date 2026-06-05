@@ -1,21 +1,19 @@
 ﻿using CatalogService.Application.Interfaces.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using migApp.Shared.Results;
-using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Application.Features.IntegrationEventHandlers.BrandSnapshot.AddBrandSnapshot;
 
 public sealed class AddBrandSnapshotCommandHandler(
     IAppDbContext context,
-    TimeProvider timeProvider) : IRequestHandler<AddBrandSnapshotCommand, IResult>
+    TimeProvider timeProvider) : IRequestHandler<AddBrandSnapshotCommand>
 {
-    public async Task<IResult> Handle(AddBrandSnapshotCommand request, CancellationToken cancellationToken)
+    public async Task Handle(AddBrandSnapshotCommand request, CancellationToken cancellationToken)
     {
         var exists = await context.BrandSnapshots
             .AnyAsync(x => x.BrandId == request.BrandId, cancellationToken);
         if (exists)
-            return Ok();
+            return;
 
         context.BrandSnapshots.Add(
             new Domain.Snapshots.BrandSnapshot
@@ -27,7 +25,5 @@ public sealed class AddBrandSnapshotCommandHandler(
             });
 
         await context.SaveChangesAsync(cancellationToken);
-
-        return Ok();
     }
 }

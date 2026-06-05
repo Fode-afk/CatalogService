@@ -24,7 +24,7 @@ public sealed class ShortDescription : ValueObject
         value = value.Trim();
 
         if (value.Length > MaxLength)
-            return Fail<ShortDescription>(ShortDescriptionErrors.TooLong());
+            return Fail<ShortDescription>(ShortDescriptionErrors.TooLong(MaxLength));
 
         return Ok(new ShortDescription(value));
     }

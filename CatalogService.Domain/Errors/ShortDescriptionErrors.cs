@@ -4,8 +4,13 @@ namespace CatalogService.Domain.Errors;
 
 public static class ShortDescriptionErrors
 {
-    public static Error NullOrEmpty() => Error.InvalidArgument(ShortDescriptionErrorCodes.NullOrEmpty);
-    public static Error TooLong() => Error.InvalidArgument(ShortDescriptionErrorCodes.TooLong);
+    public static Error NullOrEmpty() =>
+        Error.InvalidArgument(ShortDescriptionErrorCodes.NullOrEmpty,
+            "Short description is null or empty.");
+
+    public static Error TooLong(int maxLength) =>
+        Error.InvalidArgument(ShortDescriptionErrorCodes.TooLong,
+            $"Short description is too long. Maximum length is {maxLength} characters.");
 }
 
 public static class ShortDescriptionErrorCodes

@@ -25,7 +25,7 @@ public sealed partial class SeoTitle : ValueObject
         value = Normalize(value);
 
         if (value.Length > MaxLength)
-            return Fail<SeoTitle>(SeoTitleErrors.TooLong());
+            return Fail<SeoTitle>(SeoTitleErrors.TooLong(MaxLength));
 
         return Ok(new SeoTitle(value));
     }

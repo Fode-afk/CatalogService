@@ -4,8 +4,13 @@ namespace CatalogService.Domain.Errors;
 
 public static class ProductAttributeErrors
 {
-    public static Error UnifyingAttributeRequired() => Error.InvalidArgument(ProductAttributeErrorCodes.UnifyingAttributeRequired);
-    public static Error NotVariable() => Error.InvalidArgument(ProductAttributeErrorCodes.NotVariable);
+    public static Error UnifyingAttributeRequired() =>
+        Error.InvalidArgument(ProductAttributeErrorCodes.UnifyingAttributeRequired,
+            "A unifying attribute is required.");
+
+    public static Error NotVariable() =>
+        Error.InvalidArgument(ProductAttributeErrorCodes.NotVariable,
+            "The attribute is not variable.");
 }
 
 public static class ProductAttributeErrorCodes

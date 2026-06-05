@@ -1,4 +1,5 @@
 ﻿using CatalogService.Application.Interfaces.Data;
+using CatalogService.Application.Interfaces.Metrics;
 using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
 using CatalogService.Domain.Specifications.Common;
@@ -11,6 +12,7 @@ namespace CatalogService.Application.Features.Commands.DeleteProduct;
 
 public sealed class DeleteProductCommandHandler(
     IAppDbContext context,
+    ICatalogMetrics metrics,
     TimeProvider timeProvider) : IRequestHandler<DeleteProductCommand, IResult>
 {
     public async Task<IResult> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
@@ -43,6 +45,8 @@ public sealed class DeleteProductCommandHandler(
             return result;
 
         await context.SaveChangesAsync(cancellationToken);
+
+        metrics.RecordProductDeleted();
 
         return Ok();
     }

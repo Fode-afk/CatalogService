@@ -1,5 +1,6 @@
 ﻿using CatalogService.Application.Interfaces.Data;
 using CatalogService.Application.Interfaces.Jobs;
+using CatalogService.Application.Interfaces.Metrics;
 using CatalogService.Domain.Primitives;
 using CatalogService.Infrastructure.Data;
 using CatalogService.Infrastructure.DependencyInjection;
@@ -7,13 +8,19 @@ using CatalogService.Infrastructure.DomainEvents;
 using CatalogService.Infrastructure.Jobs;
 using CatalogService.Infrastructure.Messaging.Consumers;
 using CatalogService.Infrastructure.Messaging.IntegrationEvents;
+using CatalogService.Infrastructure.Observability;
 using Hangfire;
 using MassTransit;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using migApp.Shared.Behaviours;
 using migApp.Shared.Grpc;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using RabbitMQ.Client;
 
 namespace CatalogService.Infrastructure.DependencyInjection;
@@ -22,7 +29,7 @@ public static class InfrastructureExtensions
 {
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
-        IConfiguration configuration) => 
+        IConfiguration configuration) =>
         services
             .AddServices()
             .AddDatabase(configuration)
@@ -30,7 +37,9 @@ public static class InfrastructureExtensions
             .AddGrpc()
             .AddHealthChecks(configuration)
             .AddMassTransit(configuration)
-            .AddIntegrationEventHandlers();
+            .AddIntegrationEventHandlers()
+            .AddObservability(configuration)
+            .AddBehaviours();
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
@@ -150,4 +159,42 @@ public static class InfrastructureExtensions
 
         return services;
     }
+
+    private static IServiceCollection AddObservability(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var otlpEndpoint = configuration.GetConnectionString("OtlpEndpoint")
+            ?? throw new InvalidOperationException("OtlpEndpoint is not configured");
+
+        services.AddOpenTelemetry()
+            .WithTracing(tracing => tracing
+                .SetResourceBuilder(ResourceBuilder
+                    .CreateDefault()
+                    .AddService("CatalogService"))
+                .AddAspNetCoreInstrumentation(opts =>
+                    opts.Filter = ctx =>
+                        !ctx.Request.Path.StartsWithSegments("/health"))
+                .AddHttpClientInstrumentation()
+                .AddSource("MassTransit")
+                .AddSource("CatalogService")
+                .AddOtlpExporter(opts => opts.Endpoint = new Uri(otlpEndpoint)))
+            .WithMetrics(metrics => metrics
+                .SetResourceBuilder(ResourceBuilder
+                    .CreateDefault()
+                    .AddService("CatalogService"))
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation()
+                .AddMeter(CatalogServiceMetrics.MeterName)
+                .AddOtlpExporter(opts => opts.Endpoint = new Uri(otlpEndpoint)));
+
+        services.AddSingleton<ICatalogMetrics, CatalogServiceMetrics>();
+        services.AddHostedService<ActiveProductsMetricCollector>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddBehaviours(this IServiceCollection services) =>
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 }

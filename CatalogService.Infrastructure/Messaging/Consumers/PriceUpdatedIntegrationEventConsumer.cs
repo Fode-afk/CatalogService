@@ -1,0 +1,15 @@
+﻿using CatalogService.Application.Features.IntegrationEventHandlers.ProductVariantPriceSnapshot.UpdateProductVariantPriceSnapshot;
+using MassTransit;
+using MediatR;
+using migApp.Shared.Messaging.IntegrationEvents.Pricing;
+
+namespace CatalogService.Infrastructure.Messaging.Consumers;
+
+public sealed class PriceUpdatedIntegrationEventConsumer(IMediator mediator) : IConsumer<PriceUpdatedIntegrationEvent>
+{
+    public async Task Consume(ConsumeContext<PriceUpdatedIntegrationEvent> context) =>
+        await mediator.Send(new UpdateProductVariantPriceSnapshotCommand(
+            context.Message.ProductVariantId,
+            context.Message.HasActivePrice,
+            context.Message.Version), context.CancellationToken);
+}

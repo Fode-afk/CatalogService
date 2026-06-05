@@ -1,22 +1,19 @@
 ﻿using CatalogService.Application.Interfaces.Data;
-using CatalogService.Domain.Errors;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using migApp.Shared.Results;
-using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Application.Features.IntegrationEventHandlers.VendorSnapshot.AddVendorSnapshot;
 
 public sealed class AddVendorSnapshotCommandHandler(
     IAppDbContext context,
-    TimeProvider timeProvider) : IRequestHandler<AddVendorSnapshotCommand, IResult>
+    TimeProvider timeProvider) : IRequestHandler<AddVendorSnapshotCommand>
 {
-    public async Task<IResult> Handle(AddVendorSnapshotCommand request, CancellationToken cancellationToken)
+    public async Task Handle(AddVendorSnapshotCommand request, CancellationToken cancellationToken)
     {
         var exists = await context.VendorSnapshots
             .AnyAsync(x => x.VendorId == request.VendorId, cancellationToken);
         if (exists)
-            return Ok();
+            return;
 
         context.VendorSnapshots.Add(
             new Domain.Snapshots.VendorSnapshot
@@ -28,7 +25,5 @@ public sealed class AddVendorSnapshotCommandHandler(
             });
 
         await context.SaveChangesAsync(cancellationToken);
-
-        return Ok();
     }
 }

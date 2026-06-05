@@ -1,4 +1,5 @@
 ﻿using CatalogService.Application.Interfaces.Data;
+using CatalogService.Application.Interfaces.Metrics;
 using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
 using CatalogService.Domain.Specifications.Common;
@@ -11,6 +12,7 @@ namespace CatalogService.Application.Features.Commands.RestoreProduct;
 
 public sealed class RestoreProductCommandHandler(
     IAppDbContext context,
+    ICatalogMetrics metrics,
     TimeProvider timeProvider) : IRequestHandler<RestoreProductCommand, IResult>
 {
     public async Task<IResult> Handle(RestoreProductCommand request, CancellationToken cancellationToken)
@@ -41,6 +43,8 @@ public sealed class RestoreProductCommandHandler(
             return result;
 
         await context.SaveChangesAsync(cancellationToken);
+
+        metrics.RecordProductRestored();
 
         return Ok();
     }

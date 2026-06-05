@@ -66,6 +66,6 @@ public sealed class TagsLimitSpecTests
         var result = _spec.IsSatisfiedBy(ctx);
 
         // Assert
-        result.Error.Should().Be(ProductErrors.MaxTagsReached());
+        result.Error.Should().Be(ProductErrors.MaxTagsReached(Product.MaxTags));
     }
 }

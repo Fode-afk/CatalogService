@@ -1,23 +1,26 @@
 ﻿using CatalogService.Application.Interfaces.Data;
+using CatalogService.Application.Interfaces.Metrics;
+using CatalogService.Application.Logging;
 using CatalogService.Domain.Contexts;
-using CatalogService.Domain.Errors;
+using CatalogService.Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using migApp.Shared.Results;
-using static migApp.Shared.Results.ResultFactory;
+using Microsoft.Extensions.Logging;
 
 namespace CatalogService.Application.Features.IntegrationEventHandlers.ProductVariantSnapshot.DeleteProductVariantSnapshot;
 
 public sealed class DeleteProductVariantSnapshotCommandHandler(
     IAppDbContext context,
-    TimeProvider timeProvider) : IRequestHandler<DeleteProductVariantSnapshotCommand, IResult>
+    TimeProvider timeProvider,
+    ICatalogMetrics metrics,
+    ILogger<DeleteProductVariantSnapshotCommandHandler> logger) : IRequestHandler<DeleteProductVariantSnapshotCommand>
 {
-    public async Task<IResult> Handle(DeleteProductVariantSnapshotCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteProductVariantSnapshotCommand request, CancellationToken cancellationToken)
     {
         var snapshot = await context.ProductVariantSnapshots
             .FirstOrDefaultAsync(v => v.ProductVariantId == request.ProductVariantId, cancellationToken);
         if (snapshot is null)
-            return Ok();
+            return;
 
         var product = await context.Products
             .IgnoreQueryFilters()
@@ -27,14 +30,18 @@ public sealed class DeleteProductVariantSnapshotCommandHandler(
         {
             context.ProductVariantSnapshots.Remove(snapshot);
             await context.SaveChangesAsync(cancellationToken);
-            return Ok();
+            return;
         }
 
         var vendorSnapshot = await context.VendorSnapshots
             .AsNoTracking()
             .FirstOrDefaultAsync(v => v.VendorId == product.VendorId, cancellationToken);
-        if (vendorSnapshot is null)
-            return Fail(VendorSnapshotErrors.NotFound());
+
+        if (vendorSnapshot == null)
+        {
+            metrics.RecordSnapshotNotFound("Vendor");
+            throw new SnapshotNotFoundException("Vendor", product.VendorId);
+        }
 
         var ctx = new ProductRemoveVariantFromAttributesContext(
             vendorSnapshot.IsActive,
@@ -45,12 +52,11 @@ public sealed class DeleteProductVariantSnapshotCommandHandler(
             request.ProductVariantId,
             timeProvider.GetUtcNow());
         if (result.IsFailure)
-            return result;
+            logger.RemoveVariantFromAttributesFailed(
+                request.ProductVariantId, snapshot.ProductId, result.Error.Message);
 
         context.ProductVariantSnapshots.Remove(snapshot);
 
         await context.SaveChangesAsync(cancellationToken);
-
-        return Ok();
     }
 }

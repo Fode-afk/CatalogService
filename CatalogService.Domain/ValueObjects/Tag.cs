@@ -24,7 +24,7 @@ public sealed class Tag : ValueObject
         value = value.Trim();
 
         if (value.Length > MaxLength)
-            return Fail<Tag>(TagErrors.TooLong());
+            return Fail<Tag>(TagErrors.TooLong(MaxLength));
 
         return Ok(new Tag(value));
     }

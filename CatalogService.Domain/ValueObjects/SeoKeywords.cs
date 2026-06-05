@@ -24,7 +24,7 @@ public sealed class SeoKeywords : ValueObject
         value = NormalizeKeywords(value);
 
         if (value.Length > MaxLength)
-            return Fail<SeoKeywords>(SeoKeywordsErrors.TooLong());
+            return Fail<SeoKeywords>(SeoKeywordsErrors.TooLong(MaxLength));
 
         return Ok(new SeoKeywords(value));
     }

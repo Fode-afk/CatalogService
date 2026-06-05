@@ -10,8 +10,17 @@ public sealed class ProductCreatedDomainEventHandler(IPublishEndpoint publish) :
         await publish.Publish(
             new ProductCreatedIntegrationEvent(
                 notification.ProductId,
-                notification.VendorId,
                 notification.CategoryId,
+                notification.VendorId,
+                notification.BrandId,
+                notification.Name,
+                notification.Slug,
+                notification.Description,
+                notification.ShortDescription,
+                notification.SeoMetadata.Title,
+                notification.SeoMetadata.Description,
+                notification.SeoMetadata.Keywords,
+                notification.ProductStatus,
                 notification.CanBeModified,
                 notification.Version), cancellationToken);
 }

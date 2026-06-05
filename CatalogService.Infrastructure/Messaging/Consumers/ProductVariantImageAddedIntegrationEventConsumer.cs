@@ -5,9 +5,9 @@ using migApp.Shared.Messaging.IntegrationEvents.ProductVariants;
 
 namespace CatalogService.Infrastructure.Messaging.Consumers;
 
-public sealed class ProductImageAddedIntegrationEventConsumer(IMediator mediator) : IConsumer<ProductImageAddedIntegrationEvent>
+public sealed class ProductVariantImageAddedIntegrationEventConsumer(IMediator mediator) : IConsumer<ProductVariantImageAddedIntegrationEvent>
 {
-    public async Task Consume(ConsumeContext<ProductImageAddedIntegrationEvent> context) => 
+    public async Task Consume(ConsumeContext<ProductVariantImageAddedIntegrationEvent> context) => 
         await mediator.Send(new UpdateProductVariantSnapshotCommand(
             context.Message.ProductVariantId,
             context.Message.HasMainImage,

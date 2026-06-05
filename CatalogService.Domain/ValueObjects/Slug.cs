@@ -29,10 +29,10 @@ public sealed partial class Slug : ValueObject
         value = value.Trim().ToLowerInvariant();
 
         if (value.Length > MaxLength)
-            return Fail<Slug>(SlugErrors.TooLong());
+            return Fail<Slug>(SlugErrors.TooLong(MaxLength));
 
         if (value.Length < MinLength)
-            return Fail<Slug>(SlugErrors.TooShort());
+            return Fail<Slug>(SlugErrors.TooShort(MinLength));
 
         if (!SlugRegex().IsMatch(value))
             return Fail<Slug>(SlugErrors.InvalidFormat());

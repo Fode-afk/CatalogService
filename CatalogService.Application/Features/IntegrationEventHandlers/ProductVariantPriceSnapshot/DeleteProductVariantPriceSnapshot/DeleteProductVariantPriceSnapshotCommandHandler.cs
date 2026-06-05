@@ -1,24 +1,27 @@
 ﻿using CatalogService.Application.Interfaces.Data;
+using CatalogService.Application.Interfaces.Metrics;
+using CatalogService.Application.Logging;
 using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using migApp.Shared.Enums.Products;
-using migApp.Shared.Results;
-using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Application.Features.IntegrationEventHandlers.ProductVariantPriceSnapshot.DeleteProductVariantPriceSnapshot;
 
 public sealed class DeleteProductVariantPriceSnapshotCommandHandler(
     IAppDbContext context,
-    TimeProvider timeProvider) : IRequestHandler<DeleteProductVariantPriceSnapshotCommand, IResult>
+    TimeProvider timeProvider,
+    ICatalogMetrics metrics,
+    ILogger<DeleteProductVariantPriceSnapshotCommandHandler> logger) : IRequestHandler<DeleteProductVariantPriceSnapshotCommand>
 {
-    public async Task<IResult> Handle(DeleteProductVariantPriceSnapshotCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteProductVariantPriceSnapshotCommand request, CancellationToken cancellationToken)
     {
         var snapshot = await context.ProductVariantPriceSnapshots
            .FirstOrDefaultAsync(p => p.ProductVariantId == request.ProductVariantId, cancellationToken);
         if (snapshot is null)
-            return Ok();
+            return;
 
         var product = await context.Products
             .IgnoreQueryFilters()
@@ -28,7 +31,7 @@ public sealed class DeleteProductVariantPriceSnapshotCommandHandler(
         {
             context.ProductVariantPriceSnapshots.Remove(snapshot);
             await context.SaveChangesAsync(cancellationToken);
-            return Ok();
+            return;
         }
 
         var hasAnyPrice = await context.ProductVariantPriceSnapshots
@@ -42,16 +45,19 @@ public sealed class DeleteProductVariantPriceSnapshotCommandHandler(
 
         if (!hasAnyPrice)
         {
-            product.Suspend(
+            var result = product.Suspend(
                 new ProductSuspendContext(product.CanBeModified),
                 suspensionReason,
                 timeProvider.GetUtcNow());
+
+            if (result.IsSuccess)
+                metrics.RecordProductSuspended(suspensionReason.Reason.ToString());
+            else
+                logger.ProductSuspendFailed(product.Id, result.Error.Message);
         }
 
         context.ProductVariantPriceSnapshots.Remove(snapshot);
 
         await context.SaveChangesAsync(cancellationToken);
-
-        return Ok();
     }
 }

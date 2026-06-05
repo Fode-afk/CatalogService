@@ -30,10 +30,10 @@ public sealed class Name : ValueObject
         value = value.Trim();
 
         if (value.Length > MaxLength)
-            return Fail<Name>(NameErrors.TooLong());
+            return Fail<Name>(NameErrors.TooLong(MaxLength));
 
         if (value.Length < MinLength)
-            return Fail<Name>(NameErrors.TooShort());
+            return Fail<Name>(NameErrors.TooShort(MinLength));
 
         return Ok(new Name(value));
     }

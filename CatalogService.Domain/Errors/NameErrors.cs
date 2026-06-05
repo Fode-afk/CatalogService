@@ -4,9 +4,17 @@ namespace CatalogService.Domain.Errors;
 
 public static class NameErrors
 {
-    public static Error NullOrEmpty() => Error.InvalidArgument(NameErrorCodes.NullOrEmpty);
-    public static Error TooShort() => Error.InvalidArgument(NameErrorCodes.TooShort);
-    public static Error TooLong() => Error.InvalidArgument(NameErrorCodes.TooLong);
+    public static Error NullOrEmpty() =>
+        Error.InvalidArgument(NameErrorCodes.NullOrEmpty,
+            "Name cannot be null or empty.");
+
+    public static Error TooShort(int minLength) =>
+        Error.InvalidArgument(NameErrorCodes.TooShort,
+            $"Name must be at least {minLength} characters long.");
+
+    public static Error TooLong(int maxLength) =>
+        Error.InvalidArgument(NameErrorCodes.TooLong,
+            $"Name must not exceed {maxLength} characters.");
 }
 
 public static class NameErrorCodes

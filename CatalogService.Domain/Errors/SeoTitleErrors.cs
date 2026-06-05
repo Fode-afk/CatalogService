@@ -4,8 +4,13 @@ namespace CatalogService.Domain.Errors;
 
 public static class SeoTitleErrors
 {
-    public static Error NullOrEmpty() => Error.InvalidArgument(SeoTitleErrorCodes.NullOrEmpty);
-    public static Error TooLong() => Error.InvalidArgument(SeoTitleErrorCodes.TooLong);
+    public static Error NullOrEmpty() =>
+        Error.InvalidArgument(SeoTitleErrorCodes.NullOrEmpty,
+            "SEO title is null or empty.");
+
+    public static Error TooLong(int maxLength) =>
+        Error.InvalidArgument(SeoTitleErrorCodes.TooLong,
+            $"SEO title is too long. Maximum length is {maxLength} characters.");
 }
 
 public static class SeoTitleErrorCodes

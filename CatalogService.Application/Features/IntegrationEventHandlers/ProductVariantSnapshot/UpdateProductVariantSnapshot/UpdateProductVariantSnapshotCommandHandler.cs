@@ -1,34 +1,31 @@
 ﻿using CatalogService.Application.Interfaces.Data;
-using CatalogService.Domain.Errors;
+using CatalogService.Application.Interfaces.Metrics;
+using CatalogService.Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using migApp.Shared.Results;
-using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Application.Features.IntegrationEventHandlers.ProductVariantSnapshot.UpdateProductVariantSnapshot;
 
 public sealed class UpdateProductVariantSnapshotCommandHandler(
     IAppDbContext context,
-    TimeProvider timeProvider) : IRequestHandler<UpdateProductVariantSnapshotCommand, IResult>
+    ICatalogMetrics metrics,
+    TimeProvider timeProvider) : IRequestHandler<UpdateProductVariantSnapshotCommand>
 {
-    public async Task<IResult> Handle(UpdateProductVariantSnapshotCommand request, CancellationToken cancellationToken)
+    public async Task Handle(UpdateProductVariantSnapshotCommand request, CancellationToken cancellationToken)
     {
         var snapshot = await context.ProductVariantSnapshots
-         .FirstOrDefaultAsync(v => v.ProductVariantId == request.ProductVariantId, cancellationToken);
-        if (snapshot is null)
-            return Fail(ProductVariantSnapshotErrors.NotFound());
+            .FirstOrDefaultAsync(v => v.ProductVariantId == request.ProductVariantId, cancellationToken);
+
+        if (snapshot == null)
+        {
+            metrics.RecordSnapshotNotFound("ProductVariant");
+            throw new SnapshotNotFoundException("ProductVariant", request.ProductVariantId);
+        }
 
         if (request.Version <= snapshot.Version)
-            return Ok();
-
-        if (snapshot.HasMainImage == request.HasMainImage)
         {
-            snapshot.Version = request.Version;
-            snapshot.UpdatedAt = timeProvider.GetUtcNow();
-
-            await context.SaveChangesAsync(cancellationToken);
-
-            return Ok();
+            metrics.RecordSnapshotOutdated(nameof(UpdateProductVariantSnapshotCommand));
+            return;
         }
 
         snapshot.HasMainImage = request.HasMainImage;
@@ -36,7 +33,5 @@ public sealed class UpdateProductVariantSnapshotCommandHandler(
         snapshot.Version = request.Version;
 
         await context.SaveChangesAsync(cancellationToken);
-
-        return Ok();
     }
 }
