@@ -1,4 +1,5 @@
-﻿using CatalogService.Domain.Primitives;
+﻿using CatalogService.Domain.Models;
+using CatalogService.Domain.Primitives;
 using migApp.Shared.Enums.Products;
 
 namespace CatalogService.Domain.DomainEvents;
@@ -6,4 +7,5 @@ namespace CatalogService.Domain.DomainEvents;
 public sealed record ProductUnsuspendedDomainEvent(
     Guid ProductId,
     ProductStatus ProductStatus,
-    DateTimeOffset UpdatedAt) : IDomainEvent;
+    List<ProductSuspensionReason> SuspensionReasons,
+    long Version) : IDomainEvent;

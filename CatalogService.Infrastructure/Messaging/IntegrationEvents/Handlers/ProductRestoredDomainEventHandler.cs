@@ -12,5 +12,6 @@ public sealed class ProductRestoredDomainEventHandler(IPublishEndpoint publish) 
             notification.ProductId,
             notification.CategoryId,
             notification.CanBeModified,
+            notification.ProductStatus,
             notification.Version), cancellationToken);
 }

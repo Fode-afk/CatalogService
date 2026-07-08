@@ -3,11 +3,11 @@ using MassTransit;
 using MediatR;
 using migApp.Shared.Messaging.IntegrationEvents.ProductVariants;
 
-namespace CatalogService.Infrastructure.Messaging.Consumers;
+namespace CatalogService.Infrastructure.Messaging.Consumers.ProductVariant;
 
-public sealed class ProductVariantImageAddedIntegrationEventConsumer(IMediator mediator) : IConsumer<ProductVariantImageAddedIntegrationEvent>
+public sealed class ProductVariantImageRemovedIntegrationEventConsumer(IMediator mediator) : IConsumer<ProductVariantImageRemovedIntegrationEvent>
 {
-    public async Task Consume(ConsumeContext<ProductVariantImageAddedIntegrationEvent> context) => 
+    public async Task Consume(ConsumeContext<ProductVariantImageRemovedIntegrationEvent> context) => 
         await mediator.Send(new UpdateProductVariantSnapshotCommand(
             context.Message.ProductVariantId,
             context.Message.HasMainImage,

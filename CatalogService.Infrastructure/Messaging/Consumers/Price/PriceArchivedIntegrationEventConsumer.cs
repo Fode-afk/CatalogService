@@ -3,7 +3,7 @@ using MassTransit;
 using MediatR;
 using migApp.Shared.Messaging.IntegrationEvents.Pricing;
 
-namespace CatalogService.Infrastructure.Messaging.Consumers;
+namespace CatalogService.Infrastructure.Messaging.Consumers.Price;
 
 public sealed class PriceArchivedIntegrationEventConsumer(IMediator mediator) : IConsumer<PriceArchivedIntegrationEvent>
 {

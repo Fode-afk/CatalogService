@@ -5,4 +5,4 @@ namespace CatalogService.Application.Features.IntegrationEventHandlers.BrandSnap
 public sealed record UpdateBrandSnapshotCommand(
     Guid BrandId,
     bool IsActive,
-    int Version) : IRequest;
+    long Version) : IRequest;

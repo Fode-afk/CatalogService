@@ -6,10 +6,10 @@ using migApp.Shared.Messaging.IntegrationEvents.Products;
 
 namespace CatalogService.Infrastructure.Messaging.IntegrationEvents.Handlers;
 
-public sealed class ProductAttributesReplacedDomainEventHandler(IPublishEndpoint publish) : IPreCommitDomainEventHandler<ProductAttributesReplacedDomainEvent>
+public sealed class ProductVariantAddedDomainEventHandler(IPublishEndpoint publish) : IPreCommitDomainEventHandler<ProductVariantAddedDomainEvent>
 {
-    public async Task Handle(ProductAttributesReplacedDomainEvent notification, CancellationToken cancellationToken) =>
-        await publish.Publish(new ProductAttributesReplacedIntegrationEvent(
+    public async Task Handle(ProductVariantAddedDomainEvent notification, CancellationToken cancellationToken) =>
+        await publish.Publish(new ProductVariantAddedIntegrationEvent(
             notification.ProductId,
             [.. notification.Attributes.Select(a => new ProductAttributeDto(
                 a.CharacteristicId,

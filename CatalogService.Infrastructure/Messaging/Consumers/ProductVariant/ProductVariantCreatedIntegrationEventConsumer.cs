@@ -3,7 +3,7 @@ using MassTransit;
 using MediatR;
 using migApp.Shared.Messaging.IntegrationEvents.ProductVariants;
 
-namespace CatalogService.Infrastructure.Messaging.Consumers;
+namespace CatalogService.Infrastructure.Messaging.Consumers.ProductVariant;
 
 public sealed class ProductVariantCreatedIntegrationEventConsumer(IMediator mediator) : IConsumer<ProductVariantCreatedIntegrationEvent>
 {

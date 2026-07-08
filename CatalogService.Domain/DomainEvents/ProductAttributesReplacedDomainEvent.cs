@@ -6,4 +6,4 @@ namespace CatalogService.Domain.DomainEvents;
 public sealed record ProductAttributesReplacedDomainEvent(
     Guid ProductId,
     IReadOnlyList<ProductAttribute> Attributes,
-    DateTimeOffset UpdatedAt) : IDomainEvent;
+    long Version) : IDomainEvent;

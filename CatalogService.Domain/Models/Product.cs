@@ -1,6 +1,5 @@
 ﻿using CatalogService.Domain.Contexts;
 using CatalogService.Domain.DomainEvents;
-using CatalogService.Domain.Enums;
 using CatalogService.Domain.Primitives;
 using CatalogService.Domain.RequestData;
 using CatalogService.Domain.Specifications.Product;
@@ -149,6 +148,12 @@ public sealed class Product : AggregateRoot
         RaiseDomainEvent(new ProductInfoUpdatedDomainEvent(
             Id,
             CategoryId,
+            BrandId,
+            Name,
+            Slug,
+            Description,
+            ShortDescription,
+            SeoMetadata,
             CanBeModified,
             Version));
 
@@ -181,7 +186,7 @@ public sealed class Product : AggregateRoot
         RaiseDomainEvent(new ProductAttributesReplacedDomainEvent(
             Id,
             _attributes,
-            UpdatedAt.Value));
+            Version));
 
         return Ok();
     }
@@ -226,7 +231,10 @@ public sealed class Product : AggregateRoot
         }
 
         UpdatedAt = now;
-        RaiseDomainEvent(new ProductVariantAddedDomainEvent(Id));
+        RaiseDomainEvent(new ProductVariantAddedDomainEvent(
+            Id,
+            _attributes,
+            Version));
 
         return Ok();
     }
@@ -251,7 +259,10 @@ public sealed class Product : AggregateRoot
 
         UpdatedAt = now;
 
-        RaiseDomainEvent(new ProductVariantRemovedDomainEvent(Id));
+        RaiseDomainEvent(new ProductVariantRemovedDomainEvent(
+            Id,
+            _attributes,
+            Version));
 
         return Ok();
     }
@@ -275,7 +286,7 @@ public sealed class Product : AggregateRoot
         RaiseDomainEvent(new ProductTagsReplacedDomainEvent(
             Id,
             _tags,
-            UpdatedAt.Value));
+            Version));
 
         return Ok();
     }
@@ -299,6 +310,8 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             CanBeModified,
+            ProductStatus,
+            [.. _suspensionReasons],
             Version));
 
         return Ok();
@@ -322,6 +335,7 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             CanBeModified,
+            ProductStatus,
             Version));
 
         return Ok();
@@ -347,6 +361,8 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             CanBeModified,
+            IsLockedByAdmin,
+            ProductStatus,
             Version));
 
         return Ok();
@@ -371,6 +387,8 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             CanBeModified,
+            IsLockedByAdmin,
+            ProductStatus,
             Version));
 
         return Ok();
@@ -398,8 +416,10 @@ public sealed class Product : AggregateRoot
 
         RaiseDomainEvent(new ProductSuspendedDomainEvent(
             Id, 
-            ProductStatus, 
-            UpdatedAt.Value));
+            ProductStatus,
+            [.. _suspensionReasons],
+            Version));
+
 
         return Ok();
     }
@@ -427,7 +447,8 @@ public sealed class Product : AggregateRoot
         RaiseDomainEvent(new ProductUnsuspendedDomainEvent(
             Id, 
             ProductStatus,
-            UpdatedAt.Value));
+            [.. _suspensionReasons],
+            Version));
 
         return Ok();
     }
@@ -451,6 +472,8 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             CanBeModified,
+            ProductStatus,
+            [.._suspensionReasons],
             Version));
 
         return Ok();
@@ -472,18 +495,19 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             CanBeModified,
+            ProductStatus,
             Version));
         
         return Ok();
     }
 
     public IResult Delete(ProductDeleteContext ctx, DateTimeOffset now)
-        => DeleteInternal(ctx, ProductDeletionReason.DeletedByVendor, now);
+        => DeleteInternal(ctx, now);
 
     public IResult ForceDelete(DateTimeOffset now)
-        => DeleteInternal(null, ProductDeletionReason.VendorDeleted, now);
+        => DeleteInternal(null, now);
 
-    private IResult DeleteInternal(ProductDeleteContext? ctx, ProductDeletionReason reason, DateTimeOffset now)
+    private IResult DeleteInternal(ProductDeleteContext? ctx, DateTimeOffset now)
     {
         if (IsDeleted) return Ok();
 

@@ -1,7 +1,4 @@
-﻿using CatalogService.Domain.Models;
-using CatalogService.Domain.Snapshots;
-using CatalogService.Infrastructure.Data.Seeds;
-using migApp.Shared.Enums.Vendors;
+﻿using CatalogService.Infrastructure.Data.Seeds;
 
 namespace CatalogService.Infrastructure.Data;
 

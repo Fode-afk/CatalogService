@@ -2,6 +2,7 @@
 using CatalogService.Application.Interfaces.Jobs;
 using CatalogService.Application.Interfaces.Metrics;
 using CatalogService.Domain.Primitives;
+using CatalogService.Infrastructure.Behaviours;
 using CatalogService.Infrastructure.Data;
 using CatalogService.Infrastructure.DependencyInjection;
 using CatalogService.Infrastructure.DomainEvents;
@@ -195,6 +196,11 @@ public static class InfrastructureExtensions
         return services;
     }
 
-    private static IServiceCollection AddBehaviours(this IServiceCollection services) =>
+    private static IServiceCollection AddBehaviours(this IServiceCollection services)
+    {
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TracingBehaviour<,>));
+
+        return services;
+    }
 }

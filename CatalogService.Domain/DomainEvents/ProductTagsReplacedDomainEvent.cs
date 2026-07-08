@@ -6,4 +6,4 @@ namespace CatalogService.Domain.DomainEvents;
 public sealed record ProductTagsReplacedDomainEvent(
     Guid ProductId,
     IReadOnlyList<Tag> Tags,
-    DateTimeOffset UpdatedAt) : IDomainEvent;
+    long Version) : IDomainEvent;

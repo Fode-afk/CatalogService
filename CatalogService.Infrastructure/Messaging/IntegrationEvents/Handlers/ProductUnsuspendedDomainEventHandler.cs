@@ -5,13 +5,11 @@ using migApp.Shared.Messaging.IntegrationEvents.Products;
 
 namespace CatalogService.Infrastructure.Messaging.IntegrationEvents.Handlers;
 
-public sealed class ProductArchivedDomainEventHandler(IPublishEndpoint publish) : IPreCommitDomainEventHandler<ProductArchivedDomainEvent>
+public sealed class ProductUnsuspendedDomainEventHandler(IPublishEndpoint publish) : IPreCommitDomainEventHandler<ProductUnsuspendedDomainEvent>
 {
-    public async Task Handle(ProductArchivedDomainEvent notification, CancellationToken cancellationToken) =>
-        await publish.Publish(new ProductArchivedIntegrationEvent(
+    public async Task Handle(ProductUnsuspendedDomainEvent notification, CancellationToken cancellationToken) =>
+        await publish.Publish(new ProductUnsuspendedIntegrationEvent(
             notification.ProductId,
-            notification.CategoryId,
-            notification.CanBeModified,
             notification.ProductStatus,
             [..notification.SuspensionReasons.Select(r => r.Reason)],
             notification.Version), cancellationToken);

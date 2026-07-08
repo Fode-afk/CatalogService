@@ -11,6 +11,14 @@ public sealed class ProductInfoUpdatedDomainEventHandler(IPublishEndpoint publis
         await publish.Publish(new ProductInfoUpdatedIntegrationEvent(
             notification.ProductId,
             notification.CategoryId,
+            notification.BrandId,
+            notification.Name,
+            notification.Slug,
+            notification.Description,
+            notification.ShortDescription,
+            notification.SeoMetadata.Title,
+            notification.SeoMetadata.Description,
+            notification.SeoMetadata.Keywords,
             notification.CanBeModified,
             notification.Version), cancellationToken);
 }
