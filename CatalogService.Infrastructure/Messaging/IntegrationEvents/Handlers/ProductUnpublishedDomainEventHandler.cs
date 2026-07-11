@@ -13,5 +13,6 @@ public sealed class ProductUnpublishedDomainEventHandler(IPublishEndpoint publis
             notification.CategoryId,
             notification.CanBeModified,
             notification.ProductStatus,
+            notification.IsVisiblePublicly,
             notification.Version), cancellationToken);
 }

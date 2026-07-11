@@ -10,4 +10,5 @@ public sealed record ProductArchivedDomainEvent(
     bool CanBeModified,
     ProductStatus ProductStatus,
     List<ProductSuspensionReason> SuspensionReasons,
+    bool IsVisiblePublicly,
     long Version) : IDomainEvent;

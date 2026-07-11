@@ -13,5 +13,5 @@ public sealed class ProductVariantCreatedIntegrationEventConsumer(IMediator medi
             context.Message.ProductId,
             context.Message.HasMainImage,
             context.Message.Version,
-            context.Message.CharacteristicValues), context.CancellationToken);
+            context.Message.Attributes), context.CancellationToken);
 }

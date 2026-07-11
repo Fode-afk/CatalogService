@@ -141,7 +141,7 @@ public static class InfrastructureExtensions
                     h.Password("guest");
                 });
 
-                cfg.ConfigureEndpoints(context);
+                cfg.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter("catalog-service", false));
             });
         });
 

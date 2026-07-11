@@ -14,5 +14,6 @@ public sealed class ProductLockedDomainEventHandler(IPublishEndpoint publish) : 
             notification.CanBeModified,
             notification.IsLockedByAdmin,
             notification.ProductStatus,
+            notification.IsVisiblePublicly,
             notification.Version), cancellationToken);
 }

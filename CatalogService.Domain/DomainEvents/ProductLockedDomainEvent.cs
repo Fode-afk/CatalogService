@@ -9,4 +9,5 @@ public sealed record ProductLockedDomainEvent(
     bool CanBeModified,
     bool IsLockedByAdmin,
     ProductStatus ProductStatus,
+    bool IsVisiblePublicly,
     long Version) : IDomainEvent;

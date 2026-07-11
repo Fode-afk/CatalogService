@@ -57,6 +57,11 @@ public sealed class Product : AggregateRoot
         !IsLockedByAdmin &&
         !IsDeleted;
 
+    public bool IsVisiblePublicly =>
+        ProductStatus == ProductStatus.Published &&
+        !IsLockedByAdmin &&
+        !IsDeleted;
+
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset? UpdatedAt { get; private set; }
 
@@ -111,6 +116,7 @@ public sealed class Product : AggregateRoot
             product.SeoMetadata,
             product.ProductStatus,
             product.CanBeModified,
+            product.IsVisiblePublicly,
             product.Version));
 
         return Ok(product);
@@ -144,6 +150,8 @@ public sealed class Product : AggregateRoot
         BrandId = brandId;
         SeoMetadata = data.SeoMetadata;
         UpdatedAt = now;
+
+        IncreaseVersion();
 
         RaiseDomainEvent(new ProductInfoUpdatedDomainEvent(
             Id,
@@ -182,6 +190,8 @@ public sealed class Product : AggregateRoot
 
         _attributes.AddRange(toAdd);
         UpdatedAt = now;
+
+        IncreaseVersion();
 
         RaiseDomainEvent(new ProductAttributesReplacedDomainEvent(
             Id,
@@ -231,6 +241,9 @@ public sealed class Product : AggregateRoot
         }
 
         UpdatedAt = now;
+
+        IncreaseVersion();
+
         RaiseDomainEvent(new ProductVariantAddedDomainEvent(
             Id,
             _attributes,
@@ -259,6 +272,8 @@ public sealed class Product : AggregateRoot
 
         UpdatedAt = now;
 
+        IncreaseVersion();
+
         RaiseDomainEvent(new ProductVariantRemovedDomainEvent(
             Id,
             _attributes,
@@ -283,6 +298,8 @@ public sealed class Product : AggregateRoot
         _tags.AddRange(tags);
         UpdatedAt = now;
 
+        IncreaseVersion();
+
         RaiseDomainEvent(new ProductTagsReplacedDomainEvent(
             Id,
             _tags,
@@ -306,12 +323,15 @@ public sealed class Product : AggregateRoot
         ProductStatus = ProductStatus.Published;
         UpdatedAt = now;
 
+        IncreaseVersion();
+
         RaiseDomainEvent(new ProductPublishedDomainEvent(
             Id,
             CategoryId,
             CanBeModified,
             ProductStatus,
             [.. _suspensionReasons],
+            IsVisiblePublicly,
             Version));
 
         return Ok();
@@ -331,11 +351,14 @@ public sealed class Product : AggregateRoot
         ProductStatus = ProductStatus.Draft;
         UpdatedAt = now;
 
+        IncreaseVersion();
+
         RaiseDomainEvent(new ProductUnpublishedDomainEvent(
             Id,
             CategoryId,
             CanBeModified,
             ProductStatus,
+            IsVisiblePublicly,
             Version));
 
         return Ok();
@@ -357,12 +380,15 @@ public sealed class Product : AggregateRoot
 
         UpdatedAt = now;
 
+        IncreaseVersion();
+
         RaiseDomainEvent(new ProductLockedDomainEvent(
             Id,
             CategoryId,
             CanBeModified,
             IsLockedByAdmin,
             ProductStatus,
+            IsVisiblePublicly,
             Version));
 
         return Ok();
@@ -383,12 +409,15 @@ public sealed class Product : AggregateRoot
         ProductStatus = ProductStatus.Draft;
         UpdatedAt = now;
 
+        IncreaseVersion();
+
         RaiseDomainEvent(new ProductUnlockedDomainEvent(
             Id,
             CategoryId,
             CanBeModified,
             IsLockedByAdmin,
             ProductStatus,
+            IsVisiblePublicly,
             Version));
 
         return Ok();
@@ -414,10 +443,13 @@ public sealed class Product : AggregateRoot
         ProductStatus = ProductStatus.Suspended;
         UpdatedAt = now;
 
+        IncreaseVersion();
+
         RaiseDomainEvent(new ProductSuspendedDomainEvent(
             Id, 
             ProductStatus,
             [.. _suspensionReasons],
+            IsVisiblePublicly,
             Version));
 
 
@@ -444,10 +476,13 @@ public sealed class Product : AggregateRoot
         ProductStatus = ProductStatus.Draft;
         UpdatedAt = now;
 
+        IncreaseVersion();
+
         RaiseDomainEvent(new ProductUnsuspendedDomainEvent(
             Id, 
             ProductStatus,
             [.. _suspensionReasons],
+            IsVisiblePublicly,
             Version));
 
         return Ok();
@@ -468,12 +503,15 @@ public sealed class Product : AggregateRoot
         ProductStatus = ProductStatus.Archived;
         UpdatedAt = now;
 
+        IncreaseVersion();
+
         RaiseDomainEvent(new ProductArchivedDomainEvent(
             Id,
             CategoryId,
             CanBeModified,
             ProductStatus,
             [.._suspensionReasons],
+            IsVisiblePublicly,
             Version));
 
         return Ok();
@@ -491,11 +529,14 @@ public sealed class Product : AggregateRoot
         ProductStatus = ProductStatus.Draft;
         UpdatedAt = now;
 
+        IncreaseVersion();
+
         RaiseDomainEvent(new ProductRestoredDomainEvent(
             Id,
             CategoryId,
             CanBeModified,
             ProductStatus,
+            IsVisiblePublicly,
             Version));
         
         return Ok();

@@ -8,4 +8,5 @@ public sealed record ProductUnsuspendedDomainEvent(
     Guid ProductId,
     ProductStatus ProductStatus,
     List<ProductSuspensionReason> SuspensionReasons,
+    bool IsVisiblePublicly,
     long Version) : IDomainEvent;

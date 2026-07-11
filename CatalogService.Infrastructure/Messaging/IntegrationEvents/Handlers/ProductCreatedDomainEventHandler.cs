@@ -22,5 +22,6 @@ public sealed class ProductCreatedDomainEventHandler(IPublishEndpoint publish) :
                 notification.SeoMetadata.Keywords,
                 notification.ProductStatus,
                 notification.CanBeModified,
+                notification.IsVisiblePublicly,
                 notification.Version), cancellationToken);
 }

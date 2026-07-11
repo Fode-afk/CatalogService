@@ -12,5 +12,6 @@ public sealed class ProductSuspendedDomainEventHandler(IPublishEndpoint publish)
             notification.ProductId,
             notification.ProductStatus,
             [..notification.SuspensionReasons.Select(r => r.Reason)],
+            notification.IsVisiblePublicly,
             notification.Version), cancellationToken);
 }
