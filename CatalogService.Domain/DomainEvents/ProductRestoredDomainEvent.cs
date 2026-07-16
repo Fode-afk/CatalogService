@@ -6,6 +6,7 @@ namespace CatalogService.Domain.DomainEvents;
 public sealed record ProductRestoredDomainEvent(
     Guid ProductId,
     Guid CategoryId,
+    Guid VendorId,
     bool CanBeModified,
     ProductStatus ProductStatus,
     bool IsVisiblePublicly,

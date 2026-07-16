@@ -11,6 +11,7 @@ public sealed class ProductUnlockedDomainEventHandler(IPublishEndpoint publish) 
         await publish.Publish(new ProductUnlockedIntegrationEvent(
             notification.ProductId,
             notification.CategoryId,
+            notification.VendorId,
             notification.CanBeModified,
             notification.IsLockedByAdmin,
             notification.ProductStatus,

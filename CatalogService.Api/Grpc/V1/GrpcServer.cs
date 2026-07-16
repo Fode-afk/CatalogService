@@ -1,4 +1,4 @@
-﻿using CatalogService.Api.Grpc.Mappers;
+﻿using CatalogService.Api.Grpc.Mapping;
 using CatalogService.Api.Grpc.V1.Protos;
 using CatalogService.Application.Features.Commands.ArchiveProduct;
 using CatalogService.Application.Features.Commands.DeleteProduct;
@@ -19,7 +19,7 @@ internal sealed class GrpcServer(IMediator mediator) : Protos.CatalogService.Cat
     public override async Task<Empty> CreateProduct(CreateProductRequest request, ServerCallContext context)
     {
         var result = await mediator.Send(
-            ProductGrpcMapper.ToCreateCommand(request),
+            request.ToCreateCommand(),
             context.CancellationToken);
         result.ThrowIfFailure();
         return new Empty();
@@ -28,7 +28,7 @@ internal sealed class GrpcServer(IMediator mediator) : Protos.CatalogService.Cat
     public override async Task<Empty> UpdateProductInfo(UpdateProductInfoRequest request, ServerCallContext context)
     {
         var result = await mediator.Send(
-            ProductGrpcMapper.ToUpdateInfoCommand(request),
+            request.ToUpdateInfoCommand(),
             context.CancellationToken);
         result.ThrowIfFailure();
         return new Empty();
@@ -100,7 +100,7 @@ internal sealed class GrpcServer(IMediator mediator) : Protos.CatalogService.Cat
     public override async Task<Empty> ReplaceProductAttributes(ReplaceProductAttributesRequest request, ServerCallContext context)
     {
         var result = await mediator.Send(
-            ProductGrpcMapper.ToReplaceProductAttributesCommand(request),
+            request.ToReplaceProductAttributesCommand(),
             context.CancellationToken);
         result.ThrowIfFailure();
         return new Empty();
@@ -109,7 +109,7 @@ internal sealed class GrpcServer(IMediator mediator) : Protos.CatalogService.Cat
     public override async Task<Empty> ReplaceProductTags(ReplaceProductTagsRequest request, ServerCallContext context)
     {
         var result = await mediator.Send(
-            ProductGrpcMapper.ToReplaceProductTagsCommand(request),
+            request.ToReplaceProductTagsCommand(),
             context.CancellationToken);
         result.ThrowIfFailure();
         return new Empty();

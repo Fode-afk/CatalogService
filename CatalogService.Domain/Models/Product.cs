@@ -328,6 +328,7 @@ public sealed class Product : AggregateRoot
         RaiseDomainEvent(new ProductPublishedDomainEvent(
             Id,
             CategoryId,
+            VendorId,
             CanBeModified,
             ProductStatus,
             [.. _suspensionReasons],
@@ -356,6 +357,7 @@ public sealed class Product : AggregateRoot
         RaiseDomainEvent(new ProductUnpublishedDomainEvent(
             Id,
             CategoryId,
+            VendorId,
             CanBeModified,
             ProductStatus,
             IsVisiblePublicly,
@@ -385,6 +387,7 @@ public sealed class Product : AggregateRoot
         RaiseDomainEvent(new ProductLockedDomainEvent(
             Id,
             CategoryId,
+            VendorId,
             CanBeModified,
             IsLockedByAdmin,
             ProductStatus,
@@ -414,6 +417,7 @@ public sealed class Product : AggregateRoot
         RaiseDomainEvent(new ProductUnlockedDomainEvent(
             Id,
             CategoryId,
+            VendorId,
             CanBeModified,
             IsLockedByAdmin,
             ProductStatus,
@@ -446,7 +450,8 @@ public sealed class Product : AggregateRoot
         IncreaseVersion();
 
         RaiseDomainEvent(new ProductSuspendedDomainEvent(
-            Id, 
+            Id,
+            VendorId,
             ProductStatus,
             [.. _suspensionReasons],
             IsVisiblePublicly,
@@ -479,7 +484,8 @@ public sealed class Product : AggregateRoot
         IncreaseVersion();
 
         RaiseDomainEvent(new ProductUnsuspendedDomainEvent(
-            Id, 
+            Id,
+            VendorId,
             ProductStatus,
             [.. _suspensionReasons],
             IsVisiblePublicly,
@@ -508,6 +514,7 @@ public sealed class Product : AggregateRoot
         RaiseDomainEvent(new ProductArchivedDomainEvent(
             Id,
             CategoryId,
+            VendorId,
             CanBeModified,
             ProductStatus,
             [.._suspensionReasons],
@@ -534,6 +541,7 @@ public sealed class Product : AggregateRoot
         RaiseDomainEvent(new ProductRestoredDomainEvent(
             Id,
             CategoryId,
+            VendorId,
             CanBeModified,
             ProductStatus,
             IsVisiblePublicly,

@@ -4,11 +4,11 @@ using CatalogService.Application.Features.Commands.ReplaceProductAttributes;
 using CatalogService.Application.Features.Commands.ReplaceProductTags;
 using CatalogService.Application.Features.Commands.UpdateProductInfo;
 
-namespace CatalogService.Api.Grpc.Mappers;
+namespace CatalogService.Api.Grpc.Mapping;
 
 public static class ProductGrpcMapper
 {
-    public static CreateProductCommand ToCreateCommand(CreateProductRequest request) =>
+    public static CreateProductCommand ToCreateCommand(this CreateProductRequest request) =>
         new(
             VendorId: Guid.Parse(request.VendorId),
             CategoryId: Guid.Parse(request.CategoryId),
@@ -21,7 +21,7 @@ public static class ProductGrpcMapper
             SeoDescription: request.SeoDescription,
             SeoKeywords: request.SeoKeywords);
 
-    public static UpdateProductInfoCommand ToUpdateInfoCommand(UpdateProductInfoRequest request) =>
+    public static UpdateProductInfoCommand ToUpdateInfoCommand(this UpdateProductInfoRequest request) =>
         new(
             ProductId: Guid.Parse(request.ProductId),
             VendorId: Guid.Parse(request.VendorId),
@@ -35,13 +35,13 @@ public static class ProductGrpcMapper
             SeoDescription: request.SeoDescription,
             SeoKeywords: request.SeoKeywords);
 
-    public static ReplaceProductAttributesCommand ToReplaceProductAttributesCommand(ReplaceProductAttributesRequest request) =>
+    public static ReplaceProductAttributesCommand ToReplaceProductAttributesCommand(this ReplaceProductAttributesRequest request) =>
         new(
             VendorId: Guid.Parse(request.VendorId),
             ProductId: Guid.Parse(request.ProductId),
             Attributes: request.Attributes.ToDictionary(a => Guid.Parse(a.Key), a => a.Value));
 
-    public static ReplaceProductTagsCommand ToReplaceProductTagsCommand(ReplaceProductTagsRequest request) =>
+    public static ReplaceProductTagsCommand ToReplaceProductTagsCommand(this ReplaceProductTagsRequest request) =>
         new(
             VendorId: Guid.Parse(request.VendorId),
             ProductId: Guid.Parse(request.ProductId),

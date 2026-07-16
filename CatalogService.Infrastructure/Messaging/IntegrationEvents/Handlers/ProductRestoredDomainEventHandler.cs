@@ -11,6 +11,7 @@ public sealed class ProductRestoredDomainEventHandler(IPublishEndpoint publish) 
         await publish.Publish(new ProductRestoredIntegrationEvent(
             notification.ProductId,
             notification.CategoryId,
+            notification.VendorId,
             notification.CanBeModified,
             notification.ProductStatus,
             notification.IsVisiblePublicly,

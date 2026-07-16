@@ -7,6 +7,7 @@ namespace CatalogService.Domain.DomainEvents;
 public sealed record ProductPublishedDomainEvent(
     Guid ProductId,
     Guid CategoryId,
+    Guid VendorId,
     bool CanBeModified,
     ProductStatus ProductStatus,
     List<ProductSuspensionReason> SuspensionReasons,

@@ -10,6 +10,7 @@ public sealed class ProductUnsuspendedDomainEventHandler(IPublishEndpoint publis
     public async Task Handle(ProductUnsuspendedDomainEvent notification, CancellationToken cancellationToken) =>
         await publish.Publish(new ProductUnsuspendedIntegrationEvent(
             notification.ProductId,
+            notification.VendorId,
             notification.ProductStatus,
             [..notification.SuspensionReasons.Select(r => r.Reason)],
             notification.IsVisiblePublicly,

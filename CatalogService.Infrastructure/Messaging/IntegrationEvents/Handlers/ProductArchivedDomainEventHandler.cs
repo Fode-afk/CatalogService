@@ -11,6 +11,7 @@ public sealed class ProductArchivedDomainEventHandler(IPublishEndpoint publish) 
         await publish.Publish(new ProductArchivedIntegrationEvent(
             notification.ProductId,
             notification.CategoryId,
+            notification.VendorId,
             notification.CanBeModified,
             notification.ProductStatus,
             [..notification.SuspensionReasons.Select(r => r.Reason)],

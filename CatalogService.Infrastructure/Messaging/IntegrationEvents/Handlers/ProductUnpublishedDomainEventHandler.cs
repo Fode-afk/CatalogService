@@ -11,6 +11,7 @@ public sealed class ProductUnpublishedDomainEventHandler(IPublishEndpoint publis
         await publish.Publish(new ProductUnpublishedIntegrationEvent(
             notification.ProductId,
             notification.CategoryId,
+            notification.VendorId,
             notification.CanBeModified,
             notification.ProductStatus,
             notification.IsVisiblePublicly,
