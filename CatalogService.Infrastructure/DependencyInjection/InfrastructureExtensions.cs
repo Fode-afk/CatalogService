@@ -98,7 +98,7 @@ public static class InfrastructureExtensions
         services.AddGrpcHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy("Service is running"))
             .AddSqlServer(
-                connectionString: configuration.GetConnectionString("DefaultConnection")!,
+                connectionString: configuration.GetConnectionString("Database")!,
                 name: "mssql",
                 failureStatus: HealthStatus.Unhealthy,
                 tags: ["ready"])
