@@ -6,7 +6,7 @@ public sealed record ProductUpdateInfoContext(
     bool VendorIsActive,
     bool CanBeModified,
     bool CategoryIsActive,
-    bool BrandIsActive) :
+    bool BrandIsAssignable) :
         IVendorContext,
         IProductContext,
         ICategoryContext, 

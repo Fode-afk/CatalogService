@@ -2,6 +2,7 @@
 using CatalogService.Application.Interfaces.Jobs;
 using CatalogService.Application.Interfaces.Metrics;
 using CatalogService.Domain.Primitives;
+using CatalogService.Infrastructure.BackgroundServices;
 using CatalogService.Infrastructure.Behaviours;
 using CatalogService.Infrastructure.Data;
 using CatalogService.Infrastructure.DependencyInjection;
@@ -17,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using migApp.Shared.Behaviours;
 using migApp.Shared.Grpc;
 using OpenTelemetry.Metrics;
@@ -32,7 +34,7 @@ public static class InfrastructureExtensions
         this IServiceCollection services,
         IConfiguration configuration) =>
         services
-            .AddServices()
+            .AddServices(configuration)
             .AddDatabase(configuration)
             .AddHangfire(configuration)
             .AddGrpc()
@@ -42,9 +44,14 @@ public static class InfrastructureExtensions
             .AddObservability(configuration)
             .AddBehaviours();
 
-    private static IServiceCollection AddServices(this IServiceCollection services)
+    private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<IDomainEventsDispatcher, DomainEventsDispatcher>();
+
+        services.Configure<SoftDeletedProductsCleanupOptions>(
+            configuration.GetSection(SoftDeletedProductsCleanupOptions.SectionName));
+        services.AddSingleton(sp =>sp.GetRequiredService<IOptions<SoftDeletedProductsCleanupOptions>>().Value);
+        services.AddHostedService<SoftDeletedProductsCleanupService>();
 
         return services;
     }

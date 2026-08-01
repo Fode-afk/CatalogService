@@ -2,5 +2,5 @@
 
 public interface IBrandContext
 {
-    bool BrandIsActive { get; }
+    bool BrandIsAssignable { get; }
 }

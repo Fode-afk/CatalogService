@@ -19,7 +19,7 @@ public sealed class AddBrandSnapshotCommandHandler(
             new Domain.Snapshots.BrandSnapshot
             {
                 BrandId = request.BrandId,
-                IsActive = request.IsActive,
+                IsAssignable = request.IsAssignable,
                 UpdatedAt = timeProvider.GetUtcNow(),
                 Version = request.Version
             });

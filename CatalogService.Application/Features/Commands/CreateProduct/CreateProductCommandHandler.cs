@@ -44,7 +44,7 @@ public sealed class CreateProductCommandHandler(
         var ctx = new ProductCreationContext(
             vendorSnapshot.IsActive,
             categorySnapshot.IsActive,
-            brandSnapshot.IsActive);
+            brandSnapshot.IsAssignable);
 
         var result = Product.Create(
             ctx,

@@ -5,7 +5,7 @@ namespace CatalogService.Domain.Contexts;
 public sealed record ProductCreationContext(
     bool VendorIsActive,
     bool CategoryIsActive,
-    bool BrandIsActive) :
+    bool BrandIsAssignable) :
         IVendorContext,
         ICategoryContext,
         IBrandContext;

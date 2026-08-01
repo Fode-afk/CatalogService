@@ -54,7 +54,7 @@ public sealed class UpdateProductInfoCommandHandler(
             vendorSnapshot.IsActive,
             product.CanBeModified,
             categorySnapshot.IsActive,
-            brandSnapshot.IsActive);
+            brandSnapshot.IsAssignable);
 
         var result = product.UpdateInfo(
             ctx,

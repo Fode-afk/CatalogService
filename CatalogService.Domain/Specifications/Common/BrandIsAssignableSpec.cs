@@ -6,12 +6,12 @@ using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Domain.Specifications.Common;
 
-public sealed class BrandIsActiveSpec<T> : Specification<T>
+public sealed class BrandIsAssignableSpec<T> : Specification<T>
     where T : IBrandContext
 {
     public override IResult IsSatisfiedBy(T ctx)
     {
-        if (!ctx.BrandIsActive)
+        if (!ctx.BrandIsAssignable)
             return Fail(BrandSnapshotErrors.Inactive());
 
         return Ok();

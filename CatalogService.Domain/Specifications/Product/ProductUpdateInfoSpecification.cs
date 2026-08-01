@@ -10,5 +10,5 @@ public static class ProductUpdateInfoSpecification
         new VendorIsActiveSpec<ProductUpdateInfoContext>()
             .And(new CanBeModifiedSpec<ProductUpdateInfoContext>())
             .And(new CategoryIsActiveSpec<ProductUpdateInfoContext>())
-            .And(new BrandIsActiveSpec<ProductUpdateInfoContext>());
+            .And(new BrandIsAssignableSpec<ProductUpdateInfoContext>());
 }

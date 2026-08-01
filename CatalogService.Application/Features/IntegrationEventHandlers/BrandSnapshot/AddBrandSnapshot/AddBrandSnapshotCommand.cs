@@ -4,5 +4,5 @@ namespace CatalogService.Application.Features.IntegrationEventHandlers.BrandSnap
 
 public sealed record AddBrandSnapshotCommand(
     Guid BrandId, 
-    bool IsActive,
+    bool IsAssignable,
     long Version) : IRequest;

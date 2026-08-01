@@ -10,7 +10,7 @@ public static class ProductPublishSpecification
     public static readonly ISpecification<ProductPublishContext> Spec =
         new VendorIsActiveSpec<ProductPublishContext>()
             .And(new CanBeModifiedSpec<ProductPublishContext>())
-            .And(new BrandIsActiveSpec<ProductPublishContext>())
+            .And(new BrandIsAssignableSpec<ProductPublishContext>())
             .And(new CategoryIsActiveSpec<ProductPublishContext>())
             .And(new AttributesRequiredSpec<ProductPublishContext>())
             .And(new TagsRequiredSpec<ProductPublishContext>())

@@ -12,7 +12,7 @@ internal sealed class BrandSnapshotConfiguration : IEntityTypeConfiguration<Bran
 
         builder.HasKey(x => x.BrandId);
 
-        builder.HasIndex(x => x.IsActive);
+        builder.HasIndex(x => x.IsAssignable);
 
         builder.Property<byte[]>("RowVersion")
             .IsRowVersion()

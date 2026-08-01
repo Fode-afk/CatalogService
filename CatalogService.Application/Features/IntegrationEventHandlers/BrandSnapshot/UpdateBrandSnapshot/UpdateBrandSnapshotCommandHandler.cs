@@ -31,20 +31,20 @@ public sealed class UpdateBrandSnapshotCommandHandler(
             return;
         }
 
-        var isActiveChanged = snapshot.IsActive != request.IsActive;
+        var IsAssignableChanged = snapshot.IsAssignable != request.IsAssignable;
 
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
-        snapshot.IsActive = request.IsActive;
+        snapshot.IsAssignable = request.IsAssignable;
         snapshot.UpdatedAt = timeProvider.GetUtcNow();
         snapshot.Version = request.Version;
 
         await context.SaveChangesAsync(cancellationToken);
 
-        if (isActiveChanged)
+        if (IsAssignableChanged)
         {
             backgroundJobClient.Enqueue<ISuspendBrandProductsJob>(
-                job => job.Execute(request.BrandId, request.IsActive, CancellationToken.None));
+                job => job.Execute(request.BrandId, request.IsAssignable, CancellationToken.None));
         }
 
         await transaction.CommitAsync(cancellationToken);

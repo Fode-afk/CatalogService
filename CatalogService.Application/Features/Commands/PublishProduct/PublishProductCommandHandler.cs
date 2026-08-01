@@ -61,7 +61,7 @@ public sealed class PublishProductCommandHandler(
         var ctx = new ProductPublishContext(
             vendorSnapshot.IsActive,
             categorySnapshot.IsActive,
-            brandSnapshot.IsActive,
+            brandSnapshot.IsAssignable,
             product.CanBeModified,
             product.Attributes,
             product.Tags,

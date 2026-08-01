@@ -9,5 +9,5 @@ public static class ProductCreationSpecification
     public static readonly ISpecification<ProductCreationContext> Spec =
         new VendorIsActiveSpec<ProductCreationContext>()
             .And(new CategoryIsActiveSpec<ProductCreationContext>())
-            .And(new BrandIsActiveSpec<ProductCreationContext>());
+            .And(new BrandIsAssignableSpec<ProductCreationContext>());
 }

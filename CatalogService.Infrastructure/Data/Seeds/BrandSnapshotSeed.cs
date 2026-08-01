@@ -13,7 +13,7 @@ internal static class BrandSnapshotSeed
         new()
         {
             BrandId = Guid.Parse("10000000-0000-0000-0000-000000000001"),
-            IsActive = true,
+            IsAssignable = true,
             UpdatedAt = DateTimeOffset.UtcNow.AddDays(-30),
             Version = 1
         },
@@ -25,7 +25,7 @@ internal static class BrandSnapshotSeed
         new()
         {
             BrandId = Guid.Parse("20000000-0000-0000-0000-000000000001"),
-            IsActive = false,
+            IsAssignable = false,
             UpdatedAt = DateTimeOffset.UtcNow.AddDays(-5),
             Version = 1
         }

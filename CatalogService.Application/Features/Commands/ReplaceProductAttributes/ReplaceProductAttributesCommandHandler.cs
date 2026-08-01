@@ -16,7 +16,7 @@ public sealed class ReplaceProductAttributesCommandHandler(
     public async Task<IResult> Handle(ReplaceProductAttributesCommand request, CancellationToken cancellationToken)
     {
         var product = await context.Products
-      .FirstOrDefaultAsync(p => p.Id == request.ProductId, cancellationToken);
+            .FirstOrDefaultAsync(p => p.Id == request.ProductId, cancellationToken);
         if (product == null)
             return Fail(ProductErrors.NotFound());
 

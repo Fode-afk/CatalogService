@@ -65,7 +65,7 @@ public sealed class Product : AggregateRoot
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset? UpdatedAt { get; private set; }
 
-    public bool IsDeleted { get; private set; }
+    public bool IsDeleted => DeletedAt.HasValue;
     public DateTimeOffset? DeletedAt { get; private set; }
 
     public SeoMetadata SeoMetadata { get; private set; }
@@ -567,7 +567,6 @@ public sealed class Product : AggregateRoot
                 return result;
         }
 
-        IsDeleted = true;
         DeletedAt = now;
 
         if (ProductStatus == ProductStatus.Published)

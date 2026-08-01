@@ -8,7 +8,7 @@ namespace CatalogService.Domain.Contexts;
 public sealed record ProductPublishContext(
     bool VendorIsActive,
     bool CategoryIsActive,
-    bool BrandIsActive,
+    bool BrandIsAssignable,
     bool CanBeModified,
     IReadOnlyCollection<ProductAttribute> Attributes,
     IReadOnlyCollection<Tag> Tags,

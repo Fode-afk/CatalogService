@@ -7,9 +7,9 @@ namespace CatalogService.UnitTests.Domain.Specifications.Common;
 
 public sealed class BrandIsActiveSpecTests
 {
-    private sealed record TestContext(bool BrandIsActive) : IBrandContext;
+    private sealed record TestContext(bool BrandIsAssignable) : IBrandContext;
 
-    private readonly BrandIsActiveSpec<TestContext> _spec = new();
+    private readonly BrandIsAssignableSpec<TestContext> _spec = new();
 
     [Fact]
     public void Should_Fail_When_Brand_Is_Not_Active()
