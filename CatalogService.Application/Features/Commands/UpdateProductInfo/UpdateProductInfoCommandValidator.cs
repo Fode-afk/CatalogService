@@ -21,8 +21,8 @@ public sealed class UpdateProductInfoCommandValidator : AbstractValidator<Update
           .NotEmpty().WithErrorCode(ProductErrorCodes.InvalidId);
 
         RuleFor(x => x.Name)
-            .NotEmpty().WithErrorCode(NameErrorCodes.NullOrEmpty)
-            .MaximumLength(Name.MaxLength).WithErrorCode(NameErrorCodes.TooLong);
+            .NotEmpty().WithErrorCode(ProductNameErrorCodes.NullOrEmpty)
+            .MaximumLength(ProductName.MaxLength).WithErrorCode(ProductNameErrorCodes.TooLong);
 
         RuleFor(x => x.Slug)
             .NotEmpty().WithErrorCode(SlugErrorCodes.NullOrEmpty)

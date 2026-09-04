@@ -9,7 +9,7 @@ public sealed record ProductCreatedDomainEvent(
     Guid CategoryId,
     Guid VendorId,
     Guid BrandId,
-    Name Name,
+    ProductName Name,
     Slug Slug,
     Description Description,
     ShortDescription ShortDescription,

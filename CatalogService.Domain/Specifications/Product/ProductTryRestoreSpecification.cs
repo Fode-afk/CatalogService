@@ -5,7 +5,7 @@ using migApp.Shared.Enums.Products;
 
 namespace CatalogService.Domain.Specifications.Product;
 
-public static class ProductTryRestoreSpecification
+internal static class ProductTryRestoreSpecification
 {
     public static readonly ISpecification<ProductTryRestoreContext> Spec =
         Specification<ProductTryRestoreContext>.Create(

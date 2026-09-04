@@ -17,7 +17,7 @@ public sealed class Product : AggregateRoot
 
     private Product(
         Guid id,
-        Name name,
+        ProductName name,
         Slug slug,
         Description description,
         ShortDescription shortDescription,
@@ -38,7 +38,7 @@ public sealed class Product : AggregateRoot
         CreatedAt = createdAt;
     }
 
-    public Name Name { get; private set; }
+    public ProductName Name { get; private set; }
     public Slug Slug { get; private set; }
     public Description Description { get; private set; }
     public ShortDescription ShortDescription { get; private set; }

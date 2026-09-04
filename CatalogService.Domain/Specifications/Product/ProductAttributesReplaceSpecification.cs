@@ -5,7 +5,7 @@ using CatalogService.Domain.Specifications.Common;
 
 namespace CatalogService.Domain.Specifications.Product;
 
-public static class ProductAttributesReplaceSpecification
+internal static class ProductAttributesReplaceSpecification
 {
     public static readonly ISpecification<ProductAttributesReplaceContext> Spec =
         new VendorIsActiveSpec<ProductAttributesReplaceContext>()

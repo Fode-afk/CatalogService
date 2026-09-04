@@ -4,7 +4,7 @@ using CatalogService.Domain.Specifications.Common;
 
 namespace CatalogService.Domain.Specifications.Product;
 
-public static class ProductSuspendSpecification
+internal static class ProductSuspendSpecification
 {
     public static readonly ISpecification<ProductSuspendContext> Spec =
         new CanBeModifiedSpec<ProductSuspendContext>();

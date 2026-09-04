@@ -5,7 +5,7 @@ using migApp.Shared.Enums.Products;
 
 namespace CatalogService.Domain.Specifications.Product;
 
-public static class ProductUnlockSpecification
+internal static class ProductUnlockSpecification
 {
     public static readonly ISpecification<ProductUnlockContext> Spec =
         Specification<ProductUnlockContext>.Create(

@@ -41,10 +41,10 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         });
 
         builder.Property(p => p.Name)
-            .HasMaxLength(Name.MaxLength)
+            .HasMaxLength(ProductName.MaxLength)
             .HasConversion(
                 name => name.Value,
-                value => Name.Create(value).Value);
+                value => ProductName.Create(value).Value);
 
         builder.Property(p => p.Slug)
             .HasMaxLength(Slug.MaxLength)

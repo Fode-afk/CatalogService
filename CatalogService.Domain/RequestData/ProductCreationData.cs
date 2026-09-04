@@ -3,7 +3,7 @@
 namespace CatalogService.Domain.RequestData;
 
 public sealed record ProductCreationData(
-    Name Name,
+    ProductName Name,
     Slug Slug,
     Description Description,
     ShortDescription ShortDescription,

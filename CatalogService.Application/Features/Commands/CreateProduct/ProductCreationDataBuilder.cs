@@ -12,7 +12,7 @@ internal static class ProductCreationDataBuilder
     {
         var errors = new List<Error>();
 
-        var nameResult = Name.Create(request.Name);
+        var nameResult = ProductName.Create(request.Name);
         if (nameResult.IsFailure)
             errors.Add(nameResult.Error);
 

@@ -4,7 +4,7 @@ using CatalogService.Domain.Specifications.Common;
 
 namespace CatalogService.Domain.Specifications.Product;
 
-public static class ProductAddVariantToAttributesSpecification
+internal static class ProductAddVariantToAttributesSpecification
 {
     public static readonly ISpecification<ProductAddVariantToAttributesContext> Spec =
         new VendorIsActiveSpec<ProductAddVariantToAttributesContext>()

@@ -4,7 +4,7 @@ using CatalogService.Domain.Specifications.Common;
 
 namespace CatalogService.Domain.Specifications.Product;
 
-public static class ProductUnpublishSpecification
+internal static class ProductUnpublishSpecification
 {
     public static readonly ISpecification<ProductUnpublishContext> Spec =
         new VendorIsActiveSpec<ProductUnpublishContext>()

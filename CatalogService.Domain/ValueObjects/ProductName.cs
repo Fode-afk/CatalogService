@@ -5,12 +5,12 @@ using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Domain.ValueObjects;
 
-public sealed class Name : ValueObject
+public sealed class ProductName : ValueObject
 {
     public static int MaxLength => 100;
     public static int MinLength => 3;
 
-    private Name(string value)
+    private ProductName(string value)
     {
         Value = value;
     }
@@ -22,23 +22,23 @@ public sealed class Name : ValueObject
         yield return Value;
     }
 
-    public static IResult<Name> Create(string value)
+    public static IResult<ProductName> Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            return Fail<Name>(NameErrors.NullOrEmpty());
+            return Fail<ProductName>(ProductNameErrors.NullOrEmpty());
 
         value = value.Trim();
 
         if (value.Length > MaxLength)
-            return Fail<Name>(NameErrors.TooLong(MaxLength));
+            return Fail<ProductName>(ProductNameErrors.TooLong(MaxLength));
 
         if (value.Length < MinLength)
-            return Fail<Name>(NameErrors.TooShort(MinLength));
+            return Fail<ProductName>(ProductNameErrors.TooShort(MinLength));
 
-        return Ok(new Name(value));
+        return Ok(new ProductName(value));
     }
 
-    public static string Normalize(Name name) =>
+    public static string Normalize(ProductName name) =>
         name.Value
             .ToLower()
             .Replace(" ", "")
@@ -46,5 +46,5 @@ public sealed class Name : ValueObject
 
     public override string ToString() => Value;
 
-    public static implicit operator string(Name name) => name.ToString();
+    public static implicit operator string(ProductName name) => name.ToString();
 }

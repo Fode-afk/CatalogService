@@ -6,7 +6,7 @@ using migApp.Shared.Enums.Products;
 
 namespace CatalogService.Domain.Specifications.Product;
 
-public static class ProductLockSpecification
+internal static class ProductLockSpecification
 {
     public static readonly ISpecification<ProductLockContext> Spec =
         new CanBeModifiedSpec<ProductLockContext>()

@@ -10,7 +10,7 @@ public sealed class ProductAttribute
 {
     private ProductAttribute() { }
     private ProductAttribute(
-        Guid? characteristicId,
+        Guid characteristicId,
         AttributeName name,
         AttributeValue? value,
         AttributeCharType charType,
@@ -27,7 +27,7 @@ public sealed class ProductAttribute
         IsUnifying = isUnifying;
     }
 
-    public Guid? CharacteristicId { get; private set; }
+    public Guid CharacteristicId { get; private set; }
     public AttributeName Name { get; private set; }
     public AttributeValue? Value { get; private set; }
     public AttributeCharType CharType { get; private set; }
@@ -39,7 +39,7 @@ public sealed class ProductAttribute
     public IReadOnlyList<AttributeVariableValue> VariableValues => _variableValues;
 
     public static IResult<ProductAttribute> Create(
-        Guid? characteristicId,
+        Guid characteristicId,
         AttributeName name,
         AttributeValue value,
         AttributeCharType charType,
@@ -57,7 +57,7 @@ public sealed class ProductAttribute
     }
 
     public static IResult<ProductAttribute> CreateVariable(
-        Guid? characteristicId,
+        Guid characteristicId,
         AttributeName name,
         AttributeCharType charType,
         AttributeGroupName? groupName = null)
