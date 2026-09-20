@@ -45,7 +45,6 @@ public sealed class ReplaceProductTagsCommandHandler(
 
         var result = product.ReplaceTags(
             ctx,
-            [..buildResult.Value],
             timeProvider.GetUtcNow());
         if (result.IsFailure)
             return result;

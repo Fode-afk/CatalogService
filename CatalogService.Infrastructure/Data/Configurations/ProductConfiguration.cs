@@ -100,7 +100,7 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
             a.Property<int>("Id").ValueGeneratedOnAdd();
             a.HasKey("Id");
 
-            a.Property(x => x.CharacteristicId).IsRequired(false);
+            a.Property(x => x.CharacteristicId);
             a.Property(x => x.IsVariable);
             a.Property(x => x.IsUnifying);
 
@@ -189,6 +189,8 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(x => x.Version)
             .IsRequired();
 
-        builder.HasQueryFilter(p => !p.IsDeleted);
+        builder.Ignore(p => p.IsDeleted);
+
+        builder.HasQueryFilter(p => p.DeletedAt == null);
     }
 }

@@ -1,0 +1,109 @@
+﻿using CatalogService.Domain.ValueObjects;
+using FluentAssertions;
+
+namespace CatalogService.UnitTests.Domain.ValueObjects;
+
+public sealed class AttributeGroupNameTests
+{
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("  ")]
+    public void Create_Should_Fail_When_Value_Is_Null_Or_Empty(string input)
+    {
+        //Act
+        var result = AttributeGroupName.Create(input);
+
+        //Assert
+        result.IsFailure.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Create_Should_Fail_When_Value_Too_Long()
+    {
+        //Arrange
+        var input = new string('a', AttributeGroupName.MaxLength + 1);
+
+        //Act
+        var result = AttributeGroupName.Create(input);
+
+        //Assert
+        result.IsFailure.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Create_Should_Succeed_When_Value_Is_Valid()
+    {
+        //Arrange
+        var input = "valid attribute group name";
+
+        //Act
+        var result = AttributeGroupName.Create(input);
+
+        //Assert 
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Value.Should().Be(input);
+    }
+
+    [Fact]
+    public void Create_Should_Trim_Value()
+    {
+        //Arrange
+        var input = "  trimmed text  ";
+
+        //Act
+        var result = AttributeGroupName.Create(input);
+
+        //Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Value.Should().Be("trimmed text");
+    }
+
+    [Fact]
+    public void AttributeGropeName_Should_Be_Equal_When_Values_Are_Same()
+    {
+        //Arrange
+        var a = AttributeGroupName.Create("text").Value;
+        var b = AttributeGroupName.Create("text").Value;
+
+        // Assert
+        a.Should().Be(b);
+    }
+
+    [Fact]
+    public void AttributeGropeName_Should_Not_Be_Equal_When_Values_Differ()
+    {
+        //Arrange
+        var a = AttributeGroupName.Create("text1").Value;
+        var b = AttributeGroupName.Create("text2").Value;
+
+        //Assert
+        a.Should().NotBe(b);
+    }
+
+    [Fact]
+    public void ToString_Should_Return_Value()
+    {
+        // Arrange
+        var attributeGroupName = AttributeGroupName.Create("text").Value;
+
+        // Act
+        var result = attributeGroupName.ToString();
+
+        // Assert
+        result.Should().Be("text");
+    }
+
+    [Fact]
+    public void Implicit_Conversion_To_String_Should_Work()
+    {
+        // Arrange
+        var attributeGroupName = AttributeGroupName.Create("text").Value;
+
+        // Act
+        string result = attributeGroupName;
+
+        // Assert
+        result.Should().Be("text");
+    }
+}

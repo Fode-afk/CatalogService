@@ -19,6 +19,7 @@ public sealed class AddProductVariantPriceSnapshotCommandHandler(
             new Domain.Snapshots.ProductVariantPriceSnapshot
             {
                 ProductVariantId = request.ProductVariantId,
+                ProductId = request.ProductId,
                 HasPrice = request.HasPrice,
                 UpdatedAt = timeProvider.GetUtcNow(),
                 Version = request.Version

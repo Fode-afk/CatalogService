@@ -55,7 +55,6 @@ public sealed class ReplaceProductAttributesCommandHandler(
 
         var result = product.ReplaceAttributes(
             ctx,
-            buildResult.Value,
             timeProvider.GetUtcNow());
         if (result.IsFailure)
             return result;

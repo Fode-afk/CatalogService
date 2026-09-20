@@ -14,6 +14,7 @@ public sealed class ReplaceProductAttributesCommandValidator : AbstractValidator
             .NotEmpty().WithErrorCode(ProductErrorCodes.InvalidId);
 
         RuleFor(x => x.Attributes)
+            .Cascade(CascadeMode.Stop)
             .NotNull()
             .Must(x => x.Count > 0).WithErrorCode(ProductErrorCodes.AttributesRequired)
             .Must(x => x.Count < 31).WithErrorCode(ProductErrorCodes.MaxAttributesReached);

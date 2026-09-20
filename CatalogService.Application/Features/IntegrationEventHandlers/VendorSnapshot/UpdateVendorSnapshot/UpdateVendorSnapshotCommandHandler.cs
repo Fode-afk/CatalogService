@@ -33,7 +33,7 @@ public sealed class UpdateVendorSnapshotCommandHandler(
 
         var isActiveChanged = snapshot.IsActive != request.IsActive;
 
-        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+        await using var transaction = await context.BeginTransactionAsync(cancellationToken);
 
         snapshot.IsActive = request.IsActive;
         snapshot.UpdatedAt = timeProvider.GetUtcNow();

@@ -33,7 +33,7 @@ public sealed class UpdateBrandSnapshotCommandHandler(
 
         var IsAssignableChanged = snapshot.IsAssignable != request.IsAssignable;
 
-        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+        await using var transaction = await context.BeginTransactionAsync(cancellationToken);
 
         snapshot.IsAssignable = request.IsAssignable;
         snapshot.UpdatedAt = timeProvider.GetUtcNow();

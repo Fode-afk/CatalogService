@@ -170,12 +170,14 @@ public sealed class Product : AggregateRoot
 
     public IResult ReplaceAttributes(
         ProductAttributesReplaceContext ctx,
-        List<ProductAttribute> newAttributes,
         DateTimeOffset now)
     {
         var result = ProductAttributesReplaceSpecification.Spec.IsSatisfiedBy(ctx);
         if (result.IsFailure)
             return result;
+
+        if (ctx.Attributes.SequenceEqual(Attributes))
+            return Ok();
 
         _attributes.RemoveAll(a => !a.IsVariable);
 
@@ -184,7 +186,7 @@ public sealed class Product : AggregateRoot
             .Select(a => a.CharacteristicId)
             .ToHashSet();
 
-        var toAdd = newAttributes
+        var toAdd = ctx.Attributes
             .Where(a => !variableCharIds.Contains(a.CharacteristicId))
             .ToList();
 
@@ -284,18 +286,17 @@ public sealed class Product : AggregateRoot
 
     public IResult ReplaceTags(
         ProductTagsReplaceContext ctx,
-        List<Tag> tags,
         DateTimeOffset now)
     {
-        if (_tags.SequenceEqual(tags))
-            return Ok();
-
         var result = ProductTagsReplaceSpecification.Spec.IsSatisfiedBy(ctx);
         if (result.IsFailure)
             return result;
 
+        if (_tags.SequenceEqual(ctx.Tags))
+            return Ok();
+
         _tags.Clear();
-        _tags.AddRange(tags);
+        _tags.AddRange(ctx.Tags);
         UpdatedAt = now;
 
         IncreaseVersion();
@@ -342,7 +343,7 @@ public sealed class Product : AggregateRoot
         ProductUnpublishContext ctx,
         DateTimeOffset now)
     {
-        if (ProductStatus != ProductStatus.Published) 
+        if (ProductStatus != ProductStatus.Published)
             return Ok();
 
         var result = ProductUnpublishSpecification.Spec.IsSatisfiedBy(ctx);
@@ -475,10 +476,9 @@ public sealed class Product : AggregateRoot
 
         _suspensionReasons.Remove(reason);
 
-        if (_suspensionReasons.Count != 0)
-            return Ok();
+        if (_suspensionReasons.Count == 0)
+            ProductStatus = ProductStatus.Draft;
 
-        ProductStatus = ProductStatus.Draft;
         UpdatedAt = now;
 
         IncreaseVersion();

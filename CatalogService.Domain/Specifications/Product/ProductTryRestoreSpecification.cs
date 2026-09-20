@@ -9,6 +9,6 @@ internal static class ProductTryRestoreSpecification
 {
     public static readonly ISpecification<ProductTryRestoreContext> Spec =
         Specification<ProductTryRestoreContext>.Create(
-            ctx => ctx.ProductStatus == ProductStatus.Archived,
+            ctx => ctx.ProductStatus != ProductStatus.Archived,
             ProductErrors.CannotModify());
 }

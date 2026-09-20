@@ -11,14 +11,12 @@ internal sealed class DeleteVendorProductsJob(
     public async Task Execute(Guid vendorId, CancellationToken cancellationToken)
     {
         const int batchSize = 100;
-        var offset = 0;
 
         while (true)
         {
             var products = await context.Products
-                .Where(p => p.VendorId == vendorId && !p.IsDeleted)
+                .Where(p => p.VendorId == vendorId && p.DeletedAt == null)
                 .OrderBy(p => p.Id)
-                .Skip(offset)
                 .Take(batchSize)
                 .ToListAsync(cancellationToken);
 
@@ -29,12 +27,7 @@ internal sealed class DeleteVendorProductsJob(
                 product.ForceDelete(timeProvider.GetUtcNow());
 
             await context.SaveChangesAsync(cancellationToken);
-
-            if (products.Count < batchSize)
-                break;
-
-            offset += batchSize;
-            context.ChangeTracker.Clear();
+            context.ClearChangeTracker();
         }
     }
 }

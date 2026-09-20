@@ -14,6 +14,7 @@ public sealed class ReplaceProductTagsCommandValidator : AbstractValidator<Repla
            .NotEmpty().WithErrorCode(ProductErrorCodes.InvalidId); 
 
         RuleFor(x => x.Tags)
+            .Cascade(CascadeMode.Stop)
             .NotNull()
             .Must(x => x.Count > 0).WithErrorCode(ProductErrorCodes.TagsRequired)
             .Must(x => x.Count < 51).WithErrorCode(ProductErrorCodes.MaxTagsReached);

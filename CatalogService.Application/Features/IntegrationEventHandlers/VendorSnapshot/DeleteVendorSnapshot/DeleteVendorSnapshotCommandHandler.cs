@@ -17,7 +17,7 @@ public sealed class DeleteVendorSnapshotCommandHandler(
         if (snapshot is null)
             return;
 
-        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+        await using var transaction = await context.BeginTransactionAsync(cancellationToken);
 
         context.VendorSnapshots.Remove(snapshot);
 

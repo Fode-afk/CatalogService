@@ -18,7 +18,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("catalog_write")
-                .HasAnnotation("ProductVersion", "10.0.7")
+                .HasAnnotation("ProductVersion", "10.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -45,9 +45,6 @@ namespace CatalogService.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsLockedByAdmin")
                         .HasColumnType("bit");
@@ -95,8 +92,6 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
                     b.HasIndex("CreatedAt");
 
-                    b.HasIndex("IsDeleted");
-
                     b.HasIndex("ProductStatus");
 
                     b.HasIndex("Slug")
@@ -107,8 +102,6 @@ namespace CatalogService.Infrastructure.Data.Migrations
                     b.HasIndex("VendorId");
 
                     b.HasIndex("CategoryId", "ProductStatus");
-
-                    b.HasIndex("IsDeleted", "ProductStatus");
 
                     b.HasIndex("VendorId", "ProductStatus");
 
@@ -121,7 +114,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool>("IsAssignable")
                         .HasColumnType("bit");
 
                     b.Property<byte[]>("RowVersion")
@@ -137,7 +130,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
                     b.HasKey("BrandId");
 
-                    b.HasIndex("IsActive");
+                    b.HasIndex("IsAssignable");
 
                     b.ToTable("BrandSnapshots", "catalog_write");
                 });
@@ -483,7 +476,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
                                 .HasMaxLength(50)
                                 .HasColumnType("nvarchar(50)");
 
-                            b1.Property<Guid?>("CharacteristicId")
+                            b1.Property<Guid>("CharacteristicId")
                                 .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("GroupName")

@@ -6,6 +6,7 @@ using CatalogService.Infrastructure.DomainEvents;
 using MassTransit;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CatalogService.Infrastructure.Data;
 
@@ -82,4 +83,9 @@ internal sealed class AppDbContext(
         foreach (var entry in ChangeTracker.Entries<AggregateRoot>())
             entry.Entity.ClearDomainEvents();
     }
+
+    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default) =>
+        Database.BeginTransactionAsync(cancellationToken);
+
+    public void ClearChangeTracker() => ChangeTracker.Clear();
 }

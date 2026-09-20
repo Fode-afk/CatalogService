@@ -4,5 +4,6 @@ namespace CatalogService.Application.Features.IntegrationEventHandlers.ProductVa
 
 public sealed record AddProductVariantPriceSnapshotCommand(
     Guid ProductVariantId, 
+    Guid ProductId,
     bool HasPrice,
     long Version) : IRequest;

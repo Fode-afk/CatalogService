@@ -1,5 +1,4 @@
-﻿using CatalogService.Domain.Abstractions;
-using migApp.Shared.Enums.Products;
+﻿using migApp.Shared.Enums.Products;
 
 namespace CatalogService.Domain.Contexts;
 

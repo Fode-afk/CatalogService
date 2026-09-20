@@ -3,6 +3,7 @@ using CatalogService.Domain.Snapshots;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CatalogService.Application.Interfaces.Data;
 
@@ -17,8 +18,9 @@ public interface IAppDbContext
     DbSet<BrandSnapshot> BrandSnapshots { get; }
     DbSet<CharacteristicSnapshot> CharacteristicSnapshots { get; }
 
-    DatabaseFacade Database { get; }
-    ChangeTracker ChangeTracker { get; }
-
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+    Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
+
+    void ClearChangeTracker();
 }

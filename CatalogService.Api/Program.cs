@@ -37,7 +37,7 @@ builder.Host.UseSerilog((ctx, services, config) =>
 var app = builder.Build();
 
 //await app.MigrateDatabaseAsync();
-// app.SeedDatabaseAsync();
+//await app.SeedDatabaseAsync();
 
 app.UseHttpsRedirection();
 

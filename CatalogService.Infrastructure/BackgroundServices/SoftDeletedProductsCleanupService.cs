@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CatalogService.Infrastructure.BackgroundServices;
 
-internal sealed class SoftDeletedProductsCleanupService(
+public sealed class SoftDeletedProductsCleanupService(
     IServiceScopeFactory scopeFactory,
     TimeProvider timeProvider,
     SoftDeletedProductsCleanupOptions options,
@@ -14,7 +14,7 @@ internal sealed class SoftDeletedProductsCleanupService(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var timer = new PeriodicTimer(options.Interval);
+        using var timer = new PeriodicTimer(options.Interval, timeProvider);
 
         await CleanupAsync(stoppingToken);
 
@@ -24,7 +24,7 @@ internal sealed class SoftDeletedProductsCleanupService(
         }
     }
 
-    private async Task CleanupAsync(CancellationToken cancellationToken)
+    public async Task CleanupAsync(CancellationToken cancellationToken)
     {
         using var scope = scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<IAppDbContext>();
@@ -41,7 +41,7 @@ internal sealed class SoftDeletedProductsCleanupService(
 
                 var ids = await context.Products
                     .IgnoreQueryFilters()
-                    .Where(p => p.IsDeleted && p.DeletedAt != null && p.DeletedAt <= cutoff)
+                    .Where(p => p.DeletedAt != null && p.DeletedAt <= cutoff)
                     .OrderBy(p => p.Id)
                     .Select(p => p.Id)
                     .Take(options.BatchSize)

@@ -14,16 +14,14 @@ internal sealed class SuspendBrandProductsJob(
     public async Task Execute(Guid brandId, bool isActive, CancellationToken cancellationToken = default)
     {
         var suspensionReason = new ProductSuspensionReason(SuspensionReason.BrandDeactivated);
-
         const int batchSize = 100;
-        var offset = 0;
+        var processedIds = new HashSet<Guid>();
 
         while (true)
         {
             var products = await context.Products
-                .Where(p => p.BrandId == brandId)
+                .Where(p => p.BrandId == brandId && !processedIds.Contains(p.Id))
                 .OrderBy(p => p.Id)
-                .Skip(offset)
                 .Take(batchSize)
                 .ToListAsync(cancellationToken);
 
@@ -33,28 +31,24 @@ internal sealed class SuspendBrandProductsJob(
             foreach (var product in products)
             {
                 if (!isActive)
-                {
                     product.Suspend(
                         new ProductSuspendContext(product.CanBeModified),
                         suspensionReason,
                         timeProvider.GetUtcNow());
-                }
                 else
-                {
                     product.TryRestore(
                         new ProductTryRestoreContext(product.ProductStatus),
-                        suspensionReason,
+                        suspensionReason, 
                         timeProvider.GetUtcNow());
-                }
+
+                processedIds.Add(product.Id);
             }
 
             await context.SaveChangesAsync(cancellationToken);
+            context.ClearChangeTracker();
 
             if (products.Count < batchSize)
                 break;
-
-            offset += batchSize;
-            context.ChangeTracker.Clear();
         }
     }
 }

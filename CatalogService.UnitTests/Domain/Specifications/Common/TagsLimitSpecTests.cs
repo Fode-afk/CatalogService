@@ -1,6 +1,5 @@
 ﻿using CatalogService.Domain.Abstractions;
 using CatalogService.Domain.Errors;
-using CatalogService.Domain.Models;
 using CatalogService.Domain.Specifications.Common;
 using CatalogService.Domain.ValueObjects;
 using FluentAssertions;
@@ -66,6 +65,6 @@ public sealed class TagsLimitSpecTests
         var result = _spec.IsSatisfiedBy(ctx);
 
         // Assert
-        result.Error.Should().Be(ProductErrors.MaxTagsReached(Product.MaxTags));
+        result.Error.Should().Be(ProductErrors.MaxTagsReached(Models.Product.MaxTags));
     }
 }

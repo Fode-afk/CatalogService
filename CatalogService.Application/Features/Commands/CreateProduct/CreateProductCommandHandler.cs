@@ -33,7 +33,7 @@ public sealed class CreateProductCommandHandler(
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.CategoryId == request.CategoryId, cancellationToken);
         if (categorySnapshot is null)
-            return Fail(CategorySnapshotErrors.Inactive());
+            return Fail(CategorySnapshotErrors.NotFound());
 
         var buildResult = ProductCreationDataBuilder.Build(request);
         if (buildResult.IsFailure)

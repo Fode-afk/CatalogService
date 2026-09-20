@@ -54,7 +54,7 @@ internal sealed class SuspendCategoryProductsJob(
                 break;
 
             offset += batchSize;
-            context.ChangeTracker.Clear();
+            context.ClearChangeTracker();
         }
     }
 }
