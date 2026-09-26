@@ -1,12 +1,11 @@
 ﻿using CatalogService.Application.Features.IntegrationEventHandlers.CategorySnapshot.DeleteCategorySnapshot;
 using CatalogService.Application.Interfaces.Data;
 using CatalogService.Application.Interfaces.Jobs;
+using CatalogService.TestCommon.Fixtures;
 using CatalogService.UnitTests.Common;
-using CatalogService.UnitTests.Fixtures;
 using Hangfire;
 using Hangfire.Common;
 using Hangfire.States;
-using Microsoft.EntityFrameworkCore.Storage;
 using MockQueryable.NSubstitute;
 using NSubstitute;
 

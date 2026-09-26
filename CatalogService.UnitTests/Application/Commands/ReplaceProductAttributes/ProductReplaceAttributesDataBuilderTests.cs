@@ -1,7 +1,7 @@
 ﻿using CatalogService.Application.Features.Commands.ReplaceProductAttributes;
 using CatalogService.Domain.Errors;
 using CatalogService.Domain.Snapshots;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon.Fixtures;
 using FluentAssertions;
 
 namespace CatalogService.UnitTests.Application.Commands.ReplaceProductAttributes;

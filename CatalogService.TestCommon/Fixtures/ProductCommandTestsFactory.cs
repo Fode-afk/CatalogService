@@ -10,7 +10,7 @@ using CatalogService.Application.Features.Commands.UnlockProduct;
 using CatalogService.Application.Features.Commands.UnpublishProduct;
 using CatalogService.Application.Features.Commands.UpdateProductInfo;
 
-namespace CatalogService.UnitTests.Fixtures;
+namespace CatalogService.TestCommon.Fixtures;
 
 public static class ProductCommandTestsFactory
 {

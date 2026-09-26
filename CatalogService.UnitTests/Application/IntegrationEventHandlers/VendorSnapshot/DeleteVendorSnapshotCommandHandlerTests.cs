@@ -1,7 +1,7 @@
 ﻿using CatalogService.Application.Features.IntegrationEventHandlers.VendorSnapshot.DeleteVendorSnapshot;
 using CatalogService.Application.Interfaces.Jobs;
+using CatalogService.TestCommon.Fixtures;
 using CatalogService.UnitTests.Common;
-using CatalogService.UnitTests.Fixtures;
 using Hangfire.Common;
 using Hangfire.States;
 using MockQueryable.NSubstitute;

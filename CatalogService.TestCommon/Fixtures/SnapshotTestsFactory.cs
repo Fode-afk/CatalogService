@@ -1,10 +1,7 @@
-﻿using CatalogService.Application.Features.IntegrationEventHandlers.ProductVariantSnapshot.AddProductVariantSnapshot;
-using CatalogService.Domain.Snapshots;
-using CatalogService.UnitTests.Common;
-using migApp.Shared.Dtos.ProductVariant;
+﻿using CatalogService.Domain.Snapshots;
 using migApp.Shared.Enums.Characteristics;
 
-namespace CatalogService.UnitTests.Fixtures;
+namespace CatalogService.TestCommon.Fixtures;
 
 public static class SnapshotTestsFactory
 {
@@ -19,6 +16,9 @@ public static class SnapshotTestsFactory
 
     public static CategorySnapshot ActiveCategory(Guid? categoryId = null, long? version = null) =>
         new() { CategoryId = categoryId ?? Guid.NewGuid(), IsActive = true, Version = version ?? 0 };
+
+    public static CategorySnapshot InactiveCategory(Guid? categoryId = null, long? version = null) =>
+        new() { CategoryId = categoryId ?? Guid.NewGuid(), IsActive = false, Version = version ?? 0 };
 
     public static CharacteristicSnapshot Characteristic(
         Guid? characteristicId = null,

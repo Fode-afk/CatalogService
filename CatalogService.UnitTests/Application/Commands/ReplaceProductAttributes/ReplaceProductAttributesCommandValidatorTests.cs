@@ -1,6 +1,6 @@
 ﻿using CatalogService.Application.Features.Commands.ReplaceProductAttributes;
 using CatalogService.Domain.Errors;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon.Fixtures;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 

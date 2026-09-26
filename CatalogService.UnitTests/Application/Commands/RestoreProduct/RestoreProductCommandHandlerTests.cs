@@ -1,7 +1,8 @@
 ﻿using CatalogService.Application.Features.Commands.RestoreProduct;
 using CatalogService.Application.Interfaces.Metrics;
+using CatalogService.TestCommon;
+using CatalogService.TestCommon.Fixtures;
 using CatalogService.UnitTests.Common;
-using CatalogService.UnitTests.Fixtures;
 using FluentAssertions;
 using NSubstitute;
 

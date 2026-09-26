@@ -18,7 +18,7 @@ using CatalogService.Application.Features.IntegrationEventHandlers.VendorSnapsho
 using migApp.Shared.Dtos.ProductVariant;
 using migApp.Shared.Enums.Characteristics;
 
-namespace CatalogService.UnitTests.Fixtures;
+namespace CatalogService.TestCommon.Fixtures;
 
 public static class SnapshotCommandTestsFactory
 {

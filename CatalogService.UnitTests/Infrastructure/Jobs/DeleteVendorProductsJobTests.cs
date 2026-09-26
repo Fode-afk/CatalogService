@@ -1,9 +1,8 @@
 ﻿using CatalogService.Application.Interfaces.Data;
-using CatalogService.Application.Interfaces.Jobs;
 using CatalogService.Domain.Models;
 using CatalogService.Infrastructure.Jobs;
-using CatalogService.UnitTests.Common;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon;
+using CatalogService.TestCommon.Fixtures;
 using FluentAssertions;
 using MockQueryable.NSubstitute;
 using NSubstitute;

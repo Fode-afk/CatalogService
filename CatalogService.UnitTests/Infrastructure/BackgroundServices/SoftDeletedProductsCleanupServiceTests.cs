@@ -1,8 +1,9 @@
 ﻿using CatalogService.Application.Interfaces.Data;
 using CatalogService.Domain.Models;
 using CatalogService.Infrastructure.BackgroundServices;
+using CatalogService.TestCommon;
+using CatalogService.TestCommon.Fixtures;
 using CatalogService.UnitTests.Common;
-using CatalogService.UnitTests.Fixtures;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using MockQueryable.NSubstitute;

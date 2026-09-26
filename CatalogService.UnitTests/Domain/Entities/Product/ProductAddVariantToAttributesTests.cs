@@ -1,6 +1,6 @@
 ﻿using CatalogService.Domain.Models;
 using CatalogService.Domain.ValueObjects;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon.Fixtures;
 using FluentAssertions;
 using migApp.Shared.Enums.Characteristics;
 

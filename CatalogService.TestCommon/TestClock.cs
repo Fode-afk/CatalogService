@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Time.Testing;
 
-namespace CatalogService.UnitTests.Common;
+namespace CatalogService.TestCommon;
 
 public static class TestClock
 {

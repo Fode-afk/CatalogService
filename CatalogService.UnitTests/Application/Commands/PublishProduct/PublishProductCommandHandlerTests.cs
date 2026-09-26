@@ -1,10 +1,10 @@
 ﻿using CatalogService.Application.Features.Commands.PublishProduct;
 using CatalogService.Domain.Snapshots;
+using CatalogService.TestCommon;
+using CatalogService.TestCommon.Fixtures;
 using CatalogService.UnitTests.Common;
-using CatalogService.UnitTests.Fixtures;
 using FluentAssertions;
 using NSubstitute;
-using System.Reflection.PortableExecutable;
 
 namespace CatalogService.UnitTests.Application.Commands.PublishProduct;
 

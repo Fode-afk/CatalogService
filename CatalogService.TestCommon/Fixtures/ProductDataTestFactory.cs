@@ -3,7 +3,7 @@ using CatalogService.Domain.RequestData;
 using CatalogService.Domain.ValueObjects;
 using migApp.Shared.Enums.Characteristics;
 
-namespace CatalogService.UnitTests.Fixtures;
+namespace CatalogService.TestCommon.Fixtures;
 
 public static class ProductDataTestFactory
 {

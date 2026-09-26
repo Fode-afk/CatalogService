@@ -1,7 +1,7 @@
 ﻿using CatalogService.Application.Features.Commands.UpdateProductInfo;
 using CatalogService.Domain.Errors;
 using CatalogService.Domain.ValueObjects;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon.Fixtures;
 using FluentValidation.TestHelper;
 
 namespace CatalogService.UnitTests.Application.Commands.UpdateProductInfo;

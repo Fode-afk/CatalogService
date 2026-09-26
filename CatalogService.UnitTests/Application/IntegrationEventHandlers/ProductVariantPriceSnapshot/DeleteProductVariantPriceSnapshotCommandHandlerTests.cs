@@ -2,8 +2,8 @@
 using CatalogService.Application.Interfaces.Data;
 using CatalogService.Application.Interfaces.Metrics;
 using CatalogService.Domain.Models;
-using CatalogService.UnitTests.Common;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon;
+using CatalogService.TestCommon.Fixtures;
 using Microsoft.Extensions.Logging;
 using MockQueryable.NSubstitute;
 using NSubstitute;

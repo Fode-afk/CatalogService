@@ -1,6 +1,6 @@
 ﻿using CatalogService.Application.Features.IntegrationEventHandlers.CharacteristicSnapshot.DeleteCharacteristicSnapshot;
 using CatalogService.Application.Interfaces.Data;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon.Fixtures;
 using MockQueryable.NSubstitute;
 using NSubstitute;
 

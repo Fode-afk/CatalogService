@@ -1,5 +1,5 @@
 ﻿using CatalogService.Domain.DomainEvents;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon.Fixtures;
 using FluentAssertions;
 using migApp.Shared.Enums.Products;
 

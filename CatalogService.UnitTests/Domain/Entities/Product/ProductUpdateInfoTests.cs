@@ -2,7 +2,7 @@
 using CatalogService.Domain.DomainEvents;
 using CatalogService.Domain.RequestData;
 using CatalogService.Domain.ValueObjects;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon.Fixtures;
 using FluentAssertions;
 
 namespace CatalogService.UnitTests.Domain.Entities.Product;

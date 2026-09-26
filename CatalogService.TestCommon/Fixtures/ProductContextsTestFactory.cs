@@ -2,10 +2,9 @@
 using CatalogService.Domain.Models;
 using CatalogService.Domain.Snapshots;
 using CatalogService.Domain.ValueObjects;
-using CatalogService.UnitTests.Common;
 using migApp.Shared.Enums.Products;
 
-namespace CatalogService.UnitTests.Fixtures;
+namespace CatalogService.TestCommon.Fixtures;
 
 public static class ProductContextsTestFactory
 {

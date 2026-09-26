@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/tests/">
+    <Project Path="CatalogService.IntegrationTests/CatalogService.IntegrationTests.csproj" Id="7fc415ca-6e20-4bfe-a80f-cf7a563fccf9" />
+    <Project Path="CatalogService.TestCommon/CatalogService.TestCommon.csproj" Id="396d05e0-12f7-4c21-a43b-f2c599eb480f" />
     <Project Path="CatalogService.UnitTests/CatalogService.UnitTests.csproj" Id="c7508e63-6381-475e-bfdc-da3f993b6feb" />
   </Folder>
   <Project Path="CatalogService.Api/CatalogService.Api.csproj" />

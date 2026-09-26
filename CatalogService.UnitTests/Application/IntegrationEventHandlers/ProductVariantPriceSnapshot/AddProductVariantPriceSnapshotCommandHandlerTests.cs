@@ -1,7 +1,7 @@
 ﻿using CatalogService.Application.Features.IntegrationEventHandlers.ProductVariantPriceSnapshot.AddProductVariantPriceSnapshot;
 using CatalogService.Application.Interfaces.Data;
-using CatalogService.UnitTests.Common;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon;
+using CatalogService.TestCommon.Fixtures;
 using MockQueryable.NSubstitute;
 using NSubstitute;
 

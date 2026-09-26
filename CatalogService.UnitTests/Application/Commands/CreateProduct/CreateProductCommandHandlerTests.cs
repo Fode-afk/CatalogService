@@ -1,8 +1,9 @@
 ﻿using CatalogService.Application.Features.Commands.CreateProduct;
 using CatalogService.Application.Interfaces.Metrics;
 using CatalogService.Domain.Errors;
+using CatalogService.TestCommon;
+using CatalogService.TestCommon.Fixtures;
 using CatalogService.UnitTests.Common;
-using CatalogService.UnitTests.Fixtures;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;

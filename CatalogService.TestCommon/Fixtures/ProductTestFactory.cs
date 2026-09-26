@@ -2,11 +2,10 @@
 using CatalogService.Domain.Models;
 using CatalogService.Domain.Snapshots;
 using CatalogService.Domain.ValueObjects;
-using CatalogService.UnitTests.Common;
 using migApp.Shared.Enums.Characteristics;
 using migApp.Shared.Enums.Products;
 
-namespace CatalogService.UnitTests.Fixtures;
+namespace CatalogService.TestCommon.Fixtures;
 
 public static class ProductTestFactory
 {
@@ -14,14 +13,15 @@ public static class ProductTestFactory
         Guid? vendorId = null,
         Guid? categoryId = null,
         Guid? brandId = null,
-        DateTimeOffset? now = null)
+        DateTimeOffset? now = null,
+        string suffix = "")
     {
         var context = new ProductCreationContext(
             VendorIsActive: true,
             CategoryIsActive: true,
             BrandIsAssignable: true);
 
-        var data = ProductDataTestFactory.CreateData();
+        var data = ProductDataTestFactory.CreateData(suffix);
 
         var product = Product.Create(
             context,
@@ -40,9 +40,10 @@ public static class ProductTestFactory
         Guid? variantId = null,
         Guid? vendorId = null,
         Guid? categoryId = null,
-        Guid? brandId = null)
+        Guid? brandId = null,
+        string suffix = "")
     {
-        var product = CreateValid(vendorId: vendorId, brandId: brandId, categoryId: categoryId);
+        var product = CreateValid(vendorId: vendorId, brandId: brandId, categoryId: categoryId, suffix: suffix);
         var productVariantId = variantId ?? Guid.NewGuid();
 
         product.ReplaceTags(ProductContextsTestFactory.ValidTagsReplaceContext([Tag.Create("tag").Value]), TestClock.DefaultNow);
@@ -87,9 +88,10 @@ public static class ProductTestFactory
         Guid? brandId = null, 
         Guid? categoryId = null,
         Guid? vendorId = null,
+        string suffix = "",
         params ProductSuspensionReason[] suspensionReasons)
     {
-        var product = CreatePublished(brandId: brandId, categoryId: categoryId, vendorId: vendorId);
+        var product = CreatePublished(brandId: brandId, categoryId: categoryId, vendorId: vendorId, suffix: suffix);
 
         if (suspensionReasons.Length == 0)
         {
@@ -137,9 +139,9 @@ public static class ProductTestFactory
         return product;
     }
 
-    public static Product CreateDeleted()
+    public static Product CreateDeleted(Guid? vendorId = null)
     {
-        var product = CreateValid();
+        var product = CreateValid(vendorId: vendorId);
 
         product.Delete(
             ProductContextsTestFactory.ValidDeleteContext(),

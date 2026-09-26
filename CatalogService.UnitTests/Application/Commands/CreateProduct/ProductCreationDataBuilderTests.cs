@@ -1,6 +1,6 @@
 ﻿using CatalogService.Application.Features.Commands.CreateProduct;
 using CatalogService.Domain.Errors;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon.Fixtures;
 using FluentAssertions;
 using migApp.Shared.Domain.Errors;
 

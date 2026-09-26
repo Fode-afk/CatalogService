@@ -1,5 +1,5 @@
 ﻿using CatalogService.Application.Features.Commands.ReplaceProductTags;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon.Fixtures;
 using FluentAssertions;
 using migApp.Shared.Domain.Errors;
 

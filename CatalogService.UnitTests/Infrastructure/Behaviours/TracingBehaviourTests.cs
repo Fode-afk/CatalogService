@@ -1,6 +1,6 @@
 ﻿using CatalogService.Application.Interfaces.Metrics;
 using CatalogService.Infrastructure.Behaviours;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon.Fixtures;
 using FluentAssertions;
 using MediatR;
 using NSubstitute;

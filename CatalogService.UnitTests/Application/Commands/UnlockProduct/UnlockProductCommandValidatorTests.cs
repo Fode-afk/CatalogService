@@ -1,6 +1,6 @@
 ﻿using CatalogService.Application.Features.Commands.UnlockProduct;
 using CatalogService.Domain.Errors;
-using CatalogService.UnitTests.Fixtures;
+using CatalogService.TestCommon.Fixtures;
 using FluentValidation.TestHelper;
 
 namespace CatalogService.UnitTests.Application.Commands.UnlockProduct;
