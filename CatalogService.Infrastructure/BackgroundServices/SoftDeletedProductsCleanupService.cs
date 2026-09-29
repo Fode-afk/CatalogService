@@ -8,9 +8,9 @@ namespace CatalogService.Infrastructure.BackgroundServices;
 
 public sealed class SoftDeletedProductsCleanupService(
     IServiceScopeFactory scopeFactory,
+    ILogger<SoftDeletedProductsCleanupService> logger,
     TimeProvider timeProvider,
-    SoftDeletedProductsCleanupOptions options,
-    ILogger<SoftDeletedProductsCleanupService> logger) : BackgroundService
+    SoftDeletedProductsCleanupOptions options) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -19,9 +19,7 @@ public sealed class SoftDeletedProductsCleanupService(
         await CleanupAsync(stoppingToken);
 
         while (await timer.WaitForNextTickAsync(stoppingToken))
-        {
             await CleanupAsync(stoppingToken);
-        }
     }
 
     public async Task CleanupAsync(CancellationToken cancellationToken)

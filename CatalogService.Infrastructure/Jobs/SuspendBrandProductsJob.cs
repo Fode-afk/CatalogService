@@ -4,11 +4,16 @@ using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Models;
 using migApp.Shared.Enums.Products;
 using Microsoft.EntityFrameworkCore;
+using CatalogService.Application.Interfaces.Metrics;
+using CatalogService.Application.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace CatalogService.Infrastructure.Jobs;
 
 internal sealed class SuspendBrandProductsJob(
     IAppDbContext context,
+    ICatalogMetrics metrics,
+    ILogger<SuspendBrandProductsJob> logger,
     TimeProvider timeProvider) : ISuspendBrandProductsJob
 {
     public async Task Execute(Guid brandId, bool isActive, CancellationToken cancellationToken = default)
@@ -31,15 +36,29 @@ internal sealed class SuspendBrandProductsJob(
             foreach (var product in products)
             {
                 if (!isActive)
-                    product.Suspend(
+                {
+                    var result = product.Suspend(
                         new ProductSuspendContext(product.CanBeModified),
                         suspensionReason,
                         timeProvider.GetUtcNow());
+
+                    if (result.IsSuccess)
+                        metrics.RecordProductSuspended(suspensionReason.Reason.ToString());
+                    else
+                        logger.ProductSuspendFailed(product.Id, result.Error.Message);
+                }
                 else
-                    product.TryRestore(
+                {
+                    var result = product.TryRestore(
                         new ProductTryRestoreContext(product.ProductStatus),
-                        suspensionReason, 
+                        suspensionReason,
                         timeProvider.GetUtcNow());
+
+                    if (result.IsSuccess)
+                        metrics.RecordProductRestored();
+                    else 
+                        logger.ProductRestoreFailed(product.Id, result.Error.Message);
+                }
 
                 processedIds.Add(product.Id);
             }

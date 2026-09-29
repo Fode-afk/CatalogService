@@ -1,14 +1,19 @@
 ﻿using CatalogService.Application.Interfaces.Data;
 using CatalogService.Application.Interfaces.Jobs;
+using CatalogService.Application.Interfaces.Metrics;
+using CatalogService.Application.Logging;
 using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using migApp.Shared.Enums.Products;
 
 namespace CatalogService.Infrastructure.Jobs;
 
 internal sealed class SuspendVendorProductsJob(
     IAppDbContext context,
+    ICatalogMetrics metrics,
+    ILogger<SuspendVendorProductsJob> logger,
     TimeProvider timeProvider) : ISuspendVendorProductsJob
 {
     public async Task Execute(Guid vendorId, bool isActive, CancellationToken cancellationToken = default)
@@ -34,17 +39,27 @@ internal sealed class SuspendVendorProductsJob(
             {
                 if (!isActive)
                 {
-                    product.Suspend(
+                    var result = product.Suspend(
                         new ProductSuspendContext(product.CanBeModified),
                         suspensionReason,
                         timeProvider.GetUtcNow());
+
+                    if (result.IsSuccess)
+                        metrics.RecordProductSuspended(suspensionReason.Reason.ToString());
+                    else
+                        logger.ProductSuspendFailed(product.Id, result.Error.Message);
                 }
                 else
                 {
-                    product.TryRestore(
+                    var result = product.TryRestore(
                         new ProductTryRestoreContext(product.ProductStatus),
                         suspensionReason,
                         timeProvider.GetUtcNow());
+
+                    if (result.IsSuccess)
+                        metrics.RecordProductRestored();
+                    else
+                        logger.ProductRestoreFailed(product.Id, result.Error.Message);
                 }
             }
 
