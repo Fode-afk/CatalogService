@@ -11,11 +11,9 @@ service CatalogService {
 	rpc CreateProduct(CreateProductRequest) returns (google.protobuf.Empty);
     rpc UpdateProductInfo(UpdateProductInfoRequest) returns (google.protobuf.Empty);
 
-    rpc PublishProduct(PublishProductRequest) returns (google.protobuf.Empty);
+    rpc SubmitProductForPublish(SubmitProductForPublishRequest) returns (google.protobuf.Empty);
+    rpc WithdrawProductPublishSubmission(WithdrawProductPublishSubmissionRequest) returns (google.protobuf.Empty);
     rpc UnpublishProduct(UnpublishProductRequest) returns (google.protobuf.Empty);
-
-    rpc LockProduct(LockProductRequest) returns (google.protobuf.Empty);
-    rpc UnlockProduct(UnlockProductRequest) returns (google.protobuf.Empty);
 
     rpc ArchiveProduct(ArchiveProductRequest) returns (google.protobuf.Empty);
     rpc RestoreProduct(RestoreProductRequest) returns (google.protobuf.Empty);
@@ -53,7 +51,12 @@ message UpdateProductInfoRequest {
     string seo_keywords = 11;
 }
 
-message PublishProductRequest {
+message SubmitProductForPublishRequest {
+    string product_id = 1;
+    string vendor_id = 2;
+}
+
+message WithdrawProductPublishSubmissionRequest {
     string product_id = 1;
     string vendor_id = 2;
 }
@@ -61,14 +64,6 @@ message PublishProductRequest {
 message UnpublishProductRequest {
     string product_id = 1;
     string vendor_id = 2;
-}
-
-message LockProductRequest {
-    string product_id = 1;
-}
-
-message UnlockProductRequest {
-    string product_id = 1;
 }
 
 message ArchiveProductRequest {

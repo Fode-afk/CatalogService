@@ -173,6 +173,18 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
                 .HasMaxLength(100);
         });
 
+        builder.Property(p => p.RejectionReason)
+            .HasMaxLength(RejectionReason.MaxLength)
+            .HasConversion(
+                value => value != null ? value.Value : null,
+                value => value != null ? RejectionReason.Create(value).Value : null);
+
+        builder.Property(p => p.BlockReason)
+            .HasMaxLength(BlockReason.MaxLength)
+            .HasConversion(
+                value => value != null ? value.Value : null,
+                value => value != null ? BlockReason.Create(value).Value : null);
+
         builder.Navigation(p => p.Tags)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 

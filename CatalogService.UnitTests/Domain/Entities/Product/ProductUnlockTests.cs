@@ -18,7 +18,7 @@ public sealed class ProductUnlockTests
         var product = ProductTestFactory.CreateLockedByAdmin();
 
         // Act
-        var result = product.Unlock(
+        var result = product.Unblock(
             ProductContextsTestFactory.ValidUnlockContext(),
             Now);
 
@@ -33,14 +33,14 @@ public sealed class ProductUnlockTests
         var product = ProductTestFactory.CreateLockedByAdmin();
 
         // Act
-        var result = product.Unlock(
+        var result = product.Unblock(
             ProductContextsTestFactory.ValidUnlockContext(),
             Now);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
 
-        product.IsLockedByAdmin.Should().BeFalse();
+        product.IsBlocked.Should().BeFalse();
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public sealed class ProductUnlockTests
         var product = ProductTestFactory.CreateLockedByAdmin();
 
         // Act
-        var result = product.Unlock(
+        var result = product.Unblock(
             ProductContextsTestFactory.ValidUnlockContext(),
             Now);
 
@@ -67,7 +67,7 @@ public sealed class ProductUnlockTests
         var product = ProductTestFactory.CreateLockedByAdmin();
 
         // Act
-        var result = product.Unlock(
+        var result = product.Unblock(
             ProductContextsTestFactory.ValidUnlockContext(),
             Now);
 
@@ -86,7 +86,7 @@ public sealed class ProductUnlockTests
         var versionBefore = product.Version;
 
         // Act
-        var result = product.Unlock(
+        var result = product.Unblock(
             ProductContextsTestFactory.ValidUnlockContext(),
             Now);
 
@@ -103,7 +103,7 @@ public sealed class ProductUnlockTests
         var product = ProductTestFactory.CreateLockedByAdmin();
 
         // Act
-        var result = product.Unlock(
+        var result = product.Unblock(
             ProductContextsTestFactory.ValidUnlockContext(),
             Now);
 
@@ -115,7 +115,7 @@ public sealed class ProductUnlockTests
             .ContainSingle()
             .Which
             .Should()
-            .BeOfType<ProductUnlockedDomainEvent>();
+            .BeOfType<ProductUnblockedDomainEvent>();
     }
 
     [Fact]
@@ -125,7 +125,7 @@ public sealed class ProductUnlockTests
         var product = ProductTestFactory.CreateLockedByAdmin();
 
         // Act
-        var result = product.Unlock(
+        var result = product.Unblock(
             ProductContextsTestFactory.ValidUnlockContext(),
             Now);
 
@@ -135,13 +135,13 @@ public sealed class ProductUnlockTests
         var domainEvent = product.DomainEvents
             .Single()
             .Should()
-            .BeOfType<ProductUnlockedDomainEvent>()
+            .BeOfType<ProductUnblockedDomainEvent>()
             .Subject;
 
         domainEvent.ProductId.Should().Be(product.Id);
         domainEvent.CategoryId.Should().Be(product.CategoryId);
         domainEvent.VendorId.Should().Be(product.VendorId);
-        domainEvent.IsLockedByAdmin.Should().BeFalse();
+        domainEvent.IsBlocked.Should().BeFalse();
         domainEvent.ProductStatus.Should().Be(ProductStatus.Draft);
         domainEvent.Version.Should().Be(product.Version);
     }
@@ -157,14 +157,14 @@ public sealed class ProductUnlockTests
         var updatedAtBefore = product.UpdatedAt;
 
         // Act
-        var result = product.Unlock(
-            new ProductUnlockContext(ProductStatus.Archived),
+        var result = product.Unblock(
+            new ProductUnblockContext(ProductStatus.Archived),
             Now);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
 
-        product.IsLockedByAdmin.Should().BeFalse();
+        product.IsBlocked.Should().BeFalse();
         product.ProductStatus.Should().Be(statusBefore);
         product.Version.Should().Be(versionBefore);
         product.UpdatedAt.Should().Be(updatedAtBefore);
@@ -180,15 +180,15 @@ public sealed class ProductUnlockTests
         var versionBefore = product.Version;
         var updatedAtBefore = product.UpdatedAt;
 
-        var ctx = new ProductUnlockContext(ProductStatus.Archived);
+        var ctx = new ProductUnblockContext(ProductStatus.Archived);
 
         // Act
-        var result = product.Unlock(ctx, Now);
+        var result = product.Unblock(ctx, Now);
 
         // Assert
         result.IsFailure.Should().BeTrue();
 
-        product.IsLockedByAdmin.Should().BeTrue();
+        product.IsBlocked.Should().BeTrue();
         product.ProductStatus.Should().Be(ProductStatus.Draft);
         product.Version.Should().Be(versionBefore);
         product.UpdatedAt.Should().Be(updatedAtBefore);

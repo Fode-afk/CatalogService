@@ -3,12 +3,11 @@ using migApp.Shared.Enums.Products;
 
 namespace CatalogService.Domain.DomainEvents;
 
-public sealed record ProductPublishedDomainEvent(
+public sealed record ProductPublishSubmissionWithdrawnDomainEvent(
     Guid ProductId,
     Guid CategoryId,
     Guid VendorId,
     bool CanBeModified,
     ProductStatus ProductStatus,
-    DateTimeOffset? ApprovedAt,
     bool IsVisiblePublicly,
-    long Version) : IDomainEvent;
+    long Version) : IDomainEvent; 

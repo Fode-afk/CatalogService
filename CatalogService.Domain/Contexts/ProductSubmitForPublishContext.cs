@@ -5,7 +5,7 @@ using CatalogService.Domain.ValueObjects;
 
 namespace CatalogService.Domain.Contexts;
 
-public sealed record ProductPublishContext(
+public sealed record ProductSubmitForPublishContext(
     bool VendorIsActive,
     bool CategoryIsActive,
     bool BrandIsAssignable,

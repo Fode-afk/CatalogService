@@ -1,4 +1,4 @@
-﻿using CatalogService.Application.Features.Commands.UnlockProduct;
+﻿using CatalogService.Application.Features.IntegrationEventHandlers.Product.UnblockProduct;
 using CatalogService.Domain.Errors;
 using CatalogService.TestCommon.Fixtures;
 using FluentValidation.TestHelper;
@@ -7,7 +7,7 @@ namespace CatalogService.UnitTests.Application.Commands.UnlockProduct;
 
 public class UnlockProductCommandValidatorTests
 {
-    private readonly UnlockProductCommandValidator _validator = new();
+    private readonly UnblockProductCommandValidator _validator = new();
 
     [Fact]
     public void Should_Not_Have_Errors_When_Command_Is_Valid()

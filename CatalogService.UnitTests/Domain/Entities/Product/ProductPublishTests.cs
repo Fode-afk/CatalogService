@@ -18,7 +18,7 @@ public sealed class ProductPublishTests
         var ctx = ProductContextsTestFactory.ValidPublishContext();
 
         // Act
-        var result = product.Publish(ctx, Now);
+        var result = product.SubmitForPublish(ctx, Now);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -33,7 +33,7 @@ public sealed class ProductPublishTests
         var ctx = ProductContextsTestFactory.ValidPublishContext();
 
         // Act
-        var result = product.Publish(ctx, Now);
+        var result = product.SubmitForPublish(ctx, Now);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -50,7 +50,7 @@ public sealed class ProductPublishTests
         var versionBefore = product.Version;
 
         // Act
-        var result = product.Publish(ctx, Now);
+        var result = product.SubmitForPublish(ctx, Now);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -65,7 +65,7 @@ public sealed class ProductPublishTests
         var ctx = ProductContextsTestFactory.ValidPublishContext();
 
         // Act
-        var result = product.Publish(ctx, Now);
+        var result = product.SubmitForPublish(ctx, Now);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -86,7 +86,7 @@ public sealed class ProductPublishTests
         var ctx = ProductContextsTestFactory.ValidPublishContext();
 
         // Act
-        product.Publish(ctx, Now);
+        product.SubmitForPublish(ctx, Now);
 
         // Assert
         var domainEvent = product.DomainEvents

@@ -1,11 +1,11 @@
 ﻿using CatalogService.Domain.Errors;
 using FluentValidation;
 
-namespace CatalogService.Application.Features.Commands.PublishProduct;
+namespace CatalogService.Application.Features.Commands.WithdrawProductPublishSubmission;
 
-public sealed class PublishProductCommandValidator : AbstractValidator<PublishProductCommand>
+public sealed class WithdrawProductPublishSubmissionCommandValidator : AbstractValidator<WithdrawProductPublishSubmissionCommand>
 {
-    public PublishProductCommandValidator()
+    public WithdrawProductPublishSubmissionCommandValidator()
     {
         RuleFor(x => x.ProductId)
           .NotEmpty().WithErrorCode(ProductErrorCodes.InvalidId);

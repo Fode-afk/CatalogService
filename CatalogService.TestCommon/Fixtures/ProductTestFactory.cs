@@ -55,7 +55,7 @@ public static class ProductTestFactory
 
         product.AddVariantToAttributes(ProductContextsTestFactory.ValidAddVariantToAttributesContext(), [variant], TestClock.DefaultNow);
 
-        product.Publish(new ProductPublishContext(
+        product.SubmitForPublish(new ProductSubmitForPublishContext(
             VendorIsActive: true,
             CategoryIsActive: true,
             BrandIsAssignable: true,
@@ -132,7 +132,7 @@ public static class ProductTestFactory
     {
         var product = CreatePublished();
 
-        product.Lock(ProductContextsTestFactory.ValidLockContext(), TestClock.DefaultNow);
+        product.Block(ProductContextsTestFactory.ValidLockContext(), TestClock.DefaultNow);
 
         product.ClearDomainEvents();
 

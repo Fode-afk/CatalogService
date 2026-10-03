@@ -1,8 +1,6 @@
 ﻿using CatalogService.Domain.Models;
 using CatalogService.Domain.Snapshots;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CatalogService.Application.Interfaces.Data;

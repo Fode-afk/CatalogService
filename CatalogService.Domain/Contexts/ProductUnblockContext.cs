@@ -2,4 +2,4 @@
 
 namespace CatalogService.Domain.Contexts;
 
-public sealed record ProductUnlockContext(ProductStatus ProductStatus);
+public sealed record ProductUnblockContext(ProductStatus ProductStatus);

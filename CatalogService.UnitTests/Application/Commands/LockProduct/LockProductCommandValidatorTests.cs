@@ -1,4 +1,4 @@
-﻿using CatalogService.Application.Features.Commands.LockProduct;
+﻿using CatalogService.Application.Features.IntegrationEventHandlers.Product.BlockProduct;
 using CatalogService.Domain.Errors;
 using CatalogService.TestCommon.Fixtures;
 using FluentValidation.TestHelper;
@@ -7,7 +7,7 @@ namespace CatalogService.UnitTests.Application.Commands.LockProduct;
 
 public class LockProductCommandValidatorTests
 {
-    private readonly LockProductCommandValidator _validator = new();
+    private readonly BlockProductCommandValidator _validator = new();
 
     [Fact]
     public void Should_Not_Have_Errors_When_Command_Is_Valid()

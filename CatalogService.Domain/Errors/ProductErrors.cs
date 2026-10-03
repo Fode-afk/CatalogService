@@ -39,6 +39,10 @@ public static class ProductErrors
     public static Error AlreadyExists() =>  
         Error.AlreadyExists(ProductErrorCodes.AlreadyExists,
             "Product with the same ID already exists.");
+
+    public static Error StaleSubmission() =>
+        Error.InvalidArgument(ProductErrorCodes.StaleSubmission,
+            "Stale submission.");
 }
 
 public static class ProductErrorCodes
@@ -53,4 +57,5 @@ public static class ProductErrorCodes
     public const string CannotModify = "Product.CannotModify";
     public const string VendorMismatch = "Product.VendorMismatch";
     public const string AlreadyExists = "Product.AlreadyExists";
+    public const string StaleSubmission = "Product.StaleSubmission";
 }

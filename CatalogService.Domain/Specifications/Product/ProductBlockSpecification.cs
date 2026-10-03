@@ -6,11 +6,11 @@ using migApp.Shared.Enums.Products;
 
 namespace CatalogService.Domain.Specifications.Product;
 
-internal static class ProductLockSpecification
+internal static class ProductBlockSpecification
 {
-    public static readonly ISpecification<ProductLockContext> Spec =
-        new CanBeModifiedSpec<ProductLockContext>()
-            .And(Specification<ProductLockContext>.Create(
+    public static readonly ISpecification<ProductBlockContext> Spec =
+        new CanBeModifiedSpec<ProductBlockContext>()
+            .And(Specification<ProductBlockContext>.Create(
                 ctx => ctx.ProductStatus == ProductStatus.Published,
                 ProductErrors.CannotModify()));
 }

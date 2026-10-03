@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using migApp.Shared.Results;
 using static migApp.Shared.Results.ResultFactory;
 
-namespace CatalogService.Application.Features.Commands.PublishProduct;
+namespace CatalogService.Application.Features.Commands.SubmitProductForPublish;
 
-public sealed class PublishProductCommandHandler(
+public sealed class SubmitProductForPublishCommandHandler(
     IAppDbContext context,
-    TimeProvider timeProvider) : IRequestHandler<PublishProductCommand, IResult>
+    TimeProvider timeProvider) : IRequestHandler<SubmitProductForPublishCommand, IResult>
 {
-    public async Task<IResult> Handle(PublishProductCommand request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(SubmitProductForPublishCommand request, CancellationToken cancellationToken)
     {
         var product = await context.Products
             .FirstOrDefaultAsync(c => c.Id == request.ProductId, cancellationToken);
@@ -58,7 +58,7 @@ public sealed class PublishProductCommandHandler(
             .Where(p => variationSnapshots.Select(v => v.ProductVariantId).Contains(p.ProductVariantId))
             .ToListAsync(cancellationToken);
 
-        var ctx = new ProductPublishContext(
+        var ctx = new ProductSubmitForPublishContext(
             vendorSnapshot.IsActive,
             categorySnapshot.IsActive,
             brandSnapshot.IsAssignable,
@@ -68,7 +68,7 @@ public sealed class PublishProductCommandHandler(
             variationSnapshots,
             priceSnapshots);
 
-        var result = product.Publish(
+        var result = product.SubmitForPublish(
             ctx,
             timeProvider.GetUtcNow());
         if (result.IsFailure)

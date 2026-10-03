@@ -155,7 +155,7 @@ public sealed class ProductPublishSpecificationTests
         string? expectedErrorCode)
     {
         // Arrange
-        var ctx = new ProductPublishContext(
+        var ctx = new ProductSubmitForPublishContext(
             vendorIsActive,
             categoryIsActive,
             brandIsAssignable,
@@ -166,7 +166,7 @@ public sealed class ProductPublishSpecificationTests
             priceSnapshots);
 
         // Act
-        var result = ProductPublishSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = ProductSubmitForPublishPublishSpecification.Spec.IsSatisfiedBy(ctx);
 
         // Assert
         result.IsFailure.Should().Be(expectedErrorCode is not null);

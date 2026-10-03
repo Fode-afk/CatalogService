@@ -2,11 +2,10 @@
 using CatalogService.Api.Grpc.V1.Protos;
 using CatalogService.Application.Features.Commands.ArchiveProduct;
 using CatalogService.Application.Features.Commands.DeleteProduct;
-using CatalogService.Application.Features.Commands.LockProduct;
-using CatalogService.Application.Features.Commands.PublishProduct;
 using CatalogService.Application.Features.Commands.RestoreProduct;
-using CatalogService.Application.Features.Commands.UnlockProduct;
+using CatalogService.Application.Features.Commands.SubmitProductForPublish;
 using CatalogService.Application.Features.Commands.UnpublishProduct;
+using CatalogService.Application.Features.Commands.WithdrawProductPublishSubmission;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using MediatR;
@@ -34,9 +33,18 @@ internal sealed class GrpcServer(IMediator mediator) : Protos.CatalogService.Cat
         return new Empty();
     }
 
-    public override async Task<Empty> PublishProduct(PublishProductRequest request, ServerCallContext context)
+    public override async Task<Empty> SubmitProductForPublish(SubmitProductForPublishRequest request, ServerCallContext context)
     {
-        var result = await mediator.Send(new PublishProductCommand(
+        var result = await mediator.Send(new SubmitProductForPublishCommand(
+            Guid.Parse(request.ProductId),
+            Guid.Parse(request.VendorId)), context.CancellationToken);
+        result.ThrowIfFailure();
+        return new Empty();
+    }
+
+    public override async Task<Empty> WithdrawProductPublishSubmission(WithdrawProductPublishSubmissionRequest request, ServerCallContext context)
+    {
+        var result = await mediator.Send(new WithdrawProductPublishSubmissionCommand(
             Guid.Parse(request.ProductId),
             Guid.Parse(request.VendorId)), context.CancellationToken);
         result.ThrowIfFailure();
@@ -48,24 +56,6 @@ internal sealed class GrpcServer(IMediator mediator) : Protos.CatalogService.Cat
         var result = await mediator.Send(new UnpublishProductCommand(
             Guid.Parse(request.ProductId),
             Guid.Parse(request.VendorId)), context.CancellationToken);
-        result.ThrowIfFailure();
-        return new Empty();
-    }
-
-    public override async Task<Empty> LockProduct(LockProductRequest request, ServerCallContext context)
-    {
-        var result = await mediator.Send(
-            new LockProductCommand(Guid.Parse(request.ProductId)),
-            context.CancellationToken);
-        result.ThrowIfFailure();
-        return new Empty();
-    }
-
-    public override async Task<Empty> UnlockProduct(UnlockProductRequest request, ServerCallContext context)
-    {
-        var result = await mediator.Send(
-            new UnlockProductCommand(Guid.Parse(request.ProductId)),
-            context.CancellationToken);
         result.ThrowIfFailure();
         return new Empty();
     }

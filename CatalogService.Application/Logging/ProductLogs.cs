@@ -40,4 +40,53 @@ public static partial class ProductLogs
                   "Product may not be in a modifiable state. Proceeding with snapshot removal.")]
     public static partial void RemoveVariantFromAttributesFailed(
         this ILogger logger, Guid variantId, Guid productId, string reason);
+
+    [LoggerMessage(
+        EventId = 1006,
+        Level = LogLevel.Information,
+        Message = "Ignored stale decision {SubmissionId} for product {ProductId}")]
+    public static partial void IgnoredStaleDecision(
+        this ILogger logger, Guid submissionId, Guid productId);
+
+    [LoggerMessage(
+        EventId = 1007,
+        Level = LogLevel.Warning,
+        Message = "Failed to create block reason for product {ProductId}")]
+    public static partial void FailedToCreateBlockReason(
+        this ILogger logger, Guid productId);
+
+    [LoggerMessage(
+        EventId = 1008,
+        Level = LogLevel.Warning,
+        Message = "Failed to block product {ProductId}: {Error}")]
+    public static partial void FailedToBlockProduct(
+        this ILogger logger, Guid productId, string error);
+
+    [LoggerMessage(
+        EventId = 1009,
+        Level = LogLevel.Warning,
+        Message = "Failed to create rejection reason for product {ProductId}")]
+    public static partial void FailedToCreateRejectionReason(
+        this ILogger logger, Guid productId);
+
+    [LoggerMessage(
+        EventId = 1010,
+        Level = LogLevel.Warning,
+        Message = "Failed to reject product publish {SubmissionId} for product {ProductId}: {Error}")]
+    public static partial void FailedToRejectProductPublish(
+        this ILogger logger, Guid submissionId, Guid productId, string error);
+
+    [LoggerMessage(
+        EventId = 1011,
+        Level = LogLevel.Warning,
+        Message = "Failed to unblock product with ID {ProductId}. Reason: {Reason}")]
+    public static partial void FailedToUnblockProduct(
+        this ILogger logger, Guid productId, string reason);
+
+    [LoggerMessage(
+        EventId = 1012,
+        Level = LogLevel.Warning,
+        Message = "Failed to approve product publish {SubmissionId} for product {ProductId}: {Error}")]
+    public static partial void FailedToApproveProductPublish(
+        this ILogger logger, Guid submissionId, Guid productId, string error);
 }

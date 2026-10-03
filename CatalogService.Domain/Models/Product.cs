@@ -1,5 +1,6 @@
 ﻿using CatalogService.Domain.Contexts;
 using CatalogService.Domain.DomainEvents;
+using CatalogService.Domain.Errors;
 using CatalogService.Domain.Primitives;
 using CatalogService.Domain.RequestData;
 using CatalogService.Domain.Specifications.Product;
@@ -11,7 +12,7 @@ using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Domain.Models;
 
-public sealed class Product : AggregateRoot 
+public sealed class Product : AggregateRoot
 {
     private Product() : base(Guid.Empty) { }
 
@@ -51,15 +52,25 @@ public sealed class Product : AggregateRoot
 
     private readonly HashSet<ProductSuspensionReason> _suspensionReasons = [];
     public IReadOnlyCollection<ProductSuspensionReason> SuspensionReasons => _suspensionReasons;
-    public bool IsLockedByAdmin { get; private set; }
+
+    public Guid? CurrentSubmissionId { get; private set; }
+    public DateTimeOffset? SubmittedForPublishApprovalAt { get; private set; } 
+    public DateTimeOffset? ApprovedAt { get; private set; }
+    public RejectionReason? RejectionReason { get; private set; }
+
+    public BlockReason? BlockReason { get; private set; }
+    public bool IsBlocked => ProductStatus == ProductStatus.Blocked;
+
     public bool CanBeModified =>
         ProductStatus != ProductStatus.Archived &&
-        !IsLockedByAdmin &&
+        ProductStatus != ProductStatus.PendingApproval &&
+        ProductStatus != ProductStatus.Published &&
+        !IsBlocked &&
         !IsDeleted;
 
     public bool IsVisiblePublicly =>
         ProductStatus == ProductStatus.Published &&
-        !IsLockedByAdmin &&
+        !IsBlocked &&
         !IsDeleted;
 
     public DateTimeOffset CreatedAt { get; private set; }
@@ -267,7 +278,7 @@ public sealed class Product : AggregateRoot
         {
             var result = attribute.RemoveVariableValue(variantId);
             if (result.IsFailure)
-                return result;    
+                return result;
         }
 
         _attributes.RemoveAll(a => a.IsVariable && a.VariableValues.Count == 0);
@@ -309,20 +320,58 @@ public sealed class Product : AggregateRoot
         return Ok();
     }
 
-    public IResult Publish(
-        ProductPublishContext ctx,
+    public IResult SubmitForPublish(
+        ProductSubmitForPublishContext ctx,
         DateTimeOffset now)
     {
-        if (ProductStatus == ProductStatus.Published)
+        if (ProductStatus == ProductStatus.PendingApproval ||
+            ProductStatus == ProductStatus.Published)
             return Ok();
 
-        var result = ProductPublishSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = ProductSubmitForPublishPublishSpecification.Spec.IsSatisfiedBy(ctx);
         if (result.IsFailure)
             return result;
 
         _suspensionReasons.Clear();
-        ProductStatus = ProductStatus.Published;
+        RejectionReason = null;
+
+        ProductStatus = ProductStatus.PendingApproval;
+
+        CurrentSubmissionId = Guid.NewGuid();
+
+        SubmittedForPublishApprovalAt = now;
         UpdatedAt = now;
+
+        IncreaseVersion();
+
+        RaiseDomainEvent(new ProductSubmittedForPublishDomainEvent(
+            Id,
+            CurrentSubmissionId.Value,
+            CategoryId,
+            VendorId,
+            CanBeModified,
+            ProductStatus,
+            [.. _suspensionReasons],
+            RejectionReason,
+            SubmittedForPublishApprovalAt,
+            IsVisiblePublicly,
+            Version));
+
+        return Ok();
+    }
+
+    public IResult ApprovePublish(Guid submissionId, DateTimeOffset now)
+    {
+        if (ProductStatus != ProductStatus.PendingApproval ||
+            CurrentSubmissionId != submissionId)
+            return Fail(ProductErrors.StaleSubmission());
+
+        ProductStatus = ProductStatus.Published;
+
+        ApprovedAt = now;
+        UpdatedAt = now;
+
+        CurrentSubmissionId = null;
 
         IncreaseVersion();
 
@@ -332,7 +381,70 @@ public sealed class Product : AggregateRoot
             VendorId,
             CanBeModified,
             ProductStatus,
-            [.. _suspensionReasons],
+            ApprovedAt,
+            IsVisiblePublicly,
+            Version));
+
+        return Ok();
+    }
+
+    public IResult RejectPublish(
+        Guid submissionId,
+        RejectionReason? rejectionReason,
+        DateTimeOffset now)
+    {
+        if (ProductStatus != ProductStatus.PendingApproval ||
+            CurrentSubmissionId != submissionId)
+            return Fail(ProductErrors.StaleSubmission());
+
+        ProductStatus = ProductStatus.Rejected;
+        RejectionReason = rejectionReason;
+
+        CurrentSubmissionId = null;
+
+        UpdatedAt = now;
+
+        IncreaseVersion();
+
+        RaiseDomainEvent(new ProductPublishRejectedDomainEvent(
+            Id,
+            CategoryId,
+            VendorId,
+            CanBeModified,
+            ProductStatus,
+            RejectionReason,
+            IsVisiblePublicly,
+            Version));
+
+        return Ok();
+    }
+
+    public IResult WithdrawPublishSubmission(
+        ProductWithdrawPublishSubmissionContext ctx,
+        DateTimeOffset now)
+    {
+        var result = ProductWithdrawPublishSubmissionSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return result;
+
+        if (ProductStatus != ProductStatus.PendingApproval)
+            return Fail(ProductErrors.StaleSubmission());
+
+        ProductStatus = ProductStatus.Draft;
+
+        CurrentSubmissionId = null;
+        SubmittedForPublishApprovalAt = null;
+
+        UpdatedAt = now;
+
+        IncreaseVersion();
+
+        RaiseDomainEvent(new ProductPublishSubmissionWithdrawnDomainEvent(
+            Id,
+            CategoryId,
+            VendorId,
+            CanBeModified,
+            ProductStatus,
             IsVisiblePublicly,
             Version));
 
@@ -367,61 +479,64 @@ public sealed class Product : AggregateRoot
         return Ok();
     }
 
-    public IResult Lock(
-        ProductLockContext ctx,
+    public IResult Block(
+        ProductBlockContext ctx,
+        BlockReason reason,
         DateTimeOffset now)
     {
-        if (IsLockedByAdmin)
+        if (IsBlocked)
             return Ok();
 
-        var result = ProductLockSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = ProductBlockSpecification.Spec.IsSatisfiedBy(ctx);
         if (result.IsFailure)
             return result;
 
-        IsLockedByAdmin = true;
-        ProductStatus = ProductStatus.Draft;
+        ProductStatus = ProductStatus.Blocked;
+        BlockReason = reason;
 
         UpdatedAt = now;
 
         IncreaseVersion();
 
-        RaiseDomainEvent(new ProductLockedDomainEvent(
+        RaiseDomainEvent(new ProductBlockedDomainEvent(
             Id,
             CategoryId,
             VendorId,
             CanBeModified,
-            IsLockedByAdmin,
+            IsBlocked,
             ProductStatus,
+            BlockReason,
             IsVisiblePublicly,
             Version));
 
         return Ok();
     }
 
-    public IResult Unlock(
-        ProductUnlockContext ctx,
+    public IResult Unblock(
+        ProductUnblockContext ctx,
         DateTimeOffset now)
     {
-        if (!IsLockedByAdmin)
+        if (!IsBlocked)
             return Ok();
 
-        var result = ProductUnlockSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = ProductUnblockSpecification.Spec.IsSatisfiedBy(ctx);
         if (result.IsFailure)
             return result;
 
-        IsLockedByAdmin = false;
-        ProductStatus = ProductStatus.Draft;
+        ProductStatus = ProductStatus.Published;
+        BlockReason = null;
         UpdatedAt = now;
 
         IncreaseVersion();
 
-        RaiseDomainEvent(new ProductUnlockedDomainEvent(
+        RaiseDomainEvent(new ProductUnblockedDomainEvent(
             Id,
             CategoryId,
             VendorId,
             CanBeModified,
-            IsLockedByAdmin,
+            IsBlocked,
             ProductStatus,
+            BlockReason,
             IsVisiblePublicly,
             Version));
 
@@ -558,7 +673,8 @@ public sealed class Product : AggregateRoot
 
     private IResult DeleteInternal(ProductDeleteContext? ctx, DateTimeOffset now)
     {
-        if (IsDeleted) return Ok();
+        if (IsDeleted)
+            return Ok();
 
         if (ctx is not null)
         {
@@ -571,6 +687,8 @@ public sealed class Product : AggregateRoot
 
         if (ProductStatus == ProductStatus.Published)
             ProductStatus = ProductStatus.Draft;
+
+        IncreaseVersion();
 
         RaiseDomainEvent(new ProductDeletedDomainEvent(Id));
 

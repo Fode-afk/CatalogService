@@ -5,16 +5,17 @@ using migApp.Shared.Messaging.IntegrationEvents.Products;
 
 namespace CatalogService.Infrastructure.Messaging.IntegrationEvents.Handlers;
 
-public sealed class ProductLockedDomainEventHandler(IPublishEndpoint publish) : IPreCommitDomainEventHandler<ProductLockedDomainEvent>
+public sealed class ProductUnblockedDomainEventHandler(IPublishEndpoint publish) : IPreCommitDomainEventHandler<ProductUnblockedDomainEvent>
 {
-    public async Task Handle(ProductLockedDomainEvent notification, CancellationToken cancellationToken) =>
-        await publish.Publish(new ProductLockedIntegrationEvent(
+    public async Task Handle(ProductUnblockedDomainEvent notification, CancellationToken cancellationToken) =>
+        await publish.Publish(new ProductUnblockedIntegrationEvent(
             notification.ProductId,
             notification.CategoryId,
             notification.VendorId,
             notification.CanBeModified,
-            notification.IsLockedByAdmin,
+            notification.IsBlocked,
             notification.ProductStatus,
+            notification.BlockReason?.ToString(),
             notification.IsVisiblePublicly,
             notification.Version), cancellationToken);
 }

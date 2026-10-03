@@ -24,10 +24,10 @@ public sealed class ProductUnlockSpecificationTests
         string? expectedErrorCode)
     {
         // Arrange
-        var ctx = new ProductUnlockContext(productStatus);
+        var ctx = new ProductUnblockContext(productStatus);
 
         // Act
-        var result = ProductUnlockSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = ProductUnblockSpecification.Spec.IsSatisfiedBy(ctx);
 
         // Assert
         result.IsFailure.Should().Be(expectedErrorCode is not null);

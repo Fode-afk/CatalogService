@@ -44,7 +44,7 @@ public static class ProductContextsTestFactory
             CanBeModified: true,
             Tags: tags);
 
-    public static ProductPublishContext ValidPublishContext() =>
+    public static ProductSubmitForPublishContext ValidPublishContext() =>
         new(
             VendorIsActive: true,
             CategoryIsActive: true,
@@ -85,10 +85,10 @@ public static class ProductContextsTestFactory
     public static ProductTryRestoreContext ValidTryRestoreContext() =>
         new(ProductStatus.Suspended);
 
-    public static ProductLockContext ValidLockContext() =>
+    public static ProductBlockContext ValidLockContext() =>
         new(true, ProductStatus.Published);
 
-    public static ProductUnlockContext ValidUnlockContext() =>
+    public static ProductUnblockContext ValidUnlockContext() =>
         new(ProductStatus.Published);
 
     public static ProductDeleteContext ValidDeleteContext() =>

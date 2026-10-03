@@ -1,14 +1,16 @@
 ﻿using CatalogService.Domain.Primitives;
+using CatalogService.Domain.ValueObjects;
 using migApp.Shared.Enums.Products;
 
 namespace CatalogService.Domain.DomainEvents;
 
-public sealed record ProductPublishedDomainEvent(
+public sealed record ProductUnblockedDomainEvent(
     Guid ProductId,
     Guid CategoryId,
     Guid VendorId,
     bool CanBeModified,
+    bool IsBlocked,
     ProductStatus ProductStatus,
-    DateTimeOffset? ApprovedAt,
+    BlockReason? BlockReason,
     bool IsVisiblePublicly,
     long Version) : IDomainEvent;

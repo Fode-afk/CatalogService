@@ -25,12 +25,12 @@ public sealed class ProductLockSpecificationTests
         string? expectedErrorCode)
     {
         // Arrange
-        var ctx = new ProductLockContext(
+        var ctx = new ProductBlockContext(
             canBeModified,
             productStatus);
 
         // Act
-        var result = ProductLockSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = ProductBlockSpecification.Spec.IsSatisfiedBy(ctx);
 
         // Assert
         result.IsFailure.Should().Be(expectedErrorCode is not null);
