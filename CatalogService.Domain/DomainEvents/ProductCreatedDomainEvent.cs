@@ -15,6 +15,7 @@ public sealed record ProductCreatedDomainEvent(
     ShortDescription ShortDescription,
     SeoMetadata SeoMetadata,
     ProductStatus ProductStatus,
-    bool CanBeModified,
+    bool CanEditContent,
+    bool CanEditOperationalData,
     bool IsVisiblePublicly,
     long Version) : IDomainEvent;

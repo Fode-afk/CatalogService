@@ -6,13 +6,13 @@ using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Domain.Specifications.Common;
 
-public sealed class CanBeModifiedSpec<T> : Specification<T>
+public sealed class CanEditContentSpec<T> : Specification<T>
     where T : IProductContext
 {
     public override IResult IsSatisfiedBy(T ctx)
     {
-        if (!ctx.CanBeModified)
-            return Fail(ProductErrors.CannotModify());
+        if (!ctx.CanEditContent)
+            return Fail(ProductErrors.CannotEditContent());
 
         return Ok();
     }

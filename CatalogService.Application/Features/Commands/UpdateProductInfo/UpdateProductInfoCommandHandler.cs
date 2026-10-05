@@ -52,7 +52,7 @@ public sealed class UpdateProductInfoCommandHandler(
 
         var ctx = new ProductUpdateInfoContext(
             vendorSnapshot.IsActive,
-            product.CanBeModified,
+            product.CanEditContent,
             categorySnapshot.IsActive,
             brandSnapshot.IsAssignable);
 

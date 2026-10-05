@@ -2,5 +2,5 @@
 
 public interface IProductContext
 {
-    bool CanBeModified { get; }
+    bool CanEditContent { get; }
 }

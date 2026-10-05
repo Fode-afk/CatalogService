@@ -229,7 +229,7 @@ public sealed class ProductSuspendTests
         var product = ProductTestFactory.CreatePublished();
 
         var ctx = new ProductSuspendContext(
-            CanBeModified: false);
+            CanEditContent: false);
 
         var versionBefore = product.Version;
         var updatedAtBefore = product.UpdatedAt;

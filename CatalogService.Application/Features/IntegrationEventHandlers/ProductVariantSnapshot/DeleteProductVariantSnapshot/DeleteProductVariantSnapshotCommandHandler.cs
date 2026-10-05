@@ -45,7 +45,7 @@ public sealed class DeleteProductVariantSnapshotCommandHandler(
 
         var ctx = new ProductRemoveVariantFromAttributesContext(
             vendorSnapshot.IsActive,
-            product.CanBeModified);
+            product.CanEditContent);
 
         var result = product.RemoveVariantFromAttributes(
             ctx,

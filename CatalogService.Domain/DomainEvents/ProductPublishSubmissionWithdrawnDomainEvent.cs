@@ -7,7 +7,8 @@ public sealed record ProductPublishSubmissionWithdrawnDomainEvent(
     Guid ProductId,
     Guid CategoryId,
     Guid VendorId,
-    bool CanBeModified,
+    bool CanEditContent,
+    bool CanEditOperationalData,
     ProductStatus ProductStatus,
     bool IsVisiblePublicly,
     long Version) : IDomainEvent; 

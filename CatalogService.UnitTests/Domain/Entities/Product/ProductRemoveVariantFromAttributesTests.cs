@@ -255,7 +255,7 @@ public sealed class ProductRemoveVariantFromAttributesTests
 
         var ctx = new ProductRemoveVariantFromAttributesContext(
             VendorIsActive: false,
-            CanBeModified: true);
+            CanEditContent: true);
 
         var versionBefore = product.Version;
         var updatedAtBefore = product.UpdatedAt;

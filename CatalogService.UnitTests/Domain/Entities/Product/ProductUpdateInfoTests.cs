@@ -60,7 +60,7 @@ public sealed class ProductUpdateInfoTests
         var sameData = ProductDataTestFactory.CreateData();
         var invalidCtx = new ProductUpdateInfoContext(
             VendorIsActive: false,
-            CanBeModified: false,
+            CanEditContent: false,
             CategoryIsActive: false, 
             BrandIsAssignable: false);
 

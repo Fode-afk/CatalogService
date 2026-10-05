@@ -99,7 +99,7 @@ public sealed class AddProductVariantSnapshotCommandHandler(
 
         var ctx = new ProductAddVariantToAttributesContext(
             vendorSnapshot.IsActive,
-            product.CanBeModified);
+            product.CanEditContent);
 
         var result = product.AddVariantToAttributes(
             ctx,

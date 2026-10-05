@@ -20,28 +20,28 @@ public static class ProductContextsTestFactory
     {
         return new ProductUpdateInfoContext(
             VendorIsActive: true,
-            CanBeModified: true,
+            CanEditContent: true,
             CategoryIsActive: true,
             BrandIsAssignable: true);
     }
 
     public static ProductAttributesReplaceContext ValidReplaceAttributesContext(IReadOnlyCollection<ProductAttribute> attributes) =>
-        new(VendorIsActive: true, CanBeModified: true, Attributes: attributes);
+        new(VendorIsActive: true, CanEditContent: true, Attributes: attributes);
 
     public static ProductAddVariantToAttributesContext ValidAddVariantToAttributesContext() =>
         new(
             VendorIsActive: true,
-            CanBeModified: true);
+            CanEditContent: true);
 
     public static ProductRemoveVariantFromAttributesContext ValidRemoveVariantFromAttributesContext() =>
        new(
            VendorIsActive: true,
-           CanBeModified: true);
+           CanEditContent: true);
 
     public static ProductTagsReplaceContext ValidTagsReplaceContext(IReadOnlyCollection<Tag> tags) =>
         new(
             VendorIsActive: true,
-            CanBeModified: true,
+            CanEditContent: true,
             Tags: tags);
 
     public static ProductSubmitForPublishContext ValidPublishContext() =>
@@ -49,7 +49,7 @@ public static class ProductContextsTestFactory
             VendorIsActive: true,
             CategoryIsActive: true,
             BrandIsAssignable: true,
-            CanBeModified: true,
+            CanEditContent: true,
             Attributes: [ProductDataTestFactory.CreateVariableAttribute(Guid.NewGuid())],
             Tags: [Tag.Create("tag").Value],
             [new ProductVariantSnapshot
@@ -71,13 +71,13 @@ public static class ProductContextsTestFactory
 
     public static ProductUnpublishContext ValidUnpublishContext() =>
         new(VendorIsActive: true,
-            CanBeModified: true);
+            CanEditContent: true);
 
     public static ProductSuspendContext ValidSuspendContext() =>
-        new(CanBeModified: true);
+        new(CanEditContent: true);
 
     public static ProductArchiveContext ValidArchiveContext() =>
-        new(VendorIsActive: true, CanBeModified: true);
+        new(VendorIsActive: true, CanEditContent: true);
 
     public static ProductRestoreContext ValidRestoreContext() =>
         new(VendorIsActive: true);
@@ -92,5 +92,5 @@ public static class ProductContextsTestFactory
         new(ProductStatus.Published);
 
     public static ProductDeleteContext ValidDeleteContext() =>
-            new(VendorIsActive: true, CanBeModified: true);
+            new(VendorIsActive: true, CanEditContent: true);
 }

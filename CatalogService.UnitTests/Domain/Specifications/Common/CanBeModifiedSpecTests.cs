@@ -9,7 +9,7 @@ public sealed class CanBeModifiedSpecTests
 {
     private sealed record TestContext(bool CanBeModified) : IProductContext;
 
-    private readonly CanBeModifiedSpec<TestContext> _spec = new();
+    private readonly CanEditContentSpec<TestContext> _spec = new();
 
     [Fact]
     public void Should_Fail_When_Can_Not_Be_Modified()
@@ -47,6 +47,6 @@ public sealed class CanBeModifiedSpecTests
         var result = _spec.IsSatisfiedBy(ctx);
 
         // Assert
-        result.Error.Should().Be(ProductErrors.CannotModify());
+        result.Error.Should().Be(ProductErrors.CannotEditContent());
     }
 }

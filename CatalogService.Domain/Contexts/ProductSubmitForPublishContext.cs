@@ -9,7 +9,7 @@ public sealed record ProductSubmitForPublishContext(
     bool VendorIsActive,
     bool CategoryIsActive,
     bool BrandIsAssignable,
-    bool CanBeModified,
+    bool CanEditContent,
     IReadOnlyCollection<ProductAttribute> Attributes,
     IReadOnlyCollection<Tag> Tags,
     List<ProductVariantSnapshot> VariationSnapshots,

@@ -88,7 +88,7 @@ public sealed class ProductReplaceAttributesTests
         // Arrange
         var product = ProductTestFactory.CreateValid();
         var attributes = new List<ProductAttribute> { ProductDataTestFactory.CreateAttribute(Guid.NewGuid(), isUnifying: true) };
-        var ctx = new ProductAttributesReplaceContext(VendorIsActive: false, CanBeModified: true, Attributes: attributes);
+        var ctx = new ProductAttributesReplaceContext(VendorIsActive: false, CanEditContent: true, Attributes: attributes);
 
         // Act
         var result = product.ReplaceAttributes(ctx, Now);
@@ -154,7 +154,7 @@ public sealed class ProductReplaceAttributesTests
         // Arrange
         var product = ProductTestFactory.CreateValid();
         var attributes = new List<ProductAttribute> { ProductDataTestFactory.CreateAttribute(Guid.NewGuid(), isUnifying: true) };
-        var ctx = new ProductAttributesReplaceContext(VendorIsActive: false, CanBeModified: true, Attributes: attributes);
+        var ctx = new ProductAttributesReplaceContext(VendorIsActive: false, CanEditContent: true, Attributes: attributes);
         product.ReplaceAttributes(ctx, Now);
 
         // Act

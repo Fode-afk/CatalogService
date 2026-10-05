@@ -11,9 +11,9 @@ public sealed class ProductLockSpecificationTests
     public static TheoryData<bool, ProductStatus, string?> TestCases =>
         new()
         {
-            { false, ProductStatus.Published, ProductErrorCodes.CannotModify },
-            { true, ProductStatus.Draft, ProductErrorCodes.CannotModify },
-            { false, ProductStatus.Draft, ProductErrorCodes.CannotModify },
+            { false, ProductStatus.Published, ProductErrorCodes.CannotEditContent },
+            { true, ProductStatus.Draft, ProductErrorCodes.CannotEditContent },
+            { false, ProductStatus.Draft, ProductErrorCodes.CannotEditContent },
             { true, ProductStatus.Published, null }
         };
 

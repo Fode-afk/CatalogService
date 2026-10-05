@@ -5,7 +5,7 @@ namespace CatalogService.Domain.Contexts;
 
 public sealed record ProductAttributesReplaceContext(
     bool VendorIsActive,
-    bool CanBeModified,
+    bool CanEditContent,
     IReadOnlyCollection<ProductAttribute> Attributes) :
         IVendorContext,
         IProductContext,

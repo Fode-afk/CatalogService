@@ -2,4 +2,4 @@
 
 namespace CatalogService.Domain.Contexts;
 
-public sealed record ProductSuspendContext(bool CanBeModified) : IProductContext;
+public sealed record ProductSuspendContext(bool CanEditContent) : IProductContext;

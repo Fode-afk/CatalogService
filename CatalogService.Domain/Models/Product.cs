@@ -61,17 +61,23 @@ public sealed class Product : AggregateRoot
     public BlockReason? BlockReason { get; private set; }
     public bool IsBlocked => ProductStatus == ProductStatus.Blocked;
 
-    public bool CanBeModified =>
+    private bool IsActive =>
         ProductStatus != ProductStatus.Archived &&
-        ProductStatus != ProductStatus.PendingApproval &&
-        ProductStatus != ProductStatus.Published &&
-        !IsBlocked &&
-        !IsDeleted;
+        !IsDeleted &&
+        !IsBlocked;
+
+    public bool CanEditContent =>
+        IsActive &&
+        ProductStatus is ProductStatus.Draft &&
+        ProductStatus is ProductStatus.Rejected;
+
+    public bool CanEditOperationalData =>
+        IsActive &&
+        ProductStatus is ProductStatus.Draft or ProductStatus.Published;
 
     public bool IsVisiblePublicly =>
-        ProductStatus == ProductStatus.Published &&
-        !IsBlocked &&
-        !IsDeleted;
+        IsActive &&
+        ProductStatus is ProductStatus.Published;
 
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset? UpdatedAt { get; private set; }
@@ -82,12 +88,10 @@ public sealed class Product : AggregateRoot
     public SeoMetadata SeoMetadata { get; private set; }
 
     public static int MaxAttributes => 30;
-
     private readonly List<ProductAttribute> _attributes = [];
     public IReadOnlyCollection<ProductAttribute> Attributes => _attributes;
 
     public static int MaxTags => 50;
-
     private readonly List<Tag> _tags = [];
     public IReadOnlyCollection<Tag> Tags => _tags;
 
@@ -126,7 +130,8 @@ public sealed class Product : AggregateRoot
             product.ShortDescription,
             product.SeoMetadata,
             product.ProductStatus,
-            product.CanBeModified,
+            product.CanEditContent,
+            product.CanEditOperationalData,
             product.IsVisiblePublicly,
             product.Version));
 
@@ -173,7 +178,8 @@ public sealed class Product : AggregateRoot
             Description,
             ShortDescription,
             SeoMetadata,
-            CanBeModified,
+            CanEditContent,
+            CanEditOperationalData,
             Version));
 
         return Ok();
@@ -349,7 +355,8 @@ public sealed class Product : AggregateRoot
             CurrentSubmissionId.Value,
             CategoryId,
             VendorId,
-            CanBeModified,
+            CanEditContent,
+            CanEditOperationalData,
             ProductStatus,
             [.. _suspensionReasons],
             RejectionReason,
@@ -379,7 +386,8 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             VendorId,
-            CanBeModified,
+            CanEditContent,
+            CanEditOperationalData,
             ProductStatus,
             ApprovedAt,
             IsVisiblePublicly,
@@ -410,7 +418,8 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             VendorId,
-            CanBeModified,
+            CanEditContent,
+            CanEditOperationalData,
             ProductStatus,
             RejectionReason,
             IsVisiblePublicly,
@@ -443,7 +452,8 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             VendorId,
-            CanBeModified,
+            CanEditContent,
+            CanEditOperationalData,
             ProductStatus,
             IsVisiblePublicly,
             Version));
@@ -471,7 +481,8 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             VendorId,
-            CanBeModified,
+            CanEditContent,
+            CanEditOperationalData,
             ProductStatus,
             IsVisiblePublicly,
             Version));
@@ -502,7 +513,8 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             VendorId,
-            CanBeModified,
+            CanEditContent,
+            CanEditOperationalData,
             IsBlocked,
             ProductStatus,
             BlockReason,
@@ -533,7 +545,8 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             VendorId,
-            CanBeModified,
+            CanEditContent,
+            CanEditOperationalData,
             IsBlocked,
             ProductStatus,
             BlockReason,
@@ -567,7 +580,10 @@ public sealed class Product : AggregateRoot
 
         RaiseDomainEvent(new ProductSuspendedDomainEvent(
             Id,
+            CategoryId,
             VendorId,
+            CanEditContent,
+            CanEditOperationalData,
             ProductStatus,
             [.. _suspensionReasons],
             IsVisiblePublicly,
@@ -600,7 +616,10 @@ public sealed class Product : AggregateRoot
 
         RaiseDomainEvent(new ProductUnsuspendedDomainEvent(
             Id,
+            CategoryId,
             VendorId,
+            CanEditContent,
+            CanEditOperationalData,
             ProductStatus,
             [.. _suspensionReasons],
             IsVisiblePublicly,
@@ -630,7 +649,8 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             VendorId,
-            CanBeModified,
+            CanEditContent,
+            CanEditOperationalData,
             ProductStatus,
             [.._suspensionReasons],
             IsVisiblePublicly,
@@ -657,7 +677,8 @@ public sealed class Product : AggregateRoot
             Id,
             CategoryId,
             VendorId,
-            CanBeModified,
+            CanEditContent,
+            CanEditOperationalData,
             ProductStatus,
             IsVisiblePublicly,
             Version));

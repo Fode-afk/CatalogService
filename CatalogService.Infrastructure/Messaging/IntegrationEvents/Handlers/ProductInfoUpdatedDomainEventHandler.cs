@@ -19,6 +19,7 @@ public sealed class ProductInfoUpdatedDomainEventHandler(IPublishEndpoint publis
             notification.SeoMetadata.Title,
             notification.SeoMetadata.Description,
             notification.SeoMetadata.Keywords,
-            notification.CanBeModified,
+            notification.CanEditContent,
+            notification.CanEditOperationalData,
             notification.Version), cancellationToken);
 }

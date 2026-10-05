@@ -11,7 +11,7 @@ public sealed class ProductTryRestoreSpecificationTests
     public static TheoryData<ProductStatus, string?> TestCases =>
         new()
         {
-            { ProductStatus.Archived, ProductErrorCodes.CannotModify },
+            { ProductStatus.Archived, ProductErrorCodes.CannotEditContent },
             { ProductStatus.Draft, null },
             { ProductStatus.Published, null },
             { ProductStatus.Suspended, null }

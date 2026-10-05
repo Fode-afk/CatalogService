@@ -9,8 +9,8 @@ namespace CatalogService.Domain.Specifications.Product;
 internal static class ProductBlockSpecification
 {
     public static readonly ISpecification<ProductBlockContext> Spec =
-        new CanBeModifiedSpec<ProductBlockContext>()
+        new CanEditContentSpec<ProductBlockContext>()
             .And(Specification<ProductBlockContext>.Create(
                 ctx => ctx.ProductStatus == ProductStatus.Published,
-                ProductErrors.CannotModify()));
+                ProductErrors.CannotEditContent()));
 }

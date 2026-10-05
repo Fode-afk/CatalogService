@@ -4,4 +4,4 @@ namespace CatalogService.Domain.Contexts;
 
 public sealed record ProductDeleteContext(
     bool VendorIsActive,
-    bool CanBeModified) : IVendorContext, IProductContext;
+    bool CanEditContent) : IVendorContext, IProductContext;

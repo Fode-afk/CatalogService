@@ -46,7 +46,7 @@ public sealed class ProductPublishSpecificationTests
                 [],
                 CreateVariations(1, hasMainImage: true),
                 CreatePrices(1, hasPrice: true),
-                ProductErrorCodes.CannotModify
+                ProductErrorCodes.CannotEditContent
             },
 
             // Brand is not assignable

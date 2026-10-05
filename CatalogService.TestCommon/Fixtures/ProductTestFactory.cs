@@ -59,7 +59,7 @@ public static class ProductTestFactory
             VendorIsActive: true,
             CategoryIsActive: true,
             BrandIsAssignable: true,
-            CanBeModified: true,
+            CanEditContent: true,
             product.Attributes,
             product.Tags,
             [new ProductVariantSnapshot

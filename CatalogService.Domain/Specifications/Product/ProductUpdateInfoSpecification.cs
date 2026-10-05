@@ -8,7 +8,7 @@ internal static class ProductUpdateInfoSpecification
 {
     public static readonly ISpecification<ProductUpdateInfoContext> Spec =
         new VendorIsActiveSpec<ProductUpdateInfoContext>()
-            .And(new CanBeModifiedSpec<ProductUpdateInfoContext>())
+            .And(new CanEditContentSpec<ProductUpdateInfoContext>())
             .And(new CategoryIsActiveSpec<ProductUpdateInfoContext>())
             .And(new BrandIsAssignableSpec<ProductUpdateInfoContext>());
 }

@@ -4,7 +4,7 @@ namespace CatalogService.Domain.Contexts;
 
 public sealed record ProductUpdateInfoContext(
     bool VendorIsActive,
-    bool CanBeModified,
+    bool CanEditContent,
     bool CategoryIsActive,
     bool BrandIsAssignable) :
         IVendorContext,

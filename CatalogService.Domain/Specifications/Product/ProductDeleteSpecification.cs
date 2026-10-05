@@ -8,5 +8,5 @@ internal static class ProductDeleteSpecification
 {
     public static readonly ISpecification<ProductDeleteContext> Spec =
         new VendorIsActiveSpec<ProductDeleteContext>()
-            .And(new CanBeModifiedSpec<ProductDeleteContext>());
+            .And(new CanEditContentSpec<ProductDeleteContext>());
 }

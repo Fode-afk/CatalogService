@@ -12,5 +12,6 @@ public sealed record ProductInfoUpdatedDomainEvent(
     Description Description,
     ShortDescription ShortDescription,
     SeoMetadata SeoMetadata,
-    bool CanBeModified,
+    bool CanEditContent,
+    bool CanEditOperationalData,
     long Version) : IDomainEvent;

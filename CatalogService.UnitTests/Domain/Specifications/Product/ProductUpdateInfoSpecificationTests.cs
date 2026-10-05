@@ -11,7 +11,7 @@ public sealed class ProductUpdateInfoSpecificationTests
         new()
         {
             { false, true, true, true, VendorSnapshotErrorCodes.CannotModify },
-            { true, false, true, true, ProductErrorCodes.CannotModify },
+            { true, false, true, true, ProductErrorCodes.CannotEditContent },
             { true, true, false, true, CategorySnapshotErrorCodes.Inactive },
             { true, true, true, false, BrandSnapshotErrorCodes.Inactive },
             { false, false, false, false, VendorSnapshotErrorCodes.CannotModify },

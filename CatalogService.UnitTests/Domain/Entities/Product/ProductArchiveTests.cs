@@ -116,7 +116,7 @@ public sealed class ProductArchiveTests
         @event.ProductId.Should().Be(product.Id);
         @event.CategoryId.Should().Be(product.CategoryId);
         @event.VendorId.Should().Be(product.VendorId);
-        @event.CanBeModified.Should().Be(product.CanBeModified);
+        @event.CanEditContent.Should().Be(product.CanEditContent);
         @event.ProductStatus.Should().Be(ProductStatus.Archived);
         @event.IsVisiblePublicly.Should().Be(product.IsVisiblePublicly);
         @event.Version.Should().Be(product.Version);
@@ -135,7 +135,7 @@ public sealed class ProductArchiveTests
 
         var ctx = new ProductArchiveContext(
             VendorIsActive: false,
-            CanBeModified: false);
+            CanEditContent: false);
 
         // Act
         var result = product.Archive(ctx, Now);
@@ -162,7 +162,7 @@ public sealed class ProductArchiveTests
 
         var ctx = new ProductArchiveContext(
             VendorIsActive: false,
-            CanBeModified: true);
+            CanEditContent: true);
 
         // Act
         var result = product.Archive(ctx, Now);

@@ -10,7 +10,7 @@ public sealed class ProductSuspendSpecificationTests
     public static TheoryData<bool, string?> TestCases =>
         new()
         {
-            { false, ProductErrorCodes.CannotModify },
+            { false, ProductErrorCodes.CannotEditContent },
             { true, null }
         };
 

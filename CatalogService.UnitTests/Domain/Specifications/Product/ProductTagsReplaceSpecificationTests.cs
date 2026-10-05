@@ -12,7 +12,7 @@ public sealed class ProductTagsReplaceSpecificationTests
         new()
         {
             { false, true, 1, VendorSnapshotErrorCodes.CannotModify },
-            { true, false, 1, ProductErrorCodes.CannotModify },
+            { true, false, 1, ProductErrorCodes.CannotEditContent },
             { true, true, 0, ProductErrorCodes.TagsRequired },
             { true, true, CatalogService.Domain.Models.Product.MaxTags + 1, ProductErrorCodes.MaxTagsReached },
             { true, true, 1, null }

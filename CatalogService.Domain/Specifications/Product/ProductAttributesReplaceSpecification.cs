@@ -9,7 +9,7 @@ internal static class ProductAttributesReplaceSpecification
 {
     public static readonly ISpecification<ProductAttributesReplaceContext> Spec =
         new VendorIsActiveSpec<ProductAttributesReplaceContext>()
-            .And(new CanBeModifiedSpec<ProductAttributesReplaceContext>())
+            .And(new CanEditContentSpec<ProductAttributesReplaceContext>())
             .And(new AttributesRequiredSpec<ProductAttributesReplaceContext>())
             .And(new AttributesLimitSpec<ProductAttributesReplaceContext>())
             .And(Specification<ProductAttributesReplaceContext>.Create(

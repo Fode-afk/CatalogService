@@ -8,5 +8,5 @@ internal static class ProductUnpublishSpecification
 {
     public static readonly ISpecification<ProductUnpublishContext> Spec =
         new VendorIsActiveSpec<ProductUnpublishContext>()
-            .And(new CanBeModifiedSpec<ProductUnpublishContext>());
+            .And(new CanEditContentSpec<ProductUnpublishContext>());
 }

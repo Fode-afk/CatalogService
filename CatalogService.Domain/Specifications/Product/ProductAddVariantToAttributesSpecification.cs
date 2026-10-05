@@ -8,5 +8,5 @@ internal static class ProductAddVariantToAttributesSpecification
 {
     public static readonly ISpecification<ProductAddVariantToAttributesContext> Spec =
         new VendorIsActiveSpec<ProductAddVariantToAttributesContext>()
-            .And(new CanBeModifiedSpec<ProductAddVariantToAttributesContext>());
+            .And(new CanEditContentSpec<ProductAddVariantToAttributesContext>());
 }

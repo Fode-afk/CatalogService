@@ -62,7 +62,7 @@ public sealed class SubmitProductForPublishCommandHandler(
             vendorSnapshot.IsActive,
             categorySnapshot.IsActive,
             brandSnapshot.IsAssignable,
-            product.CanBeModified,
+            product.CanEditContent,
             product.Attributes,
             product.Tags,
             variationSnapshots,

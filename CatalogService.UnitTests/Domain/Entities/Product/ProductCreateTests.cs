@@ -76,7 +76,7 @@ public sealed class ProductCreateTests
         domainEvent.Name.Should().Be(product.Name);
         domainEvent.Slug.Should().Be(product.Slug);
         domainEvent.ProductStatus.Should().Be(product.ProductStatus);
-        domainEvent.CanBeModified.Should().Be(product.CanBeModified);
+        domainEvent.CanEditContent.Should().Be(product.CanEditContent);
         domainEvent.IsVisiblePublicly.Should().Be(product.IsVisiblePublicly);
         domainEvent.Version.Should().Be(product.Version);
     }

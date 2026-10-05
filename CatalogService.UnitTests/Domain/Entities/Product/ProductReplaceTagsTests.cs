@@ -166,7 +166,7 @@ public sealed class ProductReplaceTagsTests
 
         var invalidContext = new ProductTagsReplaceContext(
             VendorIsActive: false,
-            CanBeModified: false,
+            CanEditContent: false,
             Tags: tags);
 
         var versionBefore = product.Version;
@@ -296,7 +296,7 @@ public sealed class ProductReplaceTagsTests
 
         var ctx = new ProductTagsReplaceContext(
             VendorIsActive: false,
-            CanBeModified: true,
+            CanEditContent: true,
             Tags: [newTag]);
 
         var versionBefore = product.Version;
@@ -322,7 +322,7 @@ public sealed class ProductReplaceTagsTests
 
         var ctx = new ProductTagsReplaceContext(
             VendorIsActive: true,
-            CanBeModified: true,
+            CanEditContent: true,
             Tags: []);
 
         // Act

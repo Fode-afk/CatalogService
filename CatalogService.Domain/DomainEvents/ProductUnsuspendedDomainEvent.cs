@@ -6,7 +6,10 @@ namespace CatalogService.Domain.DomainEvents;
 
 public sealed record ProductUnsuspendedDomainEvent(
     Guid ProductId,
+    Guid CategoryId,
     Guid VendorId,
+    bool CanEditContent,
+    bool CanEditOperationalData,
     ProductStatus ProductStatus,
     List<ProductSuspensionReason> SuspensionReasons,
     bool IsVisiblePublicly,

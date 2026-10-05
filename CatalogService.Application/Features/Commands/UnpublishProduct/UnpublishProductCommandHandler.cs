@@ -36,7 +36,7 @@ public sealed class UnpublishProductCommandHandler(
 
         var ctx = new ProductUnpublishContext(
             vendorSnapshot.IsActive,
-            product.CanBeModified);
+            product.CanEditContent);
 
         var result = product.Unpublish(ctx, timeProvider.GetUtcNow());
         if (result.IsFailure)

@@ -40,7 +40,7 @@ public sealed class ReplaceProductTagsCommandHandler(
 
         var ctx = new ProductTagsReplaceContext(
             vendorSnapshot.IsActive,
-            product.CanBeModified,
+            product.CanEditContent,
             buildResult.Value);
 
         var result = product.ReplaceTags(

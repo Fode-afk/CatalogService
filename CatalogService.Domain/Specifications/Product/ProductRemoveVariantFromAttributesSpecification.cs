@@ -8,5 +8,5 @@ internal static class ProductRemoveVariantFromAttributesSpecification
 {
     public static readonly ISpecification<ProductRemoveVariantFromAttributesContext> Spec =
        new VendorIsActiveSpec<ProductRemoveVariantFromAttributesContext>()
-           .And(new CanBeModifiedSpec<ProductRemoveVariantFromAttributesContext>());
+           .And(new CanEditContentSpec<ProductRemoveVariantFromAttributesContext>());
 }

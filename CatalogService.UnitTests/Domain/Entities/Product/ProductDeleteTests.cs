@@ -112,7 +112,7 @@ public sealed class ProductDeleteTests
 
         var ctx = new ProductDeleteContext(
             VendorIsActive: false,
-            CanBeModified: false);
+            CanEditContent: false);
 
         // Act
         var result = product.Delete(ctx, Now);
@@ -137,7 +137,7 @@ public sealed class ProductDeleteTests
 
         var ctx = new ProductDeleteContext(
             VendorIsActive: false,
-            CanBeModified: true);
+            CanEditContent: true);
 
         // Act
         var result = product.Delete(ctx, Now);

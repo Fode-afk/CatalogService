@@ -7,5 +7,5 @@ namespace CatalogService.Domain.Specifications.Product;
 internal static class ProductSuspendSpecification
 {
     public static readonly ISpecification<ProductSuspendContext> Spec =
-        new CanBeModifiedSpec<ProductSuspendContext>();
+        new CanEditContentSpec<ProductSuspendContext>();
 }

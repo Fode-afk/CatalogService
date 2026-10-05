@@ -5,7 +5,7 @@ namespace CatalogService.Domain.Contexts;
 
 public sealed record ProductTagsReplaceContext(
     bool VendorIsActive,
-    bool CanBeModified,
+    bool CanEditContent,
     IReadOnlyCollection<Tag> Tags) :
         IVendorContext,
         IProductContext,

@@ -11,7 +11,7 @@ public sealed class ProductRemoveVariantFromAttributesSpecificationTests
         new()
         {
             { false, true, VendorSnapshotErrorCodes.CannotModify },
-            { true, false, ProductErrorCodes.CannotModify },
+            { true, false, ProductErrorCodes.CannotEditContent },
             { false, false, VendorSnapshotErrorCodes.CannotModify },
             { true, true, null }
         };

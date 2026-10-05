@@ -28,9 +28,9 @@ public static class ProductErrors
         Error.NotFound(ProductErrorCodes.NotFound,
             "Product not found.");
 
-    public static Error CannotModify() =>
-        Error.InvalidArgument(ProductErrorCodes.CannotModify,
-            "The product cannot be modified.");
+    public static Error CannotEditContent() =>
+        Error.InvalidArgument(ProductErrorCodes.CannotEditContent,
+            "The product cannot be edited.");
 
     public static Error VendorMismatch() =>
         Error.Unauthenticated(ProductErrorCodes.VendorMismatch,
@@ -54,7 +54,7 @@ public static class ProductErrorCodes
     public const string MaxTagsReached = "Product.MaxTagsReached";
     public const string NotFound = "Product.NotFound";
     public const string InvalidId = "Product.InvalidId";
-    public const string CannotModify = "Product.CannotModify";
+    public const string CannotEditContent = "Product.CannotEditContent";
     public const string VendorMismatch = "Product.VendorMismatch";
     public const string AlreadyExists = "Product.AlreadyExists";
     public const string StaleSubmission = "Product.StaleSubmission";

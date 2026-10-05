@@ -50,7 +50,7 @@ public sealed class ReplaceProductAttributesCommandHandler(
 
         var ctx = new ProductAttributesReplaceContext(
             vendorSnapshot.IsActive,
-            product.CanBeModified,
+            product.CanEditContent,
             buildResult.Value);
 
         var result = product.ReplaceAttributes(

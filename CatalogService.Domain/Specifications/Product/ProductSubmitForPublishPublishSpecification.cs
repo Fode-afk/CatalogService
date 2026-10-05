@@ -9,7 +9,7 @@ internal static class ProductSubmitForPublishPublishSpecification
 {
     public static readonly ISpecification<ProductSubmitForPublishContext> Spec =
         new VendorIsActiveSpec<ProductSubmitForPublishContext>()
-            .And(new CanBeModifiedSpec<ProductSubmitForPublishContext>())
+            .And(new CanEditContentSpec<ProductSubmitForPublishContext>())
             .And(new BrandIsAssignableSpec<ProductSubmitForPublishContext>())
             .And(new CategoryIsActiveSpec<ProductSubmitForPublishContext>())
             .And(new AttributesRequiredSpec<ProductSubmitForPublishContext>())

@@ -8,5 +8,5 @@ internal static class ProductArchiveSpecification
 {
     public static readonly ISpecification<ProductArchiveContext> Spec =
         new VendorIsActiveSpec<ProductArchiveContext>()
-            .And(new CanBeModifiedSpec<ProductArchiveContext>());
+            .And(new CanEditContentSpec<ProductArchiveContext>());
 }   

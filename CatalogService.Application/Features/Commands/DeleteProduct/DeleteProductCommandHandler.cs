@@ -38,7 +38,7 @@ public sealed class DeleteProductCommandHandler(
 
         var ctx = new ProductDeleteContext(
             vendorSnapshot.IsActive,
-            product.CanBeModified);
+            product.CanEditContent);
 
         var result = product.Delete(ctx, timeProvider.GetUtcNow());
         if (result.IsFailure)

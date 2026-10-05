@@ -14,7 +14,7 @@ public sealed class ProductAttributesReplaceSpecificationTests
         new()
         {
             { false, true, 1, 1, VendorSnapshotErrorCodes.CannotModify },
-            { true, false, 1, 1, ProductErrorCodes.CannotModify },
+            { true, false, 1, 1, ProductErrorCodes.CannotEditContent },
             { true, true, 0, 0, ProductErrorCodes.AttributesRequired },
             { true, true, CatalogService.Domain.Models.Product.MaxAttributes + 1, 0, ProductErrorCodes.MaxAttributesReached },
             { true, true, 2, 2, ProductAttributeErrorCodes.UnifyingAttributeRequired },

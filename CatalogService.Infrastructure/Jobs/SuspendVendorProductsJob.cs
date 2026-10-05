@@ -40,7 +40,7 @@ internal sealed class SuspendVendorProductsJob(
                 if (!isActive)
                 {
                     var result = product.Suspend(
-                        new ProductSuspendContext(product.CanBeModified),
+                        new ProductSuspendContext(product.CanEditContent),
                         suspensionReason,
                         timeProvider.GetUtcNow());
 
