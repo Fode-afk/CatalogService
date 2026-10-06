@@ -166,7 +166,7 @@ public sealed class ProductPublishSpecificationTests
             priceSnapshots);
 
         // Act
-        var result = ProductSubmitForPublishPublishSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = ProductSubmitForPublishSpecification.Spec.IsSatisfiedBy(ctx);
 
         // Assert
         result.IsFailure.Should().Be(expectedErrorCode is not null);

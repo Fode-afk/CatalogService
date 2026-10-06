@@ -26,7 +26,7 @@ public sealed class UnblockProductCommandHandler(
             throw new ProductNotFoundException(request.ProductId);
         }
 
-        var ctx = new ProductUnblockContext(product.ProductStatus);
+        var ctx = new ProductUnblockContext(product.IsBlocked);
 
         var result = product.Unblock(ctx, timeProvider.GetUtcNow());
 

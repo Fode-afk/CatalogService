@@ -43,6 +43,14 @@ public static class ProductErrors
     public static Error StaleSubmission() =>
         Error.InvalidArgument(ProductErrorCodes.StaleSubmission,
             "Stale submission.");
+
+    public static Error CannotBlockUnpublished() =>
+        Error.InvalidArgument(ProductErrorCodes.CannotBlockUnpublished,
+            "Cannot block unpublished product.");
+
+    public static Error CannotUnblockNotBlocked() =>
+        Error.InvalidArgument(ProductErrorCodes.CannotUnblockNotBlocked,
+            "Cannot unblock prouct witch is not blocked.");
 }
 
 public static class ProductErrorCodes
@@ -58,4 +66,6 @@ public static class ProductErrorCodes
     public const string VendorMismatch = "Product.VendorMismatch";
     public const string AlreadyExists = "Product.AlreadyExists";
     public const string StaleSubmission = "Product.StaleSubmission";
+    public const string CannotBlockUnpublished = "Product.CannotBlockUnpublished";
+    public const string CannotUnblockNotBlocked = "Product.CannotUnblockNotBlocked";
 }

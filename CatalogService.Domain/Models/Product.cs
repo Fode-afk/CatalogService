@@ -68,12 +68,18 @@ public sealed class Product : AggregateRoot
 
     public bool CanEditContent =>
         IsActive &&
-        ProductStatus is ProductStatus.Draft &&
-        ProductStatus is ProductStatus.Rejected;
+        ProductStatus is 
+            ProductStatus.Draft or
+            ProductStatus.Rejected or
+            ProductStatus.Suspended;
 
     public bool CanEditOperationalData =>
         IsActive &&
-        ProductStatus is ProductStatus.Draft or ProductStatus.Published;
+        ProductStatus is
+            ProductStatus.Draft or
+            ProductStatus.Rejected or 
+            ProductStatus.Suspended or 
+            ProductStatus.Published;
 
     public bool IsVisiblePublicly =>
         IsActive &&
@@ -334,7 +340,7 @@ public sealed class Product : AggregateRoot
             ProductStatus == ProductStatus.Published)
             return Ok();
 
-        var result = ProductSubmitForPublishPublishSpecification.Spec.IsSatisfiedBy(ctx);
+        var result = ProductSubmitForPublishSpecification.Spec.IsSatisfiedBy(ctx);
         if (result.IsFailure)
             return result;
 

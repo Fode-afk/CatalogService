@@ -35,9 +35,7 @@ public sealed class BlockProductCommandHandler(
             return;
         }
 
-        var ctx = new ProductBlockContext(
-            product.CanEditContent,
-            product.ProductStatus);
+        var ctx = new ProductBlockContext(product.ProductStatus);
 
         var result = product.Block(ctx, blockReasonResult.Value, timeProvider.GetUtcNow());
 
