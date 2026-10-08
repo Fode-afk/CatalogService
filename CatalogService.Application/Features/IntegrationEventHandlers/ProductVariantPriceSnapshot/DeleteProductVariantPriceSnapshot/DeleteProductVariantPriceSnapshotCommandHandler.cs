@@ -46,7 +46,7 @@ public sealed class DeleteProductVariantPriceSnapshotCommandHandler(
         if (!hasAnyPrice)
         {
             var result = product.Suspend(
-                new ProductSuspendContext(product.CanEditContent),
+                new ProductSuspendContext(product.CanEditOperationalData),
                 suspensionReason,
                 timeProvider.GetUtcNow());
 

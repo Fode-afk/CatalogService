@@ -1,5 +1,3 @@
-﻿using CatalogService.Domain.Abstractions;
+﻿namespace CatalogService.Domain.Contexts;
 
-namespace CatalogService.Domain.Contexts;
-
-public sealed record ProductSuspendContext(bool CanEditContent) : IProductContext;
+public sealed record ProductSuspendContext(bool CanEditOperationalData);
