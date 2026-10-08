@@ -73,7 +73,7 @@ public sealed class UpdateProductVariantPriceSnapshotCommandHandler(
         else if (request.HasPrice)
         {
             var result = product.TryRestore(
-                new ProductTryRestoreContext(product.ProductStatus),
+                new ProductTryRestoreContext(product.IsActive),
                 suspensionReason,
                 timeProvider.GetUtcNow());
 

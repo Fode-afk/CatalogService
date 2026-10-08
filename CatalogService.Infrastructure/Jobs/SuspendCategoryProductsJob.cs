@@ -52,7 +52,7 @@ internal sealed class SuspendCategoryProductsJob(
                 else
                 {
                     var result = product.TryRestore(
-                        new ProductTryRestoreContext(product.ProductStatus),
+                        new ProductTryRestoreContext(product.IsActive),
                         suspensionReason,
                         timeProvider.GetUtcNow());
 

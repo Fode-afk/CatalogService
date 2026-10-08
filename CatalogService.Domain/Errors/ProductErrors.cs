@@ -52,13 +52,13 @@ public static class ProductErrors
         Error.InvalidArgument(ProductErrorCodes.CannotUnblockNotBlocked,
             "Cannot unblock prouct witch is not blocked.");
 
-    public static Error CannotUnpublishNotPublished() =>
-        Error.InvalidArgument(ProductErrorCodes.CannotUnpublishNotPublished,
-            "Cannot unpublish not published product.");
-
     public static Error CannotEditOperationalData() =>
         Error.InvalidArgument(ProductErrorCodes.CannotEditOperationalData,
             "Cannot edit operational data.");
+
+    public static Error Inactive() =>
+        Error.InvalidArgument(ProductErrorCodes.Inactive,
+            "Product inactive.");
 }
 
 public static class ProductErrorCodes
@@ -76,6 +76,6 @@ public static class ProductErrorCodes
     public const string StaleSubmission = "Product.StaleSubmission";
     public const string CannotBlockUnpublished = "Product.CannotBlockUnpublished";
     public const string CannotUnblockNotBlocked = "Product.CannotUnblockNotBlocked";
-    public const string CannotUnpublishNotPublished = "Product.CannotUnpublishNotPublished";
     public const string CannotEditOperationalData = "Product.CannotEditOperationalData";
+    public const string Inactive = "Product.Inactive";
 }

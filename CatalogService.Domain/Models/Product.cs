@@ -61,7 +61,7 @@ public sealed class Product : AggregateRoot
     public BlockReason? BlockReason { get; private set; }
     public bool IsBlocked => ProductStatus == ProductStatus.Blocked;
 
-    private bool IsActive =>
+    public bool IsActive =>
         ProductStatus != ProductStatus.Archived &&
         !IsDeleted &&
         !IsBlocked;

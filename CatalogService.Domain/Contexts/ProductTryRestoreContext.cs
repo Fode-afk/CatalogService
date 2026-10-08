@@ -1,5 +1,3 @@
-﻿using migApp.Shared.Enums.Products;
+﻿namespace CatalogService.Domain.Contexts;
 
-namespace CatalogService.Domain.Contexts;
-
-public sealed record ProductTryRestoreContext(ProductStatus ProductStatus);
+public sealed record ProductTryRestoreContext(bool IsActive);
