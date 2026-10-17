@@ -8,6 +8,7 @@ using CatalogService.Infrastructure.Data;
 using CatalogService.Infrastructure.DependencyInjection;
 using CatalogService.Infrastructure.DomainEvents;
 using CatalogService.Infrastructure.Jobs;
+using CatalogService.Infrastructure.Messaging;
 using CatalogService.Infrastructure.Messaging.Consumers;
 using CatalogService.Infrastructure.Messaging.IntegrationEvents;
 using CatalogService.Infrastructure.Observability;
@@ -21,6 +22,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using migApp.Shared.Behaviours;
 using migApp.Shared.Grpc;
+using OpenTelemetry;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -37,9 +40,9 @@ public static class InfrastructureExtensions
             .AddServices(configuration)
             .AddDatabase(configuration)
             .AddHangfire(configuration)
-            .AddGrpc()
-            .AddHealthChecks(configuration)
-            .AddMassTransit(configuration)
+            .AddGrpcServices()
+            .AddHealth(configuration)
+            .AddMessaging()
             .AddIntegrationEventHandlers()
             .AddObservability(configuration)
             .AddBehaviours();
@@ -48,9 +51,23 @@ public static class InfrastructureExtensions
     {
         services.AddTransient<IDomainEventsDispatcher, DomainEventsDispatcher>();
 
-        services.Configure<SoftDeletedProductsCleanupOptions>(
-            configuration.GetSection(SoftDeletedProductsCleanupOptions.SectionName));
-        services.AddSingleton(sp =>sp.GetRequiredService<IOptions<SoftDeletedProductsCleanupOptions>>().Value);
+        services
+            .AddOptions<SoftDeletedProductsCleanupOptions>()
+            .Bind(configuration.GetSection(
+                SoftDeletedProductsCleanupOptions.SectionName))
+            .Validate(
+                options => options.Interval > TimeSpan.Zero,
+                $"{nameof(SoftDeletedProductsCleanupOptions.Interval)} must be greater than 0.")
+            .Validate(
+                options => options.RetentionPeriod > TimeSpan.Zero,
+                $"{nameof(SoftDeletedProductsCleanupOptions.RetentionPeriod)} must be greater than 0.")
+            .Validate(
+                options => options.BatchSize > 0,
+                $"{nameof(SoftDeletedProductsCleanupOptions.BatchSize)} must be greater than 0.")
+            .ValidateOnStart();
+
+        services.AddSingleton(sp => sp.GetRequiredService<IOptions<SoftDeletedProductsCleanupOptions>>().Value);
+
         services.AddHostedService<SoftDeletedProductsCleanupService>();
 
         return services;
@@ -58,7 +75,8 @@ public static class InfrastructureExtensions
 
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        string? connectionString = configuration.GetConnectionString("Database");
+        string connectionString = configuration.GetConnectionString("Database")
+            ?? throw new InvalidOperationException("Connection string 'Database' is missing");
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString, sqlOptions =>
@@ -73,7 +91,8 @@ public static class InfrastructureExtensions
 
     private static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
     {
-        string? connectionString = configuration.GetConnectionString("Database");
+        string connectionString = configuration.GetConnectionString("Database")
+            ?? throw new InvalidOperationException("Connection string 'Database' is missing");
 
         services.AddHangfire(config => config
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
@@ -90,7 +109,7 @@ public static class InfrastructureExtensions
         return services;
     }
 
-    private static IServiceCollection AddGrpc(this IServiceCollection services)
+    private static IServiceCollection AddGrpcServices(this IServiceCollection services)
     {
         services.AddGrpc(options =>
         {
@@ -100,24 +119,35 @@ public static class InfrastructureExtensions
         return services;
     }
 
-    private static IServiceCollection AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddHealth(this IServiceCollection services, IConfiguration configuration)
     {
+        var databaseConnectionString = configuration.GetConnectionString("Database")
+            ?? throw new InvalidOperationException("Connection string 'Database' is missing");
+
+        var rabbitMq = configuration
+            .GetSection(RabbitMqOptions.SectionName)
+            .Get<RabbitMqOptions>()
+                ?? throw new InvalidOperationException("RabbitMQ configuration is missing.");
+
         services.AddGrpcHealthChecks()
             .AddCheck("self", () => HealthCheckResult.Healthy("Service is running"))
             .AddSqlServer(
-                connectionString: configuration.GetConnectionString("Database")!,
+                connectionString: databaseConnectionString,
                 name: "mssql",
                 failureStatus: HealthStatus.Unhealthy,
                 tags: ["ready"])
             .AddRabbitMQ(
-                factory: sp =>
+                factory: async sp =>
                 {
                     var factory = new ConnectionFactory()
                     {
-                        HostName = configuration["RabbitMQ:Host"]!,
-                        Port = int.Parse(configuration["RabbitMQ:Port"]!)
+                        HostName = rabbitMq.Host,
+                        Port = rabbitMq.Port,
+                        VirtualHost = rabbitMq.VirtualHost,
+                        UserName = rabbitMq.Username,
+                        Password = rabbitMq.Password
                     };
-                    return factory.CreateConnectionAsync().GetAwaiter().GetResult();
+                    return await factory.CreateConnectionAsync();
                 },
                 name: "rabbitmq",
                 failureStatus: HealthStatus.Unhealthy,
@@ -126,11 +156,28 @@ public static class InfrastructureExtensions
         return services;
     }
 
-    private static IServiceCollection AddMassTransit(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddMessaging(this IServiceCollection services)
     {
+        services
+           .AddOptions<RabbitMqOptions>()
+           .BindConfiguration(RabbitMqOptions.SectionName)
+           .Validate(
+               options => !string.IsNullOrWhiteSpace(options.Host),
+               "RabbitMQ:Host is required.")
+           .Validate(
+               options => options.Port > 0,
+               "RabbitMQ:Port must be greater than zero.")
+           .Validate(
+               options => !string.IsNullOrWhiteSpace(options.Username),
+               "RabbitMQ:Username is required.")
+           .Validate(
+               options => !string.IsNullOrWhiteSpace(options.Password),
+               "RabbitMQ:Password is required.")
+           .ValidateOnStart();
+
         services.AddMassTransit(x =>
         {
-            x.SetKebabCaseEndpointNameFormatter();
+            x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("catalog-service", false));
 
             x.AddConsumersFromNamespaceContaining<ConsumersAssemblyMarker>();
 
@@ -142,13 +189,20 @@ public static class InfrastructureExtensions
 
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host(configuration["RabbitMQ:Host"]!, "/", h =>
-                {
-                    h.Username("guest");
-                    h.Password("guest");
-                });
+                var options = context
+                    .GetRequiredService<IOptions<RabbitMqOptions>>()
+                    .Value;
 
-                cfg.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter("catalog-service", false));
+                cfg.Host(options.Host,
+                    options.Port,
+                    options.VirtualHost,
+                    host =>
+                    {
+                        host.Username(options.Username);
+                        host.Password(options.Password);
+                    });
+
+                cfg.ConfigureEndpoints(context);
             });
         });
 
@@ -172,30 +226,25 @@ public static class InfrastructureExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var otlpEndpoint = configuration.GetConnectionString("OtlpEndpoint")
+        var otlpEndpoint = configuration["Otlp:Endpoint"]
             ?? throw new InvalidOperationException("OtlpEndpoint is not configured");
 
         services.AddOpenTelemetry()
+            .ConfigureResource(r => r.AddService("CatalogService"))
+            .UseOtlpExporter(OtlpExportProtocol.Grpc, new Uri(otlpEndpoint))
             .WithTracing(tracing => tracing
-                .SetResourceBuilder(ResourceBuilder
-                    .CreateDefault()
-                    .AddService("CatalogService"))
                 .AddAspNetCoreInstrumentation(opts =>
                     opts.Filter = ctx =>
                         !ctx.Request.Path.StartsWithSegments("/health"))
                 .AddHttpClientInstrumentation()
                 .AddSource("MassTransit")
-                .AddSource("CatalogService")
-                .AddOtlpExporter(opts => opts.Endpoint = new Uri(otlpEndpoint)))
+                .AddSource("CatalogService"))
             .WithMetrics(metrics => metrics
-                .SetResourceBuilder(ResourceBuilder
-                    .CreateDefault()
-                    .AddService("CatalogService"))
                 .AddAspNetCoreInstrumentation()
                 .AddHttpClientInstrumentation()
                 .AddRuntimeInstrumentation()
-                .AddMeter(CatalogServiceMetrics.MeterName)
-                .AddOtlpExporter(opts => opts.Endpoint = new Uri(otlpEndpoint)));
+                .AddMeter("MassTransit")
+                .AddMeter(CatalogServiceMetrics.MeterName));
 
         services.AddSingleton<ICatalogMetrics, CatalogServiceMetrics>();
         services.AddHostedService<ActiveProductsMetricCollector>();
@@ -205,8 +254,8 @@ public static class InfrastructureExtensions
 
     private static IServiceCollection AddBehaviours(this IServiceCollection services)
     {
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TracingBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         return services;
     }

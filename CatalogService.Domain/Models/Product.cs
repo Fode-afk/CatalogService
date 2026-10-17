@@ -45,7 +45,7 @@ public sealed class Product : AggregateRoot
     public ShortDescription ShortDescription { get; private set; }
 
     public Guid CategoryId { get; private set; }
-    public Guid VendorId { get; private set; }
+    public Guid VendorId { get; }
     public Guid BrandId { get; private set; }
 
     public ProductStatus ProductStatus { get; private set; } = ProductStatus.Draft;
@@ -85,7 +85,7 @@ public sealed class Product : AggregateRoot
         IsActive &&
         ProductStatus is ProductStatus.Published;
 
-    public DateTimeOffset CreatedAt { get; private set; }
+    public DateTimeOffset CreatedAt { get; }
     public DateTimeOffset? UpdatedAt { get; private set; }
 
     public bool IsDeleted => DeletedAt.HasValue;

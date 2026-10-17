@@ -10,40 +10,40 @@ public static class ProductGrpcMapper
 {
     public static CreateProductCommand ToCreateCommand(this CreateProductRequest request) =>
         new(
-            VendorId: Guid.Parse(request.VendorId),
-            CategoryId: Guid.Parse(request.CategoryId),
-            BrandId: Guid.Parse(request.BrandId),
-            Name: request.Name,
-            Slug: request.Slug,
-            Description: request.Description,
-            ShortDescription: request.ShortDescription,
-            SeoTitle: request.SeoTitle,
-            SeoDescription: request.SeoDescription,
-            SeoKeywords: request.SeoKeywords);
+            Guid.Parse(request.VendorId),
+            Guid.Parse(request.CategoryId),
+            Guid.Parse(request.BrandId),
+            request.Name,
+            request.Slug,
+            request.Description,
+            request.ShortDescription,
+            request.SeoTitle,
+            request.SeoDescription,
+            request.SeoKeywords);
 
     public static UpdateProductInfoCommand ToUpdateInfoCommand(this UpdateProductInfoRequest request) =>
         new(
-            ProductId: Guid.Parse(request.ProductId),
-            VendorId: Guid.Parse(request.VendorId),
-            Name: request.Name,
-            Slug: request.Slug,
-            Description: request.Description,
-            ShortDescription: request.ShortDescription,
-            CategoryId: Guid.Parse(request.CategoryId),
-            BrandId: Guid.Parse(request.BrandId),
-            SeoTitle: request.SeoTitle,
-            SeoDescription: request.SeoDescription,
-            SeoKeywords: request.SeoKeywords);
+            Guid.Parse(request.ProductId),
+            Guid.Parse(request.VendorId),
+            request.Name,
+            request.Slug,
+            request.Description,
+            request.ShortDescription,
+            Guid.Parse(request.CategoryId),
+            Guid.Parse(request.BrandId),
+            request.SeoTitle,
+            request.SeoDescription,
+            request.SeoKeywords);
 
     public static ReplaceProductAttributesCommand ToReplaceProductAttributesCommand(this ReplaceProductAttributesRequest request) =>
         new(
-            VendorId: Guid.Parse(request.VendorId),
-            ProductId: Guid.Parse(request.ProductId),
-            Attributes: request.Attributes.ToDictionary(a => Guid.Parse(a.Key), a => a.Value));
+            Guid.Parse(request.VendorId),
+            Guid.Parse(request.ProductId),
+            request.Attributes.ToDictionary(a => Guid.Parse(a.Key), a => a.Value));
 
     public static ReplaceProductTagsCommand ToReplaceProductTagsCommand(this ReplaceProductTagsRequest request) =>
         new(
-            VendorId: Guid.Parse(request.VendorId),
-            ProductId: Guid.Parse(request.ProductId),
-            Tags: [.. request.Tags]);
+            Guid.Parse(request.VendorId),
+            Guid.Parse(request.ProductId),
+            [.. request.Tags]);
 }

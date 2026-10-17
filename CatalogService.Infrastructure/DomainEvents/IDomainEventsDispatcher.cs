@@ -2,7 +2,7 @@
 
 namespace CatalogService.Infrastructure.DomainEvents;
 
-public interface IDomainEventsDispatcher
+internal interface IDomainEventsDispatcher
 {
     Task DispatchPreCommitDomainEventsAsync(IEnumerable<IDomainEvent> domainEvents, CancellationToken cancellationToken = default);
     Task DispatchPostCommitDomainEventsAsync(IEnumerable<IDomainEvent> domainEvents, CancellationToken cancellationToken = default);

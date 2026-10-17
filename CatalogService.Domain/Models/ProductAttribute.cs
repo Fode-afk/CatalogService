@@ -27,13 +27,13 @@ public sealed class ProductAttribute
         IsUnifying = isUnifying;
     }
 
-    public Guid CharacteristicId { get; private set; }
-    public AttributeName Name { get; private set; }
+    public Guid CharacteristicId { get; }
+    public AttributeName Name { get; }
     public AttributeValue? Value { get; private set; }
-    public AttributeCharType CharType { get; private set; }
-    public AttributeGroupName? GroupName { get; private set; }
+    public AttributeCharType CharType { get; }
+    public AttributeGroupName? GroupName { get; }
     public bool IsVariable { get; private set; }
-    public bool IsUnifying { get; private set; }
+    public bool IsUnifying { get; }
 
     private readonly List<AttributeVariableValue> _variableValues = [];
     public IReadOnlyList<AttributeVariableValue> VariableValues => _variableValues;

@@ -2,7 +2,7 @@
 
 public sealed class CategorySnapshot
 {
-    public Guid CategoryId { get; set; }
+    public Guid CategoryId { get; init; }
     public bool IsActive { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
     public long Version { get; set; }
