@@ -8,9 +8,5 @@ namespace CatalogService.Infrastructure.Messaging.Consumers.Price;
 public sealed class PriceCreatedIntegrationEventConsumer(IMediator mediator) : IConsumer<PriceCreatedIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<PriceCreatedIntegrationEvent> context) =>
-        await mediator.Send(new AddProductVariantPriceSnapshotCommand(
-            context.Message.ProductVariantId,
-            context.Message.ProductId,
-            context.Message.HasActivePrice,
-            context.Message.Version), context.CancellationToken);
+        await mediator.Send(new AddProductVariantPriceSnapshotCommand(context.Message.ProductVariantId), context.CancellationToken);
 }

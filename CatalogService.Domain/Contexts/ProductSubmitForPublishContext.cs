@@ -12,8 +12,8 @@ public sealed record ProductSubmitForPublishContext(
     bool CanEditContent,
     IReadOnlyCollection<ProductAttribute> Attributes,
     IReadOnlyCollection<Tag> Tags,
-    List<ProductVariantSnapshot> VariationSnapshots,
-    List<ProductVariantPriceSnapshot> PriceSnapshots) :
+    IReadOnlyList<ProductVariantSnapshot> VariationSnapshots,
+    IReadOnlyList<ProductVariantPriceSnapshot> PriceSnapshots) :
         IVendorContext,
         IProductContext,
         ICategoryContext,

@@ -4,9 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CatalogService.Application.Features.IntegrationEventHandlers.ProductVariantPriceSnapshot.AddProductVariantPriceSnapshot;
 
-public sealed class AddProductVariantPriceSnapshotCommandHandler(
-    IAppDbContext context,
-    TimeProvider timeProvider) : IRequestHandler<AddProductVariantPriceSnapshotCommand>
+public sealed class AddProductVariantPriceSnapshotCommandHandler(IAppDbContext context) : IRequestHandler<AddProductVariantPriceSnapshotCommand>
 {
     public async Task Handle(AddProductVariantPriceSnapshotCommand request, CancellationToken cancellationToken)
     {
@@ -19,10 +17,6 @@ public sealed class AddProductVariantPriceSnapshotCommandHandler(
             new Domain.Snapshots.ProductVariantPriceSnapshot
             {
                 ProductVariantId = request.ProductVariantId,
-                ProductId = request.ProductId,
-                HasPrice = request.HasPrice,
-                UpdatedAt = timeProvider.GetUtcNow(),
-                Version = request.Version
             });
 
         await context.SaveChangesAsync(cancellationToken);
