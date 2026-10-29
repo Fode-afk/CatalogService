@@ -1,6 +1,6 @@
 ﻿using CatalogService.Domain.DomainEvents;
-using CatalogService.Domain.Primitives;
 using MassTransit;
+using migApp.Shared.Domain.Primitives;
 using migApp.Shared.Messaging.IntegrationEvents.Products;
 namespace CatalogService.Infrastructure.Messaging.IntegrationEvents.Handlers;
 

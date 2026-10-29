@@ -1,7 +1,6 @@
 ﻿using CatalogService.Application.Interfaces.Data;
 using CatalogService.Application.Interfaces.Jobs;
 using CatalogService.Application.Interfaces.Metrics;
-using CatalogService.Domain.Primitives;
 using CatalogService.Infrastructure.BackgroundServices;
 using CatalogService.Infrastructure.Behaviours;
 using CatalogService.Infrastructure.Data;
@@ -21,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using migApp.Shared.Behaviours;
+using migApp.Shared.Domain.Primitives;
 using migApp.Shared.Grpc;
 using OpenTelemetry;
 using OpenTelemetry.Exporter;

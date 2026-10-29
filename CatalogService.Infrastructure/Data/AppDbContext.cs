@@ -1,12 +1,12 @@
 ﻿using CatalogService.Application.Interfaces.Data;
 using CatalogService.Domain.Models;
-using CatalogService.Domain.Primitives;
 using CatalogService.Domain.Snapshots;
 using CatalogService.Infrastructure.DomainEvents;
 using MassTransit;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using migApp.Shared.Domain.Primitives;
 
 namespace CatalogService.Infrastructure.Data;
 

@@ -1,5 +1,5 @@
-﻿using CatalogService.Domain.Primitives;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using migApp.Shared.Domain.Primitives;
 
 namespace CatalogService.Infrastructure.DomainEvents;
 

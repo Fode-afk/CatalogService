@@ -1,10 +1,10 @@
 ﻿using CatalogService.Domain.Contexts;
 using CatalogService.Domain.DomainEvents;
 using CatalogService.Domain.Errors;
-using CatalogService.Domain.Primitives;
 using CatalogService.Domain.RequestData;
 using CatalogService.Domain.Specifications.Product;
 using CatalogService.Domain.ValueObjects;
+using migApp.Shared.Domain.Primitives;
 using migApp.Shared.Enums.Characteristics;
 using migApp.Shared.Enums.Products;
 using migApp.Shared.Results;

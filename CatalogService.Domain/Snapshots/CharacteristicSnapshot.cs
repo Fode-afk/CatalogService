@@ -15,8 +15,4 @@ public sealed class CharacteristicSnapshot
     public bool IsUnifying { get; init; }
 
     public Guid CategoryId { get; init; }
-
-    public DateTimeOffset UpdatedAt { get; init; }
-
-    public long Version { get; init; }
 }

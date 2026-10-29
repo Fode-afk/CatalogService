@@ -1,5 +1,5 @@
-﻿using CatalogService.Domain.Primitives;
-using CatalogService.Domain.ValueObjects;
+﻿using CatalogService.Domain.ValueObjects;
+using migApp.Shared.Domain.Primitives;
 using migApp.Shared.Enums.Products;
 
 namespace CatalogService.Domain.DomainEvents;

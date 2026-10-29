@@ -1,5 +1,5 @@
 ﻿using CatalogService.Domain.Models;
-using CatalogService.Domain.Primitives;
+using migApp.Shared.Domain.Primitives;
 
 namespace CatalogService.Domain.DomainEvents;
 

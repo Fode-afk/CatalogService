@@ -16,7 +16,8 @@ public sealed class AddProductVariantPriceSnapshotCommandHandler(IAppDbContext c
         context.ProductVariantPriceSnapshots.Add(
             new Domain.Snapshots.ProductVariantPriceSnapshot
             {
-                ProductVariantId = request.ProductVariantId,
+                PriceId = request.PriceId,
+                ProductVariantId = request.ProductVariantId
             });
 
         await context.SaveChangesAsync(cancellationToken);

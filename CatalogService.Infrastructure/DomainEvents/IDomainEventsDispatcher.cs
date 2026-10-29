@@ -1,4 +1,4 @@
-﻿using CatalogService.Domain.Primitives;
+﻿using migApp.Shared.Domain.Primitives;
 
 namespace CatalogService.Infrastructure.DomainEvents;
 

@@ -10,6 +10,7 @@ public sealed class DeleteCharacteristicSnapshotCommandHandler(IAppDbContext con
     {
         var snapshot = await context.CharacteristicSnapshots
             .FirstOrDefaultAsync(c => c.CharacteristicId == request.CharacteristicId, cancellationToken);
+
         if (snapshot is null)
             return;
 

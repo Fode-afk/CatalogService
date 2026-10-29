@@ -9,5 +9,4 @@ public sealed record AddCharacteristicSnapshotCommand(
     AttributeCharType CharType,
     string? GroupName,
     bool IsUnifying,
-    Guid CategoryId,
-    long Version) : IRequest;
+    Guid CategoryId) : IRequest;

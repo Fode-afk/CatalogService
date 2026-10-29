@@ -10,7 +10,9 @@ internal sealed class ProductVariantPriceSnapshotConfiguration : IEntityTypeConf
     {
         builder.ToTable("ProductVariantPriceSnapshots", Schemas.CatalogWrite);
 
-        builder.HasKey(x => x.ProductVariantId);
+        builder.HasKey(x => x.PriceId);
+
+        builder.HasIndex(x => x.ProductVariantId).IsUnique();
 
         builder.Property<byte[]>("RowVersion")
            .IsRowVersion()
