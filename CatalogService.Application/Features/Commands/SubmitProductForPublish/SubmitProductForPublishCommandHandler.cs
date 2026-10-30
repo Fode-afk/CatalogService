@@ -1,4 +1,5 @@
-﻿using CatalogService.Application.Interfaces.Data;
+﻿using CatalogService.Application.Dtos;
+using CatalogService.Application.Interfaces.Data;
 using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
 using CatalogService.Domain.Specifications.Common;
@@ -11,14 +12,14 @@ namespace CatalogService.Application.Features.Commands.SubmitProductForPublish;
 
 public sealed class SubmitProductForPublishCommandHandler(
     IAppDbContext context,
-    TimeProvider timeProvider) : IRequestHandler<SubmitProductForPublishCommand, IResult>
+    TimeProvider timeProvider) : IRequestHandler<SubmitProductForPublishCommand, IResult<ProductWriteAck>>
 {
-    public async Task<IResult> Handle(SubmitProductForPublishCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<ProductWriteAck>> Handle(SubmitProductForPublishCommand request, CancellationToken cancellationToken)
     {
         var product = await context.Products
             .FirstOrDefaultAsync(c => c.Id == request.ProductId, cancellationToken);
         if (product == null)
-            return Fail(ProductErrors.NotFound());
+            return Fail<ProductWriteAck>(ProductErrors.NotFound());
 
         var ownershipCtx = new ProductVendorOwnershipContext(
             request.VendorId,
@@ -26,32 +27,32 @@ public sealed class SubmitProductForPublishCommandHandler(
 
         var ownershipResult = ProductBelongsToVendorSpec.Instance.IsSatisfiedBy(ownershipCtx);
         if (ownershipResult.IsFailure)
-            return ownershipResult;
+            return Fail<ProductWriteAck>(ownershipResult.Error);
 
         var vendorSnapshot = await context.VendorSnapshots
             .AsNoTracking()
             .FirstOrDefaultAsync(v => v.VendorId == request.VendorId, cancellationToken);
         if (vendorSnapshot == null)
-            return Fail(VendorSnapshotErrors.NotFound());
+            return Fail<ProductWriteAck>(VendorSnapshotErrors.NotFound());
 
         var categorySnapshot = await context.CategorySnapshots
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.CategoryId == product.CategoryId, cancellationToken);
         if (categorySnapshot == null)
-            return Fail(CategorySnapshotErrors.NotFound());
+            return Fail<ProductWriteAck>(CategorySnapshotErrors.NotFound());
 
         var brandSnapshot = await context.BrandSnapshots
             .AsNoTracking()
             .FirstOrDefaultAsync(b => b.BrandId == product.BrandId, cancellationToken);
         if (brandSnapshot == null)
-            return Fail(BrandSnapshotErrors.NotFound());
+            return Fail<ProductWriteAck>(BrandSnapshotErrors.NotFound());
 
         var variationSnapshots = await context.ProductVariantSnapshots
             .AsNoTracking()
             .Where(v => v.ProductId == product.Id)
             .ToListAsync(cancellationToken);
         if (variationSnapshots.Count == 0)
-            return Fail(ProductErrors.NoVariations());
+            return Fail<ProductWriteAck>(ProductErrors.NoVariations());
 
         var priceSnapshots = await context.ProductVariantPriceSnapshots
             .AsNoTracking()
@@ -72,10 +73,10 @@ public sealed class SubmitProductForPublishCommandHandler(
             ctx,
             timeProvider.GetUtcNow());
         if (result.IsFailure)
-            return result;
+            return Fail<ProductWriteAck>(result.Error);
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return Ok();
+        return Ok(new ProductWriteAck(product.Id, product.Version));
     }
 }

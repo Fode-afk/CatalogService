@@ -46,4 +46,11 @@ public static class ProductGrpcMapper
             Guid.Parse(request.VendorId),
             Guid.Parse(request.ProductId),
             [.. request.Tags]);
+
+    public static ProductWriteAck ToGrpc(this Application.Dtos.ProductWriteAck writeAck) =>
+        new()
+        {
+            ProductId = writeAck.ProductId.ToString(),
+            Version = writeAck.Version
+        };
 }

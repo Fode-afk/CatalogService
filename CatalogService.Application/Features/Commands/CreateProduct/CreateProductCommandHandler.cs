@@ -1,4 +1,5 @@
-﻿using CatalogService.Application.Interfaces.Data;
+﻿using CatalogService.Application.Dtos;
+using CatalogService.Application.Interfaces.Data;
 using CatalogService.Application.Interfaces.Metrics;
 using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
@@ -13,31 +14,31 @@ namespace CatalogService.Application.Features.Commands.CreateProduct;
 public sealed class CreateProductCommandHandler(
     IAppDbContext context,
     ICatalogMetrics metrics,
-    TimeProvider timeProvider) : IRequestHandler<CreateProductCommand, IResult>
+    TimeProvider timeProvider) : IRequestHandler<CreateProductCommand, IResult<ProductWriteAck>>
 {
-    public async Task<IResult> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<ProductWriteAck>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         var vendorSnapshot = await context.VendorSnapshots
             .AsNoTracking()
             .FirstOrDefaultAsync(v => v.VendorId == request.VendorId, cancellationToken);
         if (vendorSnapshot is null)
-            return Fail(VendorSnapshotErrors.NotFound());
+            return Fail<ProductWriteAck>(VendorSnapshotErrors.NotFound());
 
         var brandSnapshot = await context.BrandSnapshots
             .AsNoTracking()
             .FirstOrDefaultAsync(b => b.BrandId == request.BrandId, cancellationToken);
         if (brandSnapshot is null)
-            return Fail(BrandSnapshotErrors.NotFound());
+            return Fail<ProductWriteAck>(BrandSnapshotErrors.NotFound());
 
         var categorySnapshot = await context.CategorySnapshots
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.CategoryId == request.CategoryId, cancellationToken);
         if (categorySnapshot is null)
-            return Fail(CategorySnapshotErrors.NotFound());
+            return Fail<ProductWriteAck>(CategorySnapshotErrors.NotFound());
 
         var buildResult = ProductCreationDataBuilder.Build(request);
         if (buildResult.IsFailure)
-            return buildResult;
+            return Fail<ProductWriteAck>(buildResult.Error);
 
         var data = buildResult.Value;
 
@@ -54,9 +55,11 @@ public sealed class CreateProductCommandHandler(
             request.BrandId,
             timeProvider.GetUtcNow());
         if (result.IsFailure)
-            return result;
+            return Fail<ProductWriteAck>(result.Error);
 
-        context.Products.Add(result.Value);
+        var product = result.Value;
+
+        context.Products.Add(product);
 
         try
         {
@@ -64,11 +67,11 @@ public sealed class CreateProductCommandHandler(
         }
         catch (DbUpdateException)
         {
-            return Fail(ProductErrors.AlreadyExists());
+            return Fail<ProductWriteAck>(ProductErrors.AlreadyExists());
         }
 
         metrics.RecordProductCreated();
 
-        return Ok();
+        return Ok(new ProductWriteAck(product.Id, product.Version));
     }
 }

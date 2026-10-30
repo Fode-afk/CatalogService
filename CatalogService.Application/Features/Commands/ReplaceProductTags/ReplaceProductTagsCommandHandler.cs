@@ -1,4 +1,5 @@
-﻿using CatalogService.Application.Interfaces.Data;
+﻿using CatalogService.Application.Dtos;
+using CatalogService.Application.Interfaces.Data;
 using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
 using CatalogService.Domain.Specifications.Common;
@@ -11,14 +12,14 @@ namespace CatalogService.Application.Features.Commands.ReplaceProductTags;
 
 public sealed class ReplaceProductTagsCommandHandler(
     IAppDbContext context,
-    TimeProvider timeProvider) : IRequestHandler<ReplaceProductTagsCommand, IResult>
+    TimeProvider timeProvider) : IRequestHandler<ReplaceProductTagsCommand, IResult<ProductWriteAck>>
 {
-    public async Task<IResult> Handle(ReplaceProductTagsCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<ProductWriteAck>> Handle(ReplaceProductTagsCommand request, CancellationToken cancellationToken)
     {
         var product = await context.Products
            .FirstOrDefaultAsync(p => p.Id == request.ProductId, cancellationToken);
         if (product == null)
-            return Fail(ProductErrors.NotFound());
+            return Fail<ProductWriteAck>(ProductErrors.NotFound());
 
         var ownershipCtx = new ProductVendorOwnershipContext(
             request.VendorId,
@@ -26,17 +27,17 @@ public sealed class ReplaceProductTagsCommandHandler(
 
         var ownershipResult = ProductBelongsToVendorSpec.Instance.IsSatisfiedBy(ownershipCtx);
         if (ownershipResult.IsFailure)
-            return ownershipResult;
+            return Fail<ProductWriteAck>(ownershipResult.Error);
 
         var vendorSnapshot = await context.VendorSnapshots
             .AsNoTracking()
             .FirstOrDefaultAsync(v => v.VendorId == request.VendorId, cancellationToken);
         if (vendorSnapshot == null)
-            return Fail(VendorSnapshotErrors.NotFound());
+            return Fail<ProductWriteAck>(VendorSnapshotErrors.NotFound());
 
         var buildResult = ProductTagsReplacedDataBuilder.Build(request);
         if (buildResult.IsFailure)
-            return buildResult;
+            return Fail<ProductWriteAck>(buildResult.Error);
 
         var ctx = new ProductTagsReplaceContext(
             vendorSnapshot.IsActive,
@@ -47,10 +48,10 @@ public sealed class ReplaceProductTagsCommandHandler(
             ctx,
             timeProvider.GetUtcNow());
         if (result.IsFailure)
-            return result;
+            return Fail<ProductWriteAck>(result.Error);
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return Ok();
+        return Ok(new ProductWriteAck(product.Id, product.Version));
     }
 }

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using CatalogService.Application.Dtos;
+using MediatR;
 using migApp.Shared.Results;
 
 namespace CatalogService.Application.Features.Commands.ReplaceProductTags;
@@ -6,4 +7,4 @@ namespace CatalogService.Application.Features.Commands.ReplaceProductTags;
 public sealed record ReplaceProductTagsCommand(
     Guid ProductId,
     Guid VendorId,
-    List<string> Tags) : IRequest<IResult>;
+    List<string> Tags) : IRequest<IResult<ProductWriteAck>>;

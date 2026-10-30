@@ -1,4 +1,5 @@
-﻿using CatalogService.Application.Interfaces.Data;
+﻿using CatalogService.Application.Dtos;
+using CatalogService.Application.Interfaces.Data;
 using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
 using CatalogService.Domain.Specifications.Common;
@@ -11,14 +12,14 @@ namespace CatalogService.Application.Features.Commands.UpdateProductInfo;
 
 public sealed class UpdateProductInfoCommandHandler(
     IAppDbContext context,
-    TimeProvider timeProvider) : IRequestHandler<UpdateProductInfoCommand, IResult>
+    TimeProvider timeProvider) : IRequestHandler<UpdateProductInfoCommand, IResult<ProductWriteAck>>
 {
-    public async Task<IResult> Handle(UpdateProductInfoCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<ProductWriteAck>> Handle(UpdateProductInfoCommand request, CancellationToken cancellationToken)
     {
         var product = await context.Products
             .FirstOrDefaultAsync(c => c.Id == request.ProductId, cancellationToken);
         if (product == null)
-            return Fail(ProductErrors.NotFound());
+            return Fail<ProductWriteAck>(ProductErrors.NotFound());
 
         var ownershipCtx = new ProductVendorOwnershipContext(
            request.VendorId,
@@ -26,29 +27,29 @@ public sealed class UpdateProductInfoCommandHandler(
 
         var ownershipResult = ProductBelongsToVendorSpec.Instance.IsSatisfiedBy(ownershipCtx);
         if (ownershipResult.IsFailure)
-            return ownershipResult;
+            return Fail<ProductWriteAck>(ownershipResult.Error);
 
         var vendorSnapshot = await context.VendorSnapshots
             .AsNoTracking()
             .FirstOrDefaultAsync(v => v.VendorId == request.VendorId, cancellationToken);
         if (vendorSnapshot == null)
-            return Fail(VendorSnapshotErrors.NotFound());
+            return Fail<ProductWriteAck>(VendorSnapshotErrors.NotFound());
 
         var categorySnapshot = await context.CategorySnapshots
             .AsNoTracking()
             .FirstOrDefaultAsync(v => v.CategoryId == request.CategoryId, cancellationToken);
         if (categorySnapshot is null)
-            return Fail(CategorySnapshotErrors.NotFound());
+            return Fail<ProductWriteAck>(CategorySnapshotErrors.NotFound());
 
         var brandSnapshot = await context.BrandSnapshots
             .AsNoTracking()
             .FirstOrDefaultAsync(b => b.BrandId == request.BrandId, cancellationToken);
         if (brandSnapshot is null)
-            return Fail(BrandSnapshotErrors.NotFound());
+            return Fail<ProductWriteAck>(BrandSnapshotErrors.NotFound());
 
         var buildResult = ProductUpdateInfoDataBuilder.Build(request);
         if (buildResult.IsFailure)
-            return buildResult;
+            return Fail<ProductWriteAck>(buildResult.Error);
 
         var ctx = new ProductUpdateInfoContext(
             vendorSnapshot.IsActive,
@@ -63,7 +64,7 @@ public sealed class UpdateProductInfoCommandHandler(
             request.BrandId,
             timeProvider.GetUtcNow());
         if (result.IsFailure)
-            return result;
+            return Fail<ProductWriteAck>(result.Error);
 
         try
         {
@@ -71,9 +72,9 @@ public sealed class UpdateProductInfoCommandHandler(
         }
         catch (DbUpdateException)
         {
-            return Fail(SlugErrors.NotUnique());
+            return Fail<ProductWriteAck>(SlugErrors.NotUnique());
         }
 
-        return Ok();
+        return Ok(new ProductWriteAck(product.Id, product.Version));
     }
 }

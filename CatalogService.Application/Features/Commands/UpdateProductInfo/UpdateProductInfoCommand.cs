@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using CatalogService.Application.Dtos;
+using MediatR;
 using migApp.Shared.Results;
 
 namespace CatalogService.Application.Features.Commands.UpdateProductInfo;
@@ -17,4 +18,4 @@ public sealed record UpdateProductInfoCommand(
 
     string SeoTitle,
     string SeoDescription,
-    string SeoKeywords) : IRequest<IResult>;
+    string SeoKeywords) : IRequest<IResult<ProductWriteAck>>;

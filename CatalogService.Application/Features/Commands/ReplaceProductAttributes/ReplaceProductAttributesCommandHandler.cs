@@ -1,4 +1,5 @@
-﻿using CatalogService.Application.Interfaces.Data;
+﻿using CatalogService.Application.Dtos;
+using CatalogService.Application.Interfaces.Data;
 using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
 using CatalogService.Domain.Specifications.Common;
@@ -11,14 +12,14 @@ namespace CatalogService.Application.Features.Commands.ReplaceProductAttributes;
 
 public sealed class ReplaceProductAttributesCommandHandler(
     IAppDbContext context,
-    TimeProvider timeProvider) : IRequestHandler<ReplaceProductAttributesCommand, IResult>
+    TimeProvider timeProvider) : IRequestHandler<ReplaceProductAttributesCommand, IResult<ProductWriteAck>>
 {
-    public async Task<IResult> Handle(ReplaceProductAttributesCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<ProductWriteAck>> Handle(ReplaceProductAttributesCommand request, CancellationToken cancellationToken)
     {
         var product = await context.Products
             .FirstOrDefaultAsync(p => p.Id == request.ProductId, cancellationToken);
         if (product == null)
-            return Fail(ProductErrors.NotFound());
+            return Fail<ProductWriteAck>(ProductErrors.NotFound());
 
         var ownershipCtx = new ProductVendorOwnershipContext(
             request.VendorId,
@@ -26,13 +27,13 @@ public sealed class ReplaceProductAttributesCommandHandler(
 
         var ownershipResult = ProductBelongsToVendorSpec.Instance.IsSatisfiedBy(ownershipCtx);
         if (ownershipResult.IsFailure)
-            return ownershipResult;
+            return Fail<ProductWriteAck>(ownershipResult.Error);
 
         var vendorSnapshot = await context.VendorSnapshots
            .AsNoTracking()
            .FirstOrDefaultAsync(v => v.VendorId == request.VendorId, cancellationToken);
         if (vendorSnapshot == null)
-            return Fail(VendorSnapshotErrors.NotFound());
+            return Fail<ProductWriteAck>(VendorSnapshotErrors.NotFound());
 
         var characteristicIds = request.Attributes.Keys.ToList();
         var characteristicSnapshots = await context.CharacteristicSnapshots
@@ -42,11 +43,11 @@ public sealed class ReplaceProductAttributesCommandHandler(
                 characteristicIds.Contains(c.CharacteristicId))
             .ToListAsync(cancellationToken);
         if (characteristicSnapshots.Count == 0)
-            return Fail(CharacteristicSnapshotErrors.NotFound());
+            return Fail<ProductWriteAck>(CharacteristicSnapshotErrors.NotFound());
 
         var buildResult = ProductReplaceAttributesDataBuilder.Build(request, characteristicSnapshots);
         if (buildResult.IsFailure)
-            return buildResult;
+            return Fail<ProductWriteAck>(buildResult.Error);
 
         var ctx = new ProductAttributesReplaceContext(
             vendorSnapshot.IsActive,
@@ -57,10 +58,10 @@ public sealed class ReplaceProductAttributesCommandHandler(
             ctx,
             timeProvider.GetUtcNow());
         if (result.IsFailure)
-            return result;
+            return Fail<ProductWriteAck>(result.Error);
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return Ok();
+        return Ok(new ProductWriteAck(product.Id, product.Version));
     }
 }

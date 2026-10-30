@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using CatalogService.Application.Dtos;
+using MediatR;
 using migApp.Shared.Results;
 
 namespace CatalogService.Application.Features.Commands.WithdrawProductPublishSubmission;
 
 public sealed record WithdrawProductPublishSubmissionCommand(
     Guid ProductId, 
-    Guid VendorId) : IRequest<IResult>;
+    Guid VendorId) : IRequest<IResult<ProductWriteAck>>;

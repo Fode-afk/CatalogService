@@ -1,6 +1,7 @@
-﻿using MediatR;
+﻿using CatalogService.Application.Dtos;
+using MediatR;
 using migApp.Shared.Results;
 
 namespace CatalogService.Application.Features.Commands.UnpublishProduct;
 
-public sealed record UnpublishProductCommand(Guid ProductId, Guid VendorId) : IRequest<IResult>;
+public sealed record UnpublishProductCommand(Guid ProductId, Guid VendorId) : IRequest<IResult<ProductWriteAck>>;

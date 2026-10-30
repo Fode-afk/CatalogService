@@ -8,20 +8,20 @@ package catalog.v1;
 option csharp_namespace = "CatalogService.Api.Grpc.V1.Protos";
 
 service CatalogService {
-	rpc CreateProduct(CreateProductRequest) returns (google.protobuf.Empty);
-    rpc UpdateProductInfo(UpdateProductInfoRequest) returns (google.protobuf.Empty);
+	rpc CreateProduct(CreateProductRequest) returns (ProductWriteAck);
+    rpc UpdateProductInfo(UpdateProductInfoRequest) returns (ProductWriteAck);
 
-    rpc SubmitProductForPublish(SubmitProductForPublishRequest) returns (google.protobuf.Empty);
-    rpc WithdrawProductPublishSubmission(WithdrawProductPublishSubmissionRequest) returns (google.protobuf.Empty);
-    rpc UnpublishProduct(UnpublishProductRequest) returns (google.protobuf.Empty);
+    rpc SubmitProductForPublish(SubmitProductForPublishRequest) returns (ProductWriteAck);
+    rpc WithdrawProductPublishSubmission(WithdrawProductPublishSubmissionRequest) returns (ProductWriteAck);
+    rpc UnpublishProduct(UnpublishProductRequest) returns (ProductWriteAck);
 
-    rpc ArchiveProduct(ArchiveProductRequest) returns (google.protobuf.Empty);
-    rpc RestoreProduct(RestoreProductRequest) returns (google.protobuf.Empty);
+    rpc ArchiveProduct(ArchiveProductRequest) returns (ProductWriteAck);
+    rpc RestoreProduct(RestoreProductRequest) returns (ProductWriteAck);
 
     rpc DeleteProduct(DeleteProductRequest) returns (google.protobuf.Empty);
 
-    rpc ReplaceProductAttributes(ReplaceProductAttributesRequest) returns (google.protobuf.Empty);
-    rpc ReplaceProductTags(ReplaceProductTagsRequest) returns (google.protobuf.Empty);
+    rpc ReplaceProductAttributes(ReplaceProductAttributesRequest) returns (ProductWriteAck);
+    rpc ReplaceProductTags(ReplaceProductTagsRequest) returns (ProductWriteAck);
 }
 
 message CreateProductRequest {
@@ -91,4 +91,9 @@ message ReplaceProductTagsRequest {
     string vendor_id = 1;
     string product_id = 2;
     repeated string tags = 3;
+}
+
+message ProductWriteAck {
+    string product_id = 1;
+    int64 version = 2;
 }

@@ -1,6 +1,7 @@
-﻿using MediatR;
+﻿using CatalogService.Application.Dtos;
+using MediatR;
 using migApp.Shared.Results;
 
 namespace CatalogService.Application.Features.Commands.RestoreProduct;
 
-public sealed record RestoreProductCommand(Guid ProductId, Guid VendorId) : IRequest<IResult>;
+public sealed record RestoreProductCommand(Guid ProductId, Guid VendorId) : IRequest<IResult<ProductWriteAck>>;
