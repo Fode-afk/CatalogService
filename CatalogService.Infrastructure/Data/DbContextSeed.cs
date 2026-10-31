@@ -12,6 +12,9 @@ internal static class DbContextSeed
         if (!context.BrandSnapshots.Any())
             context.AddRange(BrandSnapshotSeed.Data);
 
+        if (!context.CategorySnapshots.Any())
+            context.AddRange(CategorySnapshotSeed.Data);
+
         if (!context.CharacteristicSnapshots.Any())
             context.AddRange(CharacteristicSnapshotSeed.Data);
 

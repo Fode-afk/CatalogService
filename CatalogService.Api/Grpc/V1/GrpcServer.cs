@@ -13,86 +13,58 @@ using migApp.Shared.Grpc;
 
 namespace CatalogService.Api.Grpc.V1;
 
-internal sealed class GrpcServer(IMediator mediator) : Protos.CatalogService.CatalogServiceBase
+internal sealed class GrpcServer(ISender sender) : Protos.CatalogService.CatalogServiceBase
 {
-    public override async Task<ProductWriteAck> CreateProduct(CreateProductRequest request, ServerCallContext context)
-    {
-        var result = await mediator.Send(
+    public override async Task<ProductWriteAck> CreateProduct(CreateProductRequest request, ServerCallContext context) =>
+        (await sender.Send(
             request.ToCreateCommand(),
-            context.CancellationToken);
-        return result.ThrowIfFailure().ToGrpc();
-    }
+            context.CancellationToken)).ThrowIfFailure().ToGrpc();
 
-    public override async Task<ProductWriteAck> UpdateProductInfo(UpdateProductInfoRequest request, ServerCallContext context)
-    {
-        var result = await mediator.Send(
+    public override async Task<ProductWriteAck> UpdateProductInfo(UpdateProductInfoRequest request, ServerCallContext context) =>
+        (await sender.Send(
             request.ToUpdateInfoCommand(),
-            context.CancellationToken);
-        return result.ThrowIfFailure().ToGrpc();
-    }
+            context.CancellationToken)).ThrowIfFailure().ToGrpc();
 
-    public override async Task<ProductWriteAck> SubmitProductForPublish(SubmitProductForPublishRequest request, ServerCallContext context)
-    {
-        var result = await mediator.Send(new SubmitProductForPublishCommand(
+    public override async Task<ProductWriteAck> SubmitProductForPublish(SubmitProductForPublishRequest request, ServerCallContext context) =>
+        (await sender.Send(new SubmitProductForPublishCommand(
             Guid.Parse(request.ProductId),
-            Guid.Parse(request.VendorId)), context.CancellationToken);
-        return result.ThrowIfFailure().ToGrpc();
-    }
+            Guid.Parse(request.VendorId)), context.CancellationToken)).ThrowIfFailure().ToGrpc();
 
-    public override async Task<ProductWriteAck> WithdrawProductPublishSubmission(WithdrawProductPublishSubmissionRequest request, ServerCallContext context)
-    {
-        var result = await mediator.Send(new WithdrawProductPublishSubmissionCommand(
+    public override async Task<ProductWriteAck> WithdrawProductPublishSubmission(WithdrawProductPublishSubmissionRequest request, ServerCallContext context) =>
+        (await sender.Send(new WithdrawProductPublishSubmissionCommand(
             Guid.Parse(request.ProductId),
-            Guid.Parse(request.VendorId)), context.CancellationToken);
-        return result.ThrowIfFailure().ToGrpc();
-    }
+            Guid.Parse(request.VendorId)), context.CancellationToken)).ThrowIfFailure().ToGrpc();
 
-    public override async Task<ProductWriteAck> UnpublishProduct(UnpublishProductRequest request, ServerCallContext context)
-    {
-        var result = await mediator.Send(new UnpublishProductCommand(
+    public override async Task<ProductWriteAck> UnpublishProduct(UnpublishProductRequest request, ServerCallContext context) =>
+        (await sender.Send(new UnpublishProductCommand(
             Guid.Parse(request.ProductId),
-            Guid.Parse(request.VendorId)), context.CancellationToken);
-        return result.ThrowIfFailure().ToGrpc();
-    }
+            Guid.Parse(request.VendorId)), context.CancellationToken)).ThrowIfFailure().ToGrpc();
 
-    public override async Task<ProductWriteAck> ArchiveProduct(ArchiveProductRequest request, ServerCallContext context)
-    {
-        var result = await mediator.Send(new ArchiveProductCommand(
+    public override async Task<ProductWriteAck> ArchiveProduct(ArchiveProductRequest request, ServerCallContext context) =>
+        (await sender.Send(new ArchiveProductCommand(
             Guid.Parse(request.ProductId), 
-            Guid.Parse(request.VendorId)), context.CancellationToken);
-        return result.ThrowIfFailure().ToGrpc();
-    }
+            Guid.Parse(request.VendorId)), context.CancellationToken)).ThrowIfFailure().ToGrpc();
 
-    public override async Task<ProductWriteAck> RestoreProduct(RestoreProductRequest request, ServerCallContext context)
-    {
-        var result = await mediator.Send(new RestoreProductCommand(
+    public override async Task<ProductWriteAck> RestoreProduct(RestoreProductRequest request, ServerCallContext context) =>
+        (await sender.Send(new RestoreProductCommand(
             Guid.Parse(request.ProductId),
-            Guid.Parse(request.VendorId)), context.CancellationToken);
-        return result.ThrowIfFailure().ToGrpc();
-    }
+            Guid.Parse(request.VendorId)), context.CancellationToken)).ThrowIfFailure().ToGrpc();
 
     public override async Task<Empty> DeleteProduct(DeleteProductRequest request, ServerCallContext context)
     {
-        var result = await mediator.Send(new DeleteProductCommand(
+        (await sender.Send(new DeleteProductCommand(
             Guid.Parse(request.ProductId),
-            Guid.Parse(request.VendorId)), context.CancellationToken);
-        result.ThrowIfFailure();
+            Guid.Parse(request.VendorId)), context.CancellationToken)).ThrowIfFailure();
         return new Empty();
     }
 
-    public override async Task<ProductWriteAck> ReplaceProductAttributes(ReplaceProductAttributesRequest request, ServerCallContext context)
-    {
-        var result = await mediator.Send(
+    public override async Task<ProductWriteAck> ReplaceProductAttributes(ReplaceProductAttributesRequest request, ServerCallContext context) => 
+        (await sender.Send(
             request.ToReplaceProductAttributesCommand(),
-            context.CancellationToken);
-        return result.ThrowIfFailure().ToGrpc();
-    }
+            context.CancellationToken)).ThrowIfFailure().ToGrpc();
 
-    public override async Task<ProductWriteAck> ReplaceProductTags(ReplaceProductTagsRequest request, ServerCallContext context)
-    {
-        var result = await mediator.Send(
+    public override async Task<ProductWriteAck> ReplaceProductTags(ReplaceProductTagsRequest request, ServerCallContext context) =>
+        (await sender.Send(
             request.ToReplaceProductTagsCommand(),
-            context.CancellationToken);
-        return result.ThrowIfFailure().ToGrpc();
-    }
+            context.CancellationToken)).ThrowIfFailure().ToGrpc();
 }
