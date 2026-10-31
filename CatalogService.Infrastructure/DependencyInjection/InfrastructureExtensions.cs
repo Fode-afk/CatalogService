@@ -79,10 +79,8 @@ public static class InfrastructureExtensions
             ?? throw new InvalidOperationException("Connection string 'Database' is missing");
 
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(connectionString, sqlOptions =>
-            {
-                sqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", Schemas.CatalogWrite);
-            }));
+            options.UseSqlServer(connectionString, sqlOptions => 
+                sqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", Schemas.CatalogWrite)));
 
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
@@ -111,11 +109,7 @@ public static class InfrastructureExtensions
 
     private static IServiceCollection AddGrpcServices(this IServiceCollection services)
     {
-        services.AddGrpc(options =>
-        {
-            options.Interceptors.Add<GrpcExceptionInterceptor>();
-        });
-
+        services.AddGrpc(options => options.Interceptors.Add<GrpcExceptionInterceptor>());
         return services;
     }
 
@@ -209,18 +203,12 @@ public static class InfrastructureExtensions
         return services;
     }
 
-    private static IServiceCollection AddIntegrationEventHandlers(this IServiceCollection services)
-    {
-        var assembly = typeof(IntegrationEventsAssemblyMarker).Assembly;
-
+    private static IServiceCollection AddIntegrationEventHandlers(this IServiceCollection services) =>
         services.Scan(scan => scan
-            .FromAssemblies(assembly)
+            .FromAssemblies(typeof(IntegrationEventsAssemblyMarker).Assembly)
             .AddClasses(classes => classes.AssignableTo(typeof(IPreCommitDomainEventHandler<>)))
             .AsImplementedInterfaces()
             .WithScopedLifetime());
-
-        return services;
-    }
 
     private static IServiceCollection AddObservability(
         this IServiceCollection services,
@@ -252,11 +240,8 @@ public static class InfrastructureExtensions
         return services;
     }
 
-    private static IServiceCollection AddBehaviours(this IServiceCollection services)
-    {
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TracingBehaviour<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
-        return services;
-    }
+    private static IServiceCollection AddBehaviours(this IServiceCollection services) =>
+        services
+            .AddTransient(typeof(IPipelineBehavior<,>), typeof(TracingBehaviour<,>))
+            .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 }

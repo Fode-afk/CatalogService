@@ -8,7 +8,7 @@ namespace CatalogService.Api.Grpc.Mapping;
 
 public static class ProductGrpcMapper
 {
-    public static CreateProductCommand ToCreateCommand(this CreateProductRequest request) =>
+    public static CreateProductCommand ToCommand(this CreateProductRequest request) =>
         new(
             Guid.Parse(request.VendorId),
             Guid.Parse(request.CategoryId),
@@ -21,7 +21,7 @@ public static class ProductGrpcMapper
             request.SeoDescription,
             request.SeoKeywords);
 
-    public static UpdateProductInfoCommand ToUpdateInfoCommand(this UpdateProductInfoRequest request) =>
+    public static UpdateProductInfoCommand ToCommand(this UpdateProductInfoRequest request) =>
         new(
             Guid.Parse(request.ProductId),
             Guid.Parse(request.VendorId),
@@ -35,19 +35,19 @@ public static class ProductGrpcMapper
             request.SeoDescription,
             request.SeoKeywords);
 
-    public static ReplaceProductAttributesCommand ToReplaceProductAttributesCommand(this ReplaceProductAttributesRequest request) =>
+    public static ReplaceProductAttributesCommand ToCommand(this ReplaceProductAttributesRequest request) =>
         new(
             Guid.Parse(request.VendorId),
             Guid.Parse(request.ProductId),
             request.Attributes.ToDictionary(a => Guid.Parse(a.Key), a => a.Value));
 
-    public static ReplaceProductTagsCommand ToReplaceProductTagsCommand(this ReplaceProductTagsRequest request) =>
+    public static ReplaceProductTagsCommand ToCommand(this ReplaceProductTagsRequest request) =>
         new(
             Guid.Parse(request.VendorId),
             Guid.Parse(request.ProductId),
             [.. request.Tags]);
 
-    public static ProductWriteAck ToGrpc(this Application.Dtos.ProductWriteAck writeAck) =>
+    public static ProductWriteAck ToResponse(this Application.Dtos.ProductWriteAck writeAck) =>
         new()
         {
             ProductId = writeAck.ProductId.ToString(),

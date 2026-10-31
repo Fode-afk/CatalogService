@@ -29,7 +29,7 @@ public sealed class ProductGrpcMapperTests
         };
 
         // Act
-        var command = request.ToCreateCommand();
+        var command = request.ToCommand();
 
         // Assert
         command.VendorId.Should().Be(vendorId);
@@ -69,7 +69,7 @@ public sealed class ProductGrpcMapperTests
         };
 
         // Act
-        var command = request.ToUpdateInfoCommand();
+        var command = request.ToCommand();
 
         // Assert
         command.ProductId.Should().Be(productId);
@@ -109,7 +109,7 @@ public sealed class ProductGrpcMapperTests
             "128 GB");
 
         // Act
-        var command = request.ToReplaceProductAttributesCommand();
+        var command = request.ToCommand();
 
         // Assert
         command.VendorId.Should().Be(vendorId);
@@ -141,7 +141,7 @@ public sealed class ProductGrpcMapperTests
         request.Tags.Add("electronics");
 
         // Act
-        var command = request.ToReplaceProductTagsCommand();
+        var command = request.ToCommand();
 
         // Assert
         command.VendorId.Should().Be(vendorId);

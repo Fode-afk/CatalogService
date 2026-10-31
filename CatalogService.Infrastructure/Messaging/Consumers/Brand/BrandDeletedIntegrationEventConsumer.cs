@@ -5,8 +5,8 @@ using migApp.Shared.Messaging.IntegrationEvents.Brands;
 
 namespace CatalogService.Infrastructure.Messaging.Consumers.Brand;
 
-public sealed class BrandDeletedIntegrationEventConsumer(IMediator mediator) : IConsumer<BrandDeletedIntegrationEvent>
+public sealed class BrandDeletedIntegrationEventConsumer(ISender sender) : IConsumer<BrandDeletedIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<BrandDeletedIntegrationEvent> context) =>
-        await mediator.Send(new DeleteBrandSnapshotCommand(context.Message.BrandId), context.CancellationToken);
+        await sender.Send(new DeleteBrandSnapshotCommand(context.Message.BrandId), context.CancellationToken);
 }

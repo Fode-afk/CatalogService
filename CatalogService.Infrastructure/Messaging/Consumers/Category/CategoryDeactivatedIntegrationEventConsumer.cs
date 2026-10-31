@@ -5,10 +5,10 @@ using migApp.Shared.Messaging.IntegrationEvents.Categories;
 
 namespace CatalogService.Infrastructure.Messaging.Consumers.Category;
 
-public sealed class CategoryDeactivatedIntegrationEventConsumer(IMediator mediator) : IConsumer<CategoryDeactivatedIntegrationEvent>
+public sealed class CategoryDeactivatedIntegrationEventConsumer(ISender sender) : IConsumer<CategoryDeactivatedIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<CategoryDeactivatedIntegrationEvent> context) =>
-        await mediator.Send(new UpdateCategorySnapshotCommand(
+        await sender.Send(new UpdateCategorySnapshotCommand(
             context.Message.CategoryId,
             context.Message.IsActive,
             context.Message.Version), context.CancellationToken);

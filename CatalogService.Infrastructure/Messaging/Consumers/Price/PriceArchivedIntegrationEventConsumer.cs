@@ -5,8 +5,8 @@ using migApp.Shared.Messaging.IntegrationEvents.Pricing;
 
 namespace CatalogService.Infrastructure.Messaging.Consumers.Price;
 
-public sealed class PriceArchivedIntegrationEventConsumer(IMediator mediator) : IConsumer<PriceArchivedIntegrationEvent>
+public sealed class PriceArchivedIntegrationEventConsumer(ISender sender) : IConsumer<PriceArchivedIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<PriceArchivedIntegrationEvent> context) =>
-        await mediator.Send(new DeleteProductVariantPriceSnapshotCommand(context.Message.PriceId), context.CancellationToken);
+        await sender.Send(new DeleteProductVariantPriceSnapshotCommand(context.Message.PriceId), context.CancellationToken);
 }

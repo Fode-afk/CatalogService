@@ -5,10 +5,10 @@ using migApp.Shared.Messaging.IntegrationEvents.Brands;
 
 namespace CatalogService.Infrastructure.Messaging.Consumers.Brand;
 
-public sealed class BrandApprovedIntegrationEventConsumer(IMediator mediator) : IConsumer<BrandApprovedIntegrationEvent>
+public sealed class BrandApprovedIntegrationEventConsumer(ISender sender) : IConsumer<BrandApprovedIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<BrandApprovedIntegrationEvent> context) =>
-        await mediator.Send(new UpdateBrandSnapshotCommand(
+        await sender.Send(new UpdateBrandSnapshotCommand(
             context.Message.BrandId,
             context.Message.IsAssignable,
             context.Message.Version), context.CancellationToken);
