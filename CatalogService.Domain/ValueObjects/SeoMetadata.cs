@@ -1,6 +1,4 @@
 ﻿using migApp.Shared.Domain.Primitives;
-using migApp.Shared.Results;
-using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Domain.ValueObjects;
 
@@ -20,18 +18,11 @@ public sealed class SeoMetadata : ValueObject
         Keywords = keywords;
     }
 
-    public static IResult<SeoMetadata> Create(
+    public static SeoMetadata Create(
         SeoTitle title,
         SeoDescription description,
-        SeoKeywords keywords)
-    {      
-        return Ok(new SeoMetadata(title, description, keywords));
-    }
+        SeoKeywords keywords) =>
+        new(title, description, keywords);
 
-    public override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Title;
-        yield return Description;
-        yield return Keywords;
-    }
+    public override IEnumerable<object> GetAtomicValues() => [Title, Description, Keywords];
 }

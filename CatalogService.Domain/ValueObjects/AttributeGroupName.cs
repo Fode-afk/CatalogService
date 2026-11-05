@@ -25,10 +25,7 @@ public sealed class AttributeGroupName : ValueObject
         return Ok(new AttributeGroupName(value));
     }
 
-    public override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
+    public override IEnumerable<object> GetAtomicValues() => [Value];
 
     public override string ToString() => Value;
     public static implicit operator string(AttributeGroupName attributeGroupName) => attributeGroupName.ToString();

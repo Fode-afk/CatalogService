@@ -11,10 +11,7 @@ public sealed class ShortDescription : ValueObject
 
     public string Value { get; }
 
-    private ShortDescription(string value)
-    {
-        Value = value;
-    }
+    private ShortDescription(string value) => Value = value;
 
     public static IResult<ShortDescription> Create(string value)
     {
@@ -29,12 +26,8 @@ public sealed class ShortDescription : ValueObject
         return Ok(new ShortDescription(value));
     }
 
-    public override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
-
+    public override IEnumerable<object> GetAtomicValues() => [Value];
+        
     public override string ToString() => Value;
-
     public static implicit operator string(ShortDescription description) => description.ToString();
 }

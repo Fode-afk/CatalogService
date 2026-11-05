@@ -11,10 +11,7 @@ public sealed class Tag : ValueObject
 
     public string Value { get; }
 
-    private Tag(string value)
-    {
-        Value = value;
-    }
+    private Tag(string value) => Value = value;
 
     public static IResult<Tag> Create(string value)
     {
@@ -29,12 +26,8 @@ public sealed class Tag : ValueObject
         return Ok(new Tag(value));
     }
 
-    public override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
+    public override IEnumerable<object> GetAtomicValues() => [Value];
 
     public override string ToString() => Value;
-
     public static implicit operator string(Tag tag) => tag.ToString();
 }

@@ -11,10 +11,7 @@ public sealed class BlockReason : ValueObject
 
     public string Value { get; }
 
-    private BlockReason(string value)
-    {
-        Value = value;
-    }
+    private BlockReason(string value) => Value = value;
 
     public static IResult<BlockReason> Create(string value)
     {
@@ -29,12 +26,8 @@ public sealed class BlockReason : ValueObject
         return Ok(new BlockReason(value));
     }
 
-    public override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
+    public override IEnumerable<object> GetAtomicValues() => [Value];
 
     public override string ToString() => Value;
-
     public static implicit operator string(BlockReason blockReason) => blockReason.ToString();
 }

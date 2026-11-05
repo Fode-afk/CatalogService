@@ -11,10 +11,7 @@ public sealed class SeoKeywords : ValueObject
 
     public string Value { get; }
 
-    private SeoKeywords(string value)
-    {
-        Value = value;
-    }
+    private SeoKeywords(string value) => Value = value;
 
     public static IResult<SeoKeywords> Create(string value)
     {
@@ -39,12 +36,8 @@ public sealed class SeoKeywords : ValueObject
         return string.Join(", ", keywords);
     }
 
-    public override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
+    public override IEnumerable<object> GetAtomicValues() => [Value];
 
     public override string ToString() => Value;
-
     public static implicit operator string(SeoKeywords seoKeywords) => seoKeywords.ToString();
 }

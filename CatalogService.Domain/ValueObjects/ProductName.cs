@@ -10,17 +10,9 @@ public sealed class ProductName : ValueObject
     public static int MaxLength => 100;
     public static int MinLength => 3;
 
-    private ProductName(string value)
-    {
-        Value = value;
-    }
-
     public string Value { get; }
 
-    public override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
+    private ProductName(string value) => Value = value;
 
     public static IResult<ProductName> Create(string value)
     {
@@ -38,13 +30,8 @@ public sealed class ProductName : ValueObject
         return Ok(new ProductName(value));
     }
 
-    public static string Normalize(ProductName name) =>
-        name.Value
-            .ToLower()
-            .Replace(" ", "")
-            .Trim();
+    public override IEnumerable<object> GetAtomicValues() => [Value];
 
     public override string ToString() => Value;
-
     public static implicit operator string(ProductName name) => name.ToString();
 }

@@ -9,17 +9,9 @@ public sealed class Description : ValueObject
 {
     public static int MaxLength => 5000;
 
-    private Description(string value)
-    {
-        Value = value;
-    }
-
     public string Value { get; }
 
-    public override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
+    private Description(string value) => Value = value;
 
     public static IResult<Description> Create(string value)
     {
@@ -34,7 +26,8 @@ public sealed class Description : ValueObject
         return Ok(new Description(value));
     }
 
-    public override string ToString() => Value;
+    public override IEnumerable<object> GetAtomicValues() => [Value];
 
+    public override string ToString() => Value;
     public static implicit operator string(Description description) => description.ToString();
 }

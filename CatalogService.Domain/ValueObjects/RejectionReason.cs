@@ -11,10 +11,7 @@ public sealed class RejectionReason : ValueObject
 
     public string Value { get; }
 
-    private RejectionReason(string value)
-    {
-        Value = value;
-    }
+    private RejectionReason(string value) => Value = value;
 
     public static IResult<RejectionReason> Create(string value)
     {
@@ -29,12 +26,8 @@ public sealed class RejectionReason : ValueObject
         return Ok(new RejectionReason(value));
     }
 
-    public override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
+    public override IEnumerable<object> GetAtomicValues() => [Value];
 
     public override string ToString() => Value;
-
     public static implicit operator string(RejectionReason rejectionReason) => rejectionReason.ToString();
 }

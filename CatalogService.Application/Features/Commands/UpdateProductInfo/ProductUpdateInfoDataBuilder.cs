@@ -40,18 +40,10 @@ internal static class ProductUpdateInfoDataBuilder
         if (seoKeywordsResult.IsFailure)
             errors.Add(seoKeywordsResult.Error);
 
-        SeoMetadata? seoMetadata = null;
-        if (seoTitleResult.IsSuccess && seoDescriptionResult.IsSuccess && seoKeywordsResult.IsSuccess)
-        {
-            var seoMetadataResult = SeoMetadata.Create(
+        var seoMetadata = SeoMetadata.Create(
                 seoTitleResult.Value,
                 seoDescriptionResult.Value,
                 seoKeywordsResult.Value);
-            if (seoMetadataResult.IsFailure)
-                errors.Add(seoMetadataResult.Error);
-            else
-                seoMetadata = seoMetadataResult.Value;
-        }
 
         if (errors.Count > 0)
             return Fail<ProductUpdateInfoData>(Error.Validation(

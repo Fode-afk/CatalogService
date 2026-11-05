@@ -16,10 +16,7 @@ public sealed partial class Slug : ValueObject
 
     public string Value { get; }
 
-    private Slug(string value)
-    {
-        Value = value;
-    }
+    private Slug(string value) => Value = value;
 
     public static IResult<Slug> Create(string value)
     {
@@ -40,12 +37,8 @@ public sealed partial class Slug : ValueObject
         return Ok(new Slug(value));
     }
 
-    public override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
+    public override IEnumerable<object> GetAtomicValues() => [Value];
 
     public override string ToString() => Value;
-
     public static implicit operator string(Slug slug) => slug.ToString();
 }
