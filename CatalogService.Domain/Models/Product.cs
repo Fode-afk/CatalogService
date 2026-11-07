@@ -242,16 +242,12 @@ public sealed class Product : AggregateRoot
 
             if (attribute is null)
             {
-                var createResult = ProductAttribute.CreateVariable(
+                attribute = ProductAttribute.CreateVariable(
                     item.CharacteristicId,
                     item.Name,
                     item.CharType,
                     item.GroupName);
 
-                if (createResult.IsFailure)
-                    return createResult;
-
-                attribute = createResult.Value;
                 attribute.MarkAsVariable();
                 _attributes.Add(attribute);
             }
@@ -287,11 +283,7 @@ public sealed class Product : AggregateRoot
             return validation;
 
         foreach (var attribute in _attributes.Where(a => a.IsVariable))
-        {
-            var result = attribute.RemoveVariableValue(variantId);
-            if (result.IsFailure)
-                return result;
-        }
+            attribute.RemoveVariableValue(variantId);
 
         _attributes.RemoveAll(a => a.IsVariable && a.VariableValues.Count == 0);
 

@@ -38,39 +38,35 @@ public sealed class ProductAttribute
     private readonly List<AttributeVariableValue> _variableValues = [];
     public IReadOnlyList<AttributeVariableValue> VariableValues => _variableValues;
 
-    public static IResult<ProductAttribute> Create(
+    public static ProductAttribute Create(
         Guid characteristicId,
         AttributeName name,
         AttributeValue value,
         AttributeCharType charType,
         AttributeGroupName? groupName = null,
-        bool isUnifying = false)
-    {
-        return Ok(new ProductAttribute(
+        bool isUnifying = false) => 
+        new(
             characteristicId,
             name,
             value,
             charType,
             groupName,
             isVariable: false,
-            isUnifying));
-    }
+            isUnifying);
 
-    public static IResult<ProductAttribute> CreateVariable(
+    public static ProductAttribute CreateVariable(
         Guid characteristicId,
         AttributeName name,
         AttributeCharType charType,
-        AttributeGroupName? groupName = null)
-    {
-        return Ok(new ProductAttribute(
+        AttributeGroupName? groupName = null) =>
+        new(
             characteristicId,
             name,
             value: null,
             charType,
             groupName,
             isVariable: true,
-            isUnifying: false));
-    }
+            isUnifying: false);
 
     public void MarkAsVariable()
     {
@@ -90,15 +86,13 @@ public sealed class ProductAttribute
         return Ok();
     }
 
-    public IResult RemoveVariableValue(Guid variantId)
+    public void RemoveVariableValue(Guid variantId)
     {
         var existing = _variableValues.FirstOrDefault(v => v.ValueId == variantId);
         if (existing is null)
-            return Ok();
+            return;
 
         _variableValues.Remove(existing);
-
-        return Ok();
     }
 }
 

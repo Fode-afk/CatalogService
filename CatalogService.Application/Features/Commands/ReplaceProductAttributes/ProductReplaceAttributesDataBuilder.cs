@@ -51,7 +51,7 @@ internal static class ProductReplaceAttributesDataBuilder
 
             if (nameResult.IsSuccess && valueResult.IsSuccess)
             {
-                var attributeResult = ProductAttribute.Create(
+                var attribute = ProductAttribute.Create(
                     snapshot.CharacteristicId,
                     nameResult.Value,
                     valueResult.Value,
@@ -59,13 +59,7 @@ internal static class ProductReplaceAttributesDataBuilder
                 groupName,
                 snapshot.IsUnifying);
 
-                if (attributeResult.IsFailure)
-                {
-                    errors.Add(attributeResult.Error);
-                    continue;
-                }
-
-                attributes.Add(attributeResult.Value);
+                attributes.Add(attribute);
             }
         }
 
