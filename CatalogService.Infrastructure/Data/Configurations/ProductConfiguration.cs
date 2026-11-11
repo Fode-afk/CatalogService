@@ -1,7 +1,9 @@
 ﻿using CatalogService.Domain.Models;
 using CatalogService.Domain.ValueObjects;
+using CatalogService.Infrastructure.Data.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using migApp.Shared.Domain.ValueObjects;
 
 namespace CatalogService.Infrastructure.Data.Configurations;
 
@@ -159,6 +161,12 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
                 .HasColumnName("Tag")
                 .HasMaxLength(Tag.MaxLength);
         });
+
+        builder.PrimitiveCollection(p => p.Markets)
+            .HasField("_markets")
+            .ElementType()
+            .HasConversion(new MarketConverter())
+            .HasMaxLength(Market.CodeLength);
 
         builder.OwnsMany(p => p.SuspensionReasons, s =>
         {

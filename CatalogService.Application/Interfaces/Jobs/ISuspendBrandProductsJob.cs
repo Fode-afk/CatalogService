@@ -2,5 +2,5 @@
 
 public interface ISuspendBrandProductsJob
 {
-    Task Execute(Guid brandId, bool isActive, CancellationToken cancellationToken = default);
+    Task Execute(Guid brandId, CancellationToken cancellationToken = default);
 }

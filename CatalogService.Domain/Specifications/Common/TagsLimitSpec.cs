@@ -6,7 +6,7 @@ using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Domain.Specifications.Common;
 
-public sealed class TagsLimitSpec<T> : Specification<T>
+internal sealed class TagsLimitSpec<T> : Specification<T>
     where T : ITagsContext
 {
     public override IResult IsSatisfiedBy(T ctx)

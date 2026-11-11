@@ -66,6 +66,7 @@ public sealed class SubmitProductForPublishCommandHandler(
             product.CanEditContent,
             product.Attributes,
             product.Tags,
+            product.Markets,
             variationSnapshots,
             priceSnapshots);
 

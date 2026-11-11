@@ -16,8 +16,12 @@ internal sealed class SuspendCategoryProductsJob(
     ILogger<SuspendCategoryProductsJob> logger,
     TimeProvider timeProvider) : ISuspendCategoryProductsJob
 {
-    public async Task Execute(Guid categoryId, bool isActive, CancellationToken cancellationToken = default)
+    public async Task Execute(Guid categoryId, CancellationToken cancellationToken = default)
     {
+        var category = await context.CategorySnapshots
+            .AsNoTracking()
+            .FirstOrDefaultAsync(b => b.CategoryId == categoryId, cancellationToken);
+
         var suspensionReason = new ProductSuspensionReason(SuspensionReason.CategoryDeactivated);
 
         const int batchSize = 100;
@@ -37,7 +41,7 @@ internal sealed class SuspendCategoryProductsJob(
 
             foreach (var product in products)
             {
-                if (!isActive)
+                if (category == null || !category.IsActive)
                 {
                     var result = product.Suspend(
                         new ProductSuspendContext(product.CanEditOperationalData),

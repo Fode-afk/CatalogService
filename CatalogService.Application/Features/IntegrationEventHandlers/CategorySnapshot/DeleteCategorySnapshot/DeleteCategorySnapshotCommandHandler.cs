@@ -24,7 +24,7 @@ public sealed class DeleteCategorySnapshotCommandHandler(
         await context.SaveChangesAsync(cancellationToken);
 
         backgroundJobClient.Enqueue<ISuspendCategoryProductsJob>(
-            job => job.Execute(request.CategoryId, isActive: false, CancellationToken.None));
+            job => job.Execute(request.CategoryId, CancellationToken.None));
 
         await transaction.CommitAsync(cancellationToken);
     }

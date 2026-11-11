@@ -42,10 +42,8 @@ public sealed class UpdateBrandSnapshotCommandHandler(
         await context.SaveChangesAsync(cancellationToken);
 
         if (IsAssignableChanged)
-        {
             backgroundJobClient.Enqueue<ISuspendBrandProductsJob>(
-                job => job.Execute(request.BrandId, request.IsAssignable, CancellationToken.None));
-        }
+                job => job.Execute(request.BrandId, CancellationToken.None));
 
         await transaction.CommitAsync(cancellationToken);
     }

@@ -16,8 +16,15 @@ internal sealed class SuspendVendorProductsJob(
     ILogger<SuspendVendorProductsJob> logger,
     TimeProvider timeProvider) : ISuspendVendorProductsJob
 {
-    public async Task Execute(Guid vendorId, bool isActive, CancellationToken cancellationToken = default)
+    public async Task Execute(Guid vendorId, CancellationToken cancellationToken = default)
     {
+        var vendor = await context.VendorSnapshots
+           .AsNoTracking()
+           .FirstOrDefaultAsync(b => b.VendorId == vendorId, cancellationToken);
+
+        if (vendor is null)
+            return;
+
         var suspensionReason = new ProductSuspensionReason(SuspensionReason.VendorDeactivated);
 
         const int batchSize = 100;
@@ -37,7 +44,7 @@ internal sealed class SuspendVendorProductsJob(
 
             foreach (var product in products)
             {
-                if (!isActive)
+                if (!vendor.IsActive)
                 {
                     var result = product.Suspend(
                         new ProductSuspendContext(product.CanEditOperationalData),

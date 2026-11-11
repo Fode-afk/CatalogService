@@ -16,6 +16,18 @@ public static class ProductErrors
         Error.InvalidArgument(ProductErrorCodes.TagsRequired,
             "Tags are required.");
 
+    public static Error MarketsRequired() =>
+        Error.InvalidArgument(ProductErrorCodes.MarketsRequired,
+            "Markets are required.");
+
+    public static Error DuplicateMarket() =>
+        Error.InvalidArgument(ProductErrorCodes.DuplicateMarket,
+            "Duplicate market.");
+
+    public static Error MarketNotAllowedForVendor() =>
+        Error.InvalidArgument(ProductErrorCodes.MarketNotAllowedForVendor,
+            "Market not allowed for vendor.");
+
     public static Error MaxAttributesReached(int maxAttributes) =>
         Error.InvalidArgument(ProductErrorCodes.MaxAttributesReached,
             $"Maximum number of attributes ({maxAttributes}) reached.");
@@ -66,6 +78,9 @@ public static class ProductErrorCodes
     public const string NoVariations = "Product.NoVariations";
     public const string AttributesRequired = "Product.AttributesRequired";
     public const string TagsRequired = "Product.TagsRequired";
+    public const string MarketsRequired = "Product.MarketsRequired";
+    public const string DuplicateMarket = "Product.DuplicateMarket";
+    public const string MarketNotAllowedForVendor = "Product.MarketNotAllowedForVendor";
     public const string MaxAttributesReached = "Product.MaxAttributesReached";
     public const string MaxTagsReached = "Product.MaxTagsReached";
     public const string NotFound = "Product.NotFound";

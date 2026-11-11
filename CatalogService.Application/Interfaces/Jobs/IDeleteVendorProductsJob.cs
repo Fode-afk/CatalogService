@@ -2,5 +2,5 @@
 
 public interface IDeleteVendorProductsJob
 {
-    Task Execute(Guid vendorId, CancellationToken cancellationToken);
+    Task Execute(Guid vendorId, CancellationToken cancellationToken = default);
 }

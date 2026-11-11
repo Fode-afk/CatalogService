@@ -5,4 +5,5 @@ namespace CatalogService.Application.Features.IntegrationEventHandlers.VendorSna
 public sealed record AddVendorSnapshotCommand(
     Guid VendorId,
     bool IsActive,
+    List<string> Markets,
     long Version) : IRequest;

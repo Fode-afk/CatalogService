@@ -133,6 +133,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
                     SeoTitle = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     SeoDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     SeoKeywords = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Markets = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     Version = table.Column<long>(type: "bigint", nullable: false)
                 },
@@ -178,8 +179,9 @@ namespace CatalogService.Infrastructure.Data.Migrations
                 columns: table => new
                 {
                     VendorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Markets = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     Version = table.Column<long>(type: "bigint", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },

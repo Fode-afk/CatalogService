@@ -8,7 +8,7 @@ internal sealed class DeleteVendorProductsJob(
     IAppDbContext context,
     TimeProvider timeProvider) : IDeleteVendorProductsJob
 {
-    public async Task Execute(Guid vendorId, CancellationToken cancellationToken)
+    public async Task Execute(Guid vendorId, CancellationToken cancellationToken = default)
     {
         const int batchSize = 100;
 

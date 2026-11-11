@@ -22,6 +22,7 @@ service CatalogService {
 
     rpc ReplaceProductAttributes(ReplaceProductAttributesRequest) returns (ProductWriteAck);
     rpc ReplaceProductTags(ReplaceProductTagsRequest) returns (ProductWriteAck);
+    rpc SetProductMarkets(SetProductMarketsRequest) returns (ProductWriteAck);
 }
 
 message CreateProductRequest {
@@ -91,6 +92,12 @@ message ReplaceProductTagsRequest {
     string vendor_id = 1;
     string product_id = 2;
     repeated string tags = 3;
+}
+
+message SetProductMarketsRequest {
+    string vendor_id = 1;
+    string product_id = 2;
+    repeated string markets = 3;
 }
 
 message ProductWriteAck {

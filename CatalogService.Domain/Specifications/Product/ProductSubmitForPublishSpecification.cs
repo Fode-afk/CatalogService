@@ -14,6 +14,7 @@ internal static class ProductSubmitForPublishSpecification
             .And(new CategoryIsActiveSpec<ProductSubmitForPublishContext>())
             .And(new AttributesRequiredSpec<ProductSubmitForPublishContext>())
             .And(new TagsRequiredSpec<ProductSubmitForPublishContext>())
+            .And(new MarketsRequiredSpec<ProductSubmitForPublishContext>())
             .And(Specification<ProductSubmitForPublishContext>.Create(
                 ctx => ctx.PriceSnapshots.Count == ctx.VariationSnapshots.Count,
                 ProductVariantPriceSnapshotErrors.NoPrice()))

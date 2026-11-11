@@ -2,5 +2,5 @@
 
 public interface ISuspendCategoryProductsJob
 {
-    Task Execute(Guid categoryId, bool isActive, CancellationToken cancellationToken = default);
+    Task Execute(Guid categoryId, CancellationToken cancellationToken = default);
 }

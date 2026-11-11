@@ -6,7 +6,7 @@ using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Domain.Specifications.Common;
 
-public sealed class CanEditContentSpec<T> : Specification<T>
+internal sealed class CanEditContentSpec<T> : Specification<T>
     where T : IProductContext
 {
     public override IResult IsSatisfiedBy(T ctx)

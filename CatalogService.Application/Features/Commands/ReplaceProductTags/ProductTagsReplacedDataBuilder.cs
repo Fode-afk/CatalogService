@@ -5,7 +5,7 @@ using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Application.Features.Commands.ReplaceProductTags;
 
-public static class ProductTagsReplacedDataBuilder
+internal static class ProductTagsReplacedDataBuilder
 {
     public static IResult<IReadOnlyCollection<Tag>> Build(ReplaceProductTagsCommand request)
     {
@@ -14,6 +14,7 @@ public static class ProductTagsReplacedDataBuilder
         var tagResults = request.Tags
             .Select(Tag.Create)
             .ToList();
+
         errors.AddRange(tagResults
             .Where(r => r.IsFailure)
             .Select(r => r.Error));

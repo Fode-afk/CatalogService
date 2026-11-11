@@ -2,6 +2,7 @@
 using CatalogService.Domain.Models;
 using CatalogService.Domain.Snapshots;
 using CatalogService.Domain.ValueObjects;
+using migApp.Shared.Domain.ValueObjects;
 
 namespace CatalogService.Domain.Contexts;
 
@@ -12,6 +13,7 @@ public sealed record ProductSubmitForPublishContext(
     bool CanEditContent,
     IReadOnlyCollection<ProductAttribute> Attributes,
     IReadOnlyCollection<Tag> Tags,
+    IReadOnlyCollection<Market> Markets,
     IReadOnlyList<ProductVariantSnapshot> VariationSnapshots,
     IReadOnlyList<ProductVariantPriceSnapshot> PriceSnapshots) :
         IVendorContext,
@@ -19,4 +21,5 @@ public sealed record ProductSubmitForPublishContext(
         ICategoryContext,
         IBrandContext,
         IAttributesContext,
-        ITagsContext;
+        ITagsContext,
+        IMarketsContext;

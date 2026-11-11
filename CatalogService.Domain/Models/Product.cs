@@ -5,6 +5,7 @@ using CatalogService.Domain.RequestData;
 using CatalogService.Domain.Specifications.Product;
 using CatalogService.Domain.ValueObjects;
 using migApp.Shared.Domain.Primitives;
+using migApp.Shared.Domain.ValueObjects;
 using migApp.Shared.Enums.Characteristics;
 using migApp.Shared.Enums.Products;
 using migApp.Shared.Results;
@@ -100,6 +101,9 @@ public sealed class Product : AggregateRoot
     public static int MaxTags => 50;
     private readonly List<Tag> _tags = [];
     public IReadOnlyCollection<Tag> Tags => _tags;
+
+    private readonly HashSet<Market> _markets = [];
+    public IReadOnlyCollection<Market> Markets => _markets;
 
     public static IResult<Product> Create(
         ProductCreationContext ctx,
@@ -320,6 +324,68 @@ public sealed class Product : AggregateRoot
             Id,
             _tags,
             Version));
+
+        return Ok();
+    }
+
+    public IResult SetMarkets(
+        ProductSetMarketsContext ctx,
+        DateTimeOffset now)
+    {
+        var result = ProductSetMarketsSpecification.Spec.IsSatisfiedBy(ctx);
+        if (result.IsFailure)
+            return result;
+
+        if (_markets.SetEquals(ctx.Markets))
+            return Ok();
+
+        var removed = _markets.Except(ctx.Markets).ToList();
+        var added = ctx.Markets.Except(_markets).ToList();
+
+        _markets.Clear();
+
+        foreach (var market in ctx.Markets)
+            _markets.Add(market);
+
+        UpdatedAt = now;
+
+        IncreaseVersion();
+
+        RaiseDomainEvent(new ProductMarketsChangedDomainEvent(
+            Id,
+            [.. _markets],
+            added, 
+            removed,
+            Version));
+
+        return Ok();
+    }
+
+    public IResult RestrictMarkets(IReadOnlySet<Market> vendorAllowed, DateTimeOffset now)
+    {
+        var removed = _markets.Where(m => !vendorAllowed.Contains(m)).ToList();
+        if (removed.Count == 0)
+            return Ok();
+
+        foreach (var market in removed)
+            _markets.Remove(market);
+
+        UpdatedAt = now;
+
+        IncreaseVersion();
+
+        RaiseDomainEvent(new ProductMarketsChangedDomainEvent(
+            Id,
+            [.. _markets],
+            AddedMarkets: [], 
+            removed, 
+            Version));
+
+        if (_markets.Count == 0 && ProductStatus == ProductStatus.Published)
+            return Suspend(
+                new ProductSuspendContext(CanEditOperationalData),
+                new ProductSuspensionReason(SuspensionReason.VendorMarketsRestricted),
+                now);
 
         return Ok();
     }

@@ -16,8 +16,12 @@ internal sealed class SuspendBrandProductsJob(
     ILogger<SuspendBrandProductsJob> logger,
     TimeProvider timeProvider) : ISuspendBrandProductsJob
 {
-    public async Task Execute(Guid brandId, bool isActive, CancellationToken cancellationToken = default)
+    public async Task Execute(Guid brandId, CancellationToken cancellationToken = default)
     {
+        var brand = await context.BrandSnapshots
+            .AsNoTracking()
+            .FirstOrDefaultAsync(b => b.BrandId == brandId, cancellationToken); 
+
         var suspensionReason = new ProductSuspensionReason(SuspensionReason.BrandDeactivated);
         const int batchSize = 100;
         var processedIds = new HashSet<Guid>();
@@ -35,7 +39,7 @@ internal sealed class SuspendBrandProductsJob(
 
             foreach (var product in products)
             {
-                if (!isActive)
+                if (brand == null || !brand.IsAssignable)
                 {
                     var result = product.Suspend(
                         new ProductSuspendContext(product.CanEditOperationalData),

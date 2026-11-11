@@ -5,11 +5,11 @@ using migApp.Shared.Messaging.IntegrationEvents.Vendors;
 
 namespace CatalogService.Infrastructure.Messaging.Consumers.Vendor;
 
-public sealed class VendorCreatedIntegrationEventConsumer(ISender sender) : IConsumer<VendorCreatedIntegrationEvent>
-{
-    public async Task Consume(ConsumeContext<VendorCreatedIntegrationEvent> context) =>
-        await sender.Send(new AddVendorSnapshotCommand(
-            context.Message.VendorId, 
-            context.Message.IsActive,
-            context.Message.Version), context.CancellationToken);
-}
+//public sealed class VendorCreatedIntegrationEventConsumer(ISender sender) : IConsumer<VendorCreatedIntegrationEvent>
+//{
+//    public async Task Consume(ConsumeContext<VendorCreatedIntegrationEvent> context) =>
+//        await sender.Send(new AddVendorSnapshotCommand(
+//            context.Message.VendorId, 
+//            context.Message.IsActive,
+//            context.Message.Version), context.CancellationToken);
+//}

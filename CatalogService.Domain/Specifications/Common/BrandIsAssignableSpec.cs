@@ -6,7 +6,7 @@ using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Domain.Specifications.Common;
 
-public sealed class BrandIsAssignableSpec<T> : Specification<T>
+internal sealed class BrandIsAssignableSpec<T> : Specification<T>
     where T : IBrandContext
 {
     public override IResult IsSatisfiedBy(T ctx)

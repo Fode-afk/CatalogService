@@ -24,7 +24,7 @@ public sealed class DeleteBrandSnapshotCommandHandler(
         await context.SaveChangesAsync(cancellationToken);
 
         backgroundJobClient.Enqueue<ISuspendBrandProductsJob>(
-            job => job.Execute(request.BrandId, isActive: false, CancellationToken.None));
+            job => job.Execute(request.BrandId, CancellationToken.None));
 
         await transaction.CommitAsync(cancellationToken);
     }

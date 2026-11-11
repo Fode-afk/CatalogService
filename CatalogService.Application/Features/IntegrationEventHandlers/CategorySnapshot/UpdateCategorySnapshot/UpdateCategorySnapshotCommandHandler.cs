@@ -42,10 +42,8 @@ public sealed class UpdateCategorySnapshotCommandHandler(
         await context.SaveChangesAsync(cancellationToken);
 
         if (isActiveChanged)
-        {
             backgroundJobClient.Enqueue<ISuspendCategoryProductsJob>(
-                job => job.Execute(request.CategoryId, request.IsActive, CancellationToken.None));
-        }
+                job => job.Execute(request.CategoryId, CancellationToken.None));
 
         await transaction.CommitAsync(cancellationToken);
     }

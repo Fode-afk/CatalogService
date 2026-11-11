@@ -2,6 +2,7 @@
 using CatalogService.Application.Features.Commands.CreateProduct;
 using CatalogService.Application.Features.Commands.ReplaceProductAttributes;
 using CatalogService.Application.Features.Commands.ReplaceProductTags;
+using CatalogService.Application.Features.Commands.SetProductMarkets;
 using CatalogService.Application.Features.Commands.UpdateProductInfo;
 
 namespace CatalogService.Api.Grpc.Mapping;
@@ -37,15 +38,21 @@ public static class ProductGrpcMapper
 
     public static ReplaceProductAttributesCommand ToCommand(this ReplaceProductAttributesRequest request) =>
         new(
-            Guid.Parse(request.VendorId),
             Guid.Parse(request.ProductId),
+            Guid.Parse(request.VendorId),
             request.Attributes.ToDictionary(a => Guid.Parse(a.Key), a => a.Value));
 
     public static ReplaceProductTagsCommand ToCommand(this ReplaceProductTagsRequest request) =>
         new(
-            Guid.Parse(request.VendorId),
             Guid.Parse(request.ProductId),
+            Guid.Parse(request.VendorId),
             [.. request.Tags]);
+
+    public static SetProductMarketsCommand ToCommand(this SetProductMarketsRequest request) =>
+        new(
+            Guid.Parse(request.ProductId),
+            Guid.Parse(request.VendorId),
+            [.. request.Markets]);
 
     public static ProductWriteAck ToResponse(this Application.Dtos.ProductWriteAck writeAck) =>
         new()

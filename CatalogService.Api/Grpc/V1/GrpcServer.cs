@@ -63,4 +63,8 @@ internal sealed class GrpcServer(ISender sender) : Protos.CatalogService.Catalog
     public override async Task<ProductWriteAck> ReplaceProductTags(ReplaceProductTagsRequest request, ServerCallContext context) =>
         (await sender.Send(request.ToCommand(), context.CancellationToken))
             .ThrowIfFailure().ToResponse();
+
+    public override async Task<ProductWriteAck> SetProductMarkets(SetProductMarketsRequest request, ServerCallContext context) =>
+        (await sender.Send(request.ToCommand(), context.CancellationToken))
+            .ThrowIfFailure().ToResponse();
 }

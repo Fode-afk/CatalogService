@@ -42,10 +42,8 @@ public sealed class UpdateVendorSnapshotCommandHandler(
         await context.SaveChangesAsync(cancellationToken);
 
         if (isActiveChanged)
-        {
             backgroundJobClient.Enqueue<ISuspendVendorProductsJob>(
-                job => job.Execute(request.VendorId, request.IsActive, CancellationToken.None));
-        }
+                job => job.Execute(request.VendorId, CancellationToken.None));
 
         await transaction.CommitAsync(cancellationToken);
     }

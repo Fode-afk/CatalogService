@@ -6,7 +6,7 @@ using static migApp.Shared.Results.ResultFactory;
 
 namespace CatalogService.Domain.Specifications.Common;
 
-public sealed class CategoryIsActiveSpec<T> : Specification<T>
+internal sealed class CategoryIsActiveSpec<T> : Specification<T>
     where T : ICategoryContext
 {
     public override IResult IsSatisfiedBy(T ctx)
