@@ -223,6 +223,11 @@ namespace CatalogService.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Market")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
                     b.Property<Guid>("ProductVariantId")
                         .HasColumnType("uniqueidentifier");
 
@@ -233,8 +238,10 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
                     b.HasKey("PriceId");
 
-                    b.HasIndex("ProductVariantId")
+                    b.HasIndex("Market")
                         .IsUnique();
+
+                    b.HasIndex("ProductVariantId");
 
                     b.ToTable("ProductVariantPriceSnapshots", "catalog_write");
                 });

@@ -16,8 +16,8 @@ internal static class ProductSubmitForPublishSpecification
             .And(new TagsRequiredSpec<ProductSubmitForPublishContext>())
             .And(new MarketsRequiredSpec<ProductSubmitForPublishContext>())
             .And(Specification<ProductSubmitForPublishContext>.Create(
-                ctx => ctx.PriceSnapshots.Count == ctx.VariationSnapshots.Count,
-                ProductVariantPriceSnapshotErrors.NoPrice()))
+                ctx => ctx.AllVariantsPricedInAllMarkets,
+                ProductErrors.PricesMissingForMarkets()))
             .And(Specification<ProductSubmitForPublishContext>.Create(
                 ctx => ctx.VariationSnapshots.All(v => v.HasMainImage),
                 ProductVariantSnapshotErrors.ImagesRequired()));

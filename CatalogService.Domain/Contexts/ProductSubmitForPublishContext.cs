@@ -11,11 +11,11 @@ public sealed record ProductSubmitForPublishContext(
     bool CategoryIsActive,
     bool BrandIsAssignable,
     bool CanEditContent,
+    bool AllVariantsPricedInAllMarkets,
     IReadOnlyCollection<ProductAttribute> Attributes,
     IReadOnlyCollection<Tag> Tags,
     IReadOnlyCollection<Market> Markets,
-    IReadOnlyList<ProductVariantSnapshot> VariationSnapshots,
-    IReadOnlyList<ProductVariantPriceSnapshot> PriceSnapshots) :
+    IReadOnlyList<ProductVariantSnapshot> VariationSnapshots) :
         IVendorContext,
         IProductContext,
         ICategoryContext,

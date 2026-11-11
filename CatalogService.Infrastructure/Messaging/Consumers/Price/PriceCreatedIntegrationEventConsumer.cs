@@ -9,9 +9,9 @@ public sealed class PriceCreatedIntegrationEventConsumer(ISender sender) : ICons
 {
     public async Task Consume(ConsumeContext<PriceCreatedIntegrationEvent> context)
     {
-        if (context.Message.IsBase)
-            await sender.Send(new AddProductVariantPriceSnapshotCommand(
-                context.Message.PriceId, 
-                context.Message.ProductVariantId), context.CancellationToken);
+        await sender.Send(new AddProductVariantPriceSnapshotCommand(
+            context.Message.PriceId, 
+            context.Message.ProductVariantId,
+            context.Message.Market), context.CancellationToken);
     }
 }

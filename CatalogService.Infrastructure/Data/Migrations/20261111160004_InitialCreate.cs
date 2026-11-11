@@ -149,6 +149,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
                 {
                     PriceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductVariantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Market = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -460,11 +461,17 @@ namespace CatalogService.Infrastructure.Data.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductVariantPriceSnapshots_Market",
+                schema: "catalog_write",
+                table: "ProductVariantPriceSnapshots",
+                column: "Market",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductVariantPriceSnapshots_ProductVariantId",
                 schema: "catalog_write",
                 table: "ProductVariantPriceSnapshots",
-                column: "ProductVariantId",
-                unique: true);
+                column: "ProductVariantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductVariantSnapshots_ProductId",

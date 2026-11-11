@@ -71,6 +71,10 @@ public static class ProductErrors
     public static Error Inactive() =>
         Error.InvalidArgument(ProductErrorCodes.Inactive,
             "Product inactive.");
+
+    public static Error PricesMissingForMarkets() =>
+        Error.InvalidArgument(ProductErrorCodes.PricesMissingForMarkets,
+            "Prices are missing for markets.");
 }
 
 public static class ProductErrorCodes
@@ -93,4 +97,5 @@ public static class ProductErrorCodes
     public const string CannotUnblockNotBlocked = "Product.CannotUnblockNotBlocked";
     public const string CannotEditOperationalData = "Product.CannotEditOperationalData";
     public const string Inactive = "Product.Inactive";
+    public const string PricesMissingForMarkets = "Product.PricesMissingForMarkets";
 }

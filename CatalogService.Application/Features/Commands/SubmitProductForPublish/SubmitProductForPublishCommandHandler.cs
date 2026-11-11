@@ -54,21 +54,42 @@ public sealed class SubmitProductForPublishCommandHandler(
         if (variationSnapshots.Count == 0)
             return Fail<ProductWriteAck>(ProductErrors.NoVariations());
 
-        var priceSnapshots = await context.ProductVariantPriceSnapshots
+        var variantIds = variationSnapshots.Select(v => v.ProductVariantId).ToList();
+        var productMarkets = product.Markets.ToList();
+
+        var pricedPairs = await context.ProductVariantPriceSnapshots
             .AsNoTracking()
-            .Where(p => variationSnapshots.Select(v => v.ProductVariantId).Contains(p.ProductVariantId))
+            .Where(p =>
+                variantIds.Contains(p.ProductVariantId) &&
+                productMarkets.Contains(p.Market))
+            .Select(p => new { p.ProductVariantId, p.Market })
             .ToListAsync(cancellationToken);
+
+        var pricedByVariant = pricedPairs
+            .GroupBy(p => p.ProductVariantId)
+            .ToDictionary(g => g.Key, g => g.Select(x => x.Market).ToHashSet());
+
+        var missing = variantIds
+            .Select(id => new
+            {
+                VariantId = id,
+                Markets = productMarkets
+                    .Where(m => !pricedByVariant.TryGetValue(id, out var set) || !set.Contains(m))
+                    .ToList()
+            })
+            .Where(x => x.Markets.Count > 0)
+            .ToList();
 
         var ctx = new ProductSubmitForPublishContext(
             vendorSnapshot.IsActive,
             categorySnapshot.IsActive,
             brandSnapshot.IsAssignable,
             product.CanEditContent,
+            AllVariantsPricedInAllMarkets: missing.Count == 0,
             product.Attributes,
             product.Tags,
             product.Markets,
-            variationSnapshots,
-            priceSnapshots);
+            variationSnapshots);
 
         var result = product.SubmitForPublish(
             ctx,

@@ -5,6 +5,7 @@ using CatalogService.Domain.Contexts;
 using CatalogService.Domain.Errors;
 using CatalogService.Domain.Models;
 using MediatR;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using migApp.Shared.Results;
 using static migApp.Shared.Results.ResultFactory;
@@ -65,7 +66,7 @@ public sealed class CreateProductCommandHandler(
         {
             await context.SaveChangesAsync(cancellationToken);
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException ex) when (ex.InnerException is SqlException { Number: 2601 or 2627 })
         {
             return Fail<ProductWriteAck>(ProductErrors.AlreadyExists());
         }
