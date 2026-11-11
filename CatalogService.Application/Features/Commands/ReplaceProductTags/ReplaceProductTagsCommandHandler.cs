@@ -16,6 +16,10 @@ public sealed class ReplaceProductTagsCommandHandler(
 {
     public async Task<IResult<ProductWriteAck>> Handle(ReplaceProductTagsCommand request, CancellationToken cancellationToken)
     {
+        var buildResult = ProductTagsReplacedDataBuilder.Build(request);
+        if (buildResult.IsFailure)
+            return Fail<ProductWriteAck>(buildResult.Error);
+
         var product = await context.Products
            .FirstOrDefaultAsync(p => p.Id == request.ProductId, cancellationToken);
         if (product == null)
@@ -34,10 +38,6 @@ public sealed class ReplaceProductTagsCommandHandler(
             .FirstOrDefaultAsync(v => v.VendorId == request.VendorId, cancellationToken);
         if (vendorSnapshot == null)
             return Fail<ProductWriteAck>(VendorSnapshotErrors.NotFound());
-
-        var buildResult = ProductTagsReplacedDataBuilder.Build(request);
-        if (buildResult.IsFailure)
-            return Fail<ProductWriteAck>(buildResult.Error);
 
         var ctx = new ProductTagsReplaceContext(
             vendorSnapshot.IsActive,

@@ -16,6 +16,10 @@ public sealed class UpdateProductInfoCommandHandler(
 {
     public async Task<IResult<ProductWriteAck>> Handle(UpdateProductInfoCommand request, CancellationToken cancellationToken)
     {
+        var buildResult = ProductUpdateInfoDataBuilder.Build(request);
+        if (buildResult.IsFailure)
+            return Fail<ProductWriteAck>(buildResult.Error);
+
         var product = await context.Products
             .FirstOrDefaultAsync(c => c.Id == request.ProductId, cancellationToken);
         if (product == null)
@@ -46,10 +50,6 @@ public sealed class UpdateProductInfoCommandHandler(
             .FirstOrDefaultAsync(b => b.BrandId == request.BrandId, cancellationToken);
         if (brandSnapshot is null)
             return Fail<ProductWriteAck>(BrandSnapshotErrors.NotFound());
-
-        var buildResult = ProductUpdateInfoDataBuilder.Build(request);
-        if (buildResult.IsFailure)
-            return Fail<ProductWriteAck>(buildResult.Error);
 
         var ctx = new ProductUpdateInfoContext(
             vendorSnapshot.IsActive,

@@ -19,6 +19,12 @@ public sealed class CreateProductCommandHandler(
 {
     public async Task<IResult<ProductWriteAck>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
+        var buildResult = ProductCreationDataBuilder.Build(request);
+        if (buildResult.IsFailure)
+            return Fail<ProductWriteAck>(buildResult.Error);
+
+        var data = buildResult.Value;
+
         var vendorSnapshot = await context.VendorSnapshots
             .AsNoTracking()
             .FirstOrDefaultAsync(v => v.VendorId == request.VendorId, cancellationToken);
@@ -36,12 +42,6 @@ public sealed class CreateProductCommandHandler(
             .FirstOrDefaultAsync(c => c.CategoryId == request.CategoryId, cancellationToken);
         if (categorySnapshot is null)
             return Fail<ProductWriteAck>(CategorySnapshotErrors.NotFound());
-
-        var buildResult = ProductCreationDataBuilder.Build(request);
-        if (buildResult.IsFailure)
-            return Fail<ProductWriteAck>(buildResult.Error);
-
-        var data = buildResult.Value;
 
         var ctx = new ProductCreationContext(
             vendorSnapshot.IsActive,
