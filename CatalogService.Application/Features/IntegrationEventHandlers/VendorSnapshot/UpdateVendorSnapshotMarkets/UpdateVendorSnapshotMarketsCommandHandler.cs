@@ -31,7 +31,7 @@ public sealed class UpdateVendorSnapshotMarketsCommandHandler(
 
         if (request.Version <= snapshot.Version)
         {
-            metrics.RecordSnapshotOutdated(nameof(UpdateVendorSnapshotCommand));
+            metrics.RecordSnapshotOutdated(nameof(UpdateVendorSnapshotMarketsCommand));
             return;
         }
 
