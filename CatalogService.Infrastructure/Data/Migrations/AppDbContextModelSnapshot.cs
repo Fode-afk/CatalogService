@@ -349,7 +349,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
                     b.HasIndex("Delivered");
 
-                    b.ToTable("InboxState", "messaging");
+                    b.ToTable("InboxState", "messaging_catalog");
                 });
 
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
@@ -442,7 +442,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
                         .IsUnique()
                         .HasFilter("[InboxMessageId] IS NOT NULL AND [InboxConsumerId] IS NOT NULL");
 
-                    b.ToTable("OutboxMessages", "messaging");
+                    b.ToTable("OutboxMessages", "messaging_catalog");
                 });
 
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxState", b =>
@@ -472,7 +472,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
                     b.HasIndex("Created");
 
-                    b.ToTable("OutboxState", "messaging");
+                    b.ToTable("OutboxState", "messaging_catalog");
                 });
 
             modelBuilder.Entity("CatalogService.Domain.Models.Product", b =>

@@ -17,6 +17,8 @@ var app = builder.Build();
 await app.MigrateDatabaseAsync();
 await app.SeedDatabaseAsync();
 
+app.RegisterRecurringJobs();
+
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();

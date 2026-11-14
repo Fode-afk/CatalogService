@@ -1,17 +1,16 @@
 ﻿using CatalogService.Application.Interfaces.Data;
 using CatalogService.Application.Interfaces.Jobs;
 using CatalogService.Application.Interfaces.Metrics;
-using CatalogService.Infrastructure.BackgroundServices;
 using CatalogService.Infrastructure.Behaviours;
 using CatalogService.Infrastructure.Data;
 using CatalogService.Infrastructure.DependencyInjection;
 using CatalogService.Infrastructure.DomainEvents;
 using CatalogService.Infrastructure.Jobs;
-using CatalogService.Infrastructure.Messaging;
 using CatalogService.Infrastructure.Messaging.Consumers;
 using CatalogService.Infrastructure.Messaging.IntegrationEvents;
 using CatalogService.Infrastructure.Observability;
 using Hangfire;
+using Hangfire.SqlServer;
 using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +21,7 @@ using Microsoft.Extensions.Options;
 using migApp.Shared.Behaviours;
 using migApp.Shared.Domain.Primitives;
 using migApp.Shared.Grpc;
+using migApp.Shared.Messaging;
 using OpenTelemetry;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
@@ -37,7 +37,7 @@ public static class InfrastructureExtensions
         this IServiceCollection services,
         IConfiguration configuration) =>
         services
-            .AddServices(configuration)
+            .AddServices()
             .AddDatabase(configuration)
             .AddHangfire(configuration)
             .AddGrpcServices()
@@ -47,31 +47,8 @@ public static class InfrastructureExtensions
             .AddObservability(configuration)
             .AddBehaviours();
 
-    private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
-    {
+    private static IServiceCollection AddServices(this IServiceCollection services) =>
         services.AddTransient<IDomainEventsDispatcher, DomainEventsDispatcher>();
-
-        services
-            .AddOptions<SoftDeletedProductsCleanupOptions>()
-            .Bind(configuration.GetSection(
-                SoftDeletedProductsCleanupOptions.SectionName))
-            .Validate(
-                options => options.Interval > TimeSpan.Zero,
-                $"{nameof(SoftDeletedProductsCleanupOptions.Interval)} must be greater than 0.")
-            .Validate(
-                options => options.RetentionPeriod > TimeSpan.Zero,
-                $"{nameof(SoftDeletedProductsCleanupOptions.RetentionPeriod)} must be greater than 0.")
-            .Validate(
-                options => options.BatchSize > 0,
-                $"{nameof(SoftDeletedProductsCleanupOptions.BatchSize)} must be greater than 0.")
-            .ValidateOnStart();
-
-        services.AddSingleton(sp => sp.GetRequiredService<IOptions<SoftDeletedProductsCleanupOptions>>().Value);
-
-        services.AddHostedService<SoftDeletedProductsCleanupService>();
-
-        return services;
-    }
 
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
@@ -96,13 +73,36 @@ public static class InfrastructureExtensions
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
-            .UseSqlServerStorage(connectionString));
+            .UseSqlServerStorage(connectionString, new SqlServerStorageOptions
+            {
+                SchemaName = Schemas.Hangfire,
+                PrepareSchemaIfNecessary = true,
+                UseRecommendedIsolationLevel = true,
+                DisableGlobalLocks = true,
+                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                QueuePollInterval = TimeSpan.Zero
+            }));
 
         services.AddHangfireServer();
         services.AddScoped<ISuspendVendorProductsJob, SuspendVendorProductsJob>();
         services.AddScoped<IDeleteVendorProductsJob, DeleteVendorProductsJob>();
         services.AddScoped<ISuspendBrandProductsJob, SuspendBrandProductsJob>();
         services.AddScoped<ISuspendCategoryProductsJob, SuspendCategoryProductsJob>();
+
+        services.AddOptions<SoftDeletedProductsCleanupOptions>()
+            .Bind(configuration.GetSection(SoftDeletedProductsCleanupOptions.SectionName))
+            .Validate(
+                o => Cronos.CronExpression.TryParse(o.CronExpression, Cronos.CronFormat.Standard, out _),
+                $"{nameof(SoftDeletedProductsCleanupOptions.CronExpression)} must be a valid 5-field cron expression.")
+            .Validate(o => o.RetentionPeriod > TimeSpan.Zero,
+                $"{nameof(SoftDeletedProductsCleanupOptions.RetentionPeriod)} must be greater than 0.")
+            .Validate(o => o.BatchSize > 0,
+                $"{nameof(SoftDeletedProductsCleanupOptions.BatchSize)} must be greater than 0.")
+            .ValidateOnStart();
+
+        services.AddSingleton(sp => sp.GetRequiredService<IOptions<SoftDeletedProductsCleanupOptions>>().Value);
+        services.AddScoped<ICleanupSoftDeletedProductsJob, CleanupSoftDeletedProductsJob>();
 
         return services;
     }

@@ -15,7 +15,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
                 name: "catalog_write");
 
             migrationBuilder.EnsureSchema(
-                name: "messaging");
+                name: "messaging_catalog");
 
             migrationBuilder.CreateTable(
                 name: "BrandSnapshots",
@@ -69,7 +69,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "InboxState",
-                schema: "messaging",
+                schema: "messaging_catalog",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -93,7 +93,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "OutboxState",
-                schema: "messaging",
+                schema: "messaging_catalog",
                 columns: table => new
                 {
                     OutboxId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -193,7 +193,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
             migrationBuilder.CreateTable(
                 name: "OutboxMessages",
-                schema: "messaging",
+                schema: "messaging_catalog",
                 columns: table => new
                 {
                     SequenceNumber = table.Column<long>(type: "bigint", nullable: false)
@@ -225,13 +225,13 @@ namespace CatalogService.Infrastructure.Data.Migrations
                     table.ForeignKey(
                         name: "FK_OutboxMessages_InboxState_InboxMessageId_InboxConsumerId",
                         columns: x => new { x.InboxMessageId, x.InboxConsumerId },
-                        principalSchema: "messaging",
+                        principalSchema: "messaging_catalog",
                         principalTable: "InboxState",
                         principalColumns: new[] { "MessageId", "ConsumerId" });
                     table.ForeignKey(
                         name: "FK_OutboxMessages_OutboxState_OutboxId",
                         column: x => x.OutboxId,
-                        principalSchema: "messaging",
+                        principalSchema: "messaging_catalog",
                         principalTable: "OutboxState",
                         principalColumn: "OutboxId");
                 });
@@ -349,25 +349,25 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_InboxState_Delivered",
-                schema: "messaging",
+                schema: "messaging_catalog",
                 table: "InboxState",
                 column: "Delivered");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OutboxMessages_EnqueueTime",
-                schema: "messaging",
+                schema: "messaging_catalog",
                 table: "OutboxMessages",
                 column: "EnqueueTime");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OutboxMessages_ExpirationTime",
-                schema: "messaging",
+                schema: "messaging_catalog",
                 table: "OutboxMessages",
                 column: "ExpirationTime");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OutboxMessages_InboxMessageId_InboxConsumerId_SequenceNumber",
-                schema: "messaging",
+                schema: "messaging_catalog",
                 table: "OutboxMessages",
                 columns: new[] { "InboxMessageId", "InboxConsumerId", "SequenceNumber" },
                 unique: true,
@@ -375,7 +375,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_OutboxMessages_OutboxId_SequenceNumber",
-                schema: "messaging",
+                schema: "messaging_catalog",
                 table: "OutboxMessages",
                 columns: new[] { "OutboxId", "SequenceNumber" },
                 unique: true,
@@ -383,7 +383,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_OutboxState_Created",
-                schema: "messaging",
+                schema: "messaging_catalog",
                 table: "OutboxState",
                 column: "Created");
 
@@ -497,7 +497,7 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "OutboxMessages",
-                schema: "messaging");
+                schema: "messaging_catalog");
 
             migrationBuilder.DropTable(
                 name: "ProductAttributeVariableValues",
@@ -525,11 +525,11 @@ namespace CatalogService.Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "InboxState",
-                schema: "messaging");
+                schema: "messaging_catalog");
 
             migrationBuilder.DropTable(
                 name: "OutboxState",
-                schema: "messaging");
+                schema: "messaging_catalog");
 
             migrationBuilder.DropTable(
                 name: "ProductAttributes",

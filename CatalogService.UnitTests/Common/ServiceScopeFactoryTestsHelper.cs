@@ -1,5 +1,5 @@
 ﻿using CatalogService.Application.Interfaces.Data;
-using CatalogService.Infrastructure.BackgroundServices;
+using CatalogService.Infrastructure.Jobs;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 
